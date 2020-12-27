@@ -27,7 +27,9 @@
 #ifndef COSOCO_ATTRIBUTELIST_H
 #define COSOCO_ATTRIBUTELIST_H
 
+#include "UTF8String.h"
 #include <libxml/xmlstring.h>
+
 namespace XCSP3Core {
     /**
  * represents the attribute list of a XML tag
@@ -35,7 +37,6 @@ namespace XCSP3Core {
     class AttributeList {
     public:
         typedef unsigned char Byte;
-
 
         /**
          * an empty list of attributes
@@ -45,50 +46,44 @@ namespace XCSP3Core {
             list = NULL;
         }
 
-
-        AttributeList(const Byte **attr) {
+        AttributeList(const Byte** attr) {
             list = attr;
 
             n = 0;
-            if(list == NULL)
+            if (list == NULL)
                 return;
 
-            while(list[n] != NULL)
+            while (list[n] != NULL)
                 n += 2;
 
             n /= 2;
         }
 
-
         inline int size() const {
             return n;
         }
 
-
-        UTF8String operator[](const char *name) const {
-            for(int i = 0; i < n; ++i)
-                if(xmlStrEqual(list[2 * i], reinterpret_cast<const Byte *> (name)))
+        UTF8String operator[](const char* name) const {
+            for (int i = 0; i < n; ++i)
+                if (xmlStrEqual(list[2 * i], reinterpret_cast<const Byte*>(name)))
                     return UTF8String(list[2 * i + 1]);
 
             return UTF8String();
         }
 
-
         inline UTF8String getName(int i) const {
             return UTF8String(list[2 * i]);
         }
-
 
         inline UTF8String getValue(int i) const {
             return UTF8String(list[2 * i + 1]);
         }
 
-
     private:
-        int n; // number of attributes
-        const Byte **list; // list[2*i] is the name of the i-th attribute,
+        int n;             // number of attributes
+        const Byte** list; // list[2*i] is the name of the i-th attribute,
         // list[2*i+1] is its value
     };
 
-}
+} // namespace XCSP3Core
 #endif //COSOCO_ATTRIBUTELIST_H
