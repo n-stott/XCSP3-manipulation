@@ -42,7 +42,7 @@ void XMLParser::startElement(UTF8String name, const AttributeList& attributes) {
     }
 
     if (!stateStack.empty() && !stateStack.front().subtagAllowed)
-        throw runtime_error("this element must not contain any element");
+        throw std::runtime_error("this element must not contain any element");
 
     TagActionList::iterator iAction = tagList.find(name);
     TagAction* action;
@@ -56,7 +56,7 @@ void XMLParser::startElement(UTF8String name, const AttributeList& attributes) {
     } else {
         // add a handler to ignore the text and end element
         action = unknownTagHandler;
-        cerr << "unknown tag " << name << endl;
+        std::cerr << "unknown tag " << name << std::endl;
     }
 
     stateStack.push_front(State());
@@ -87,7 +87,7 @@ void XMLParser::characters(UTF8String chars) {
         if (chars.isWhiteSpace())
             return;
         else
-            throw runtime_error("Text found outside any tag");
+            throw std::runtime_error("Text found outside any tag");
     }
 
     if (!textLeft.empty()) {
@@ -169,7 +169,7 @@ void XMLParser::handleAbridgedNotation(UTF8String chars, bool lastChunk) {
 //    or a basic entity, or a template parameter
 //------------------------------------------------------------------------------------------
 
-void XMLParser::parseSequence(const UTF8String& txt, vector<XVariable*>& list, vector<char> delimiters) {
+void XMLParser::parseSequence(const UTF8String& txt, std::vector<XVariable*>& list, std::vector<char> delimiters) {
     UTF8String::Tokenizer tokenizer(txt);
 
     for (char c : delimiters)
@@ -180,7 +180,7 @@ void XMLParser::parseSequence(const UTF8String& txt, vector<XVariable*>& list, v
         UTF8String token = tokenizer.nextToken();
         bool isSep = false;
         for (unsigned int i = 0; i < delimiters.size(); i++) {
-            string tt;
+            std::string tt;
             token.to(tt);
             if (tt.size() == 1 && tt[0] == delimiters[i]) {
                 if (i == 0)
@@ -191,20 +191,20 @@ void XMLParser::parseSequence(const UTF8String& txt, vector<XVariable*>& list, v
         if (isSep)
             continue;
 
-        string current, compactForm;
+        std::string current, compactForm;
         token.to(current);
         current = trim(current);
         size_t tree = current.find('(');
-        if (tree != string::npos) { // Tree expressions
+        if (tree != std::string::npos) { // Tree expressions
             list.push_back(new XTree(current));
             continue;
         }
         size_t percent = current.find('%');
-        if (percent == string::npos) { // Normal variable
+        if (percent == std::string::npos) { // Normal variable
             size_t pos = current.find('[');
-            if (pos == string::npos) { // Not an array
+            if (pos == std::string::npos) { // Not an array
                 size_t dotdot = current.find('.');
-                if (dotdot == string::npos) {
+                if (dotdot == std::string::npos) {
                     int nb;
                     try { // An integer
                         nb = std::stoi(current);
@@ -212,11 +212,11 @@ void XMLParser::parseSequence(const UTF8String& txt, vector<XVariable*>& list, v
                         list.push_back(xi);
                         toFree.push_back(xi);
 
-                    } catch (invalid_argument& e) {
+                    } catch (std::invalid_argument& e) {
                         if (variablesList[current] != NULL)
                             list.push_back(static_cast<XVariable*>(variablesList[current]));
                         else
-                            throw runtime_error("unknown variable: " + current);
+                            throw std::runtime_error("unknown variable: " + current);
                     }
                 } else { // A range
                     int first = std::stoi(current.substr(0, dotdot));
@@ -225,19 +225,19 @@ void XMLParser::parseSequence(const UTF8String& txt, vector<XVariable*>& list, v
                         list.push_back(new XEInterval(current, first, last));
                     } else {
                         for (int i = first; i <= last; i++) {
-                            XInteger* xi = new XInteger(to_string(i), i);
+                            XInteger* xi = new XInteger(std::to_string(i), i);
                             list.push_back(xi);
                             toFree.push_back(xi);
                         }
                     }
                 }
             } else {
-                string name;
+                std::string name;
                 token.substr(0, pos).to(name);
                 token.substr(pos).to(compactForm);
 
                 if (variablesList[name] == NULL)
-                    throw runtime_error("unknown variable: " + name);
+                    throw std::runtime_error("unknown variable: " + name);
                 (static_cast<XVariableArray*>(variablesList[name]))->getVarsFor(list, compactForm);
             }
         } else {
@@ -254,7 +254,7 @@ void XMLParser::parseSequence(const UTF8String& txt, vector<XVariable*>& list, v
 }
 
 // Return True if START appears;
-bool XMLParser::parseTuples(const UTF8String& txt, vector<vector<int>>& tuples) {
+bool XMLParser::parseTuples(const UTF8String& txt, std::vector<std::vector<int>>& tuples) {
     bool hasStar = false;
     UTF8String::Tokenizer tokenizer(txt);
     tokenizer.addSeparator(')');
@@ -269,7 +269,7 @@ bool XMLParser::parseTuples(const UTF8String& txt, vector<vector<int>>& tuples) 
             continue;
         }
         if (token == UTF8String(")")) {
-            tuples.push_back(vector<int>(currentTuple.begin(), currentTuple.end()));
+            tuples.push_back(std::vector<int>(currentTuple.begin(), currentTuple.end()));
             continue;
         }
         int val = -1;
@@ -310,7 +310,7 @@ void XMLParser::parseDomain(const UTF8String& txt, XDomainInteger& domain) {
     }
 }
 
-void XMLParser::parseListOfIntegerOrInterval(const UTF8String& txt, vector<XIntegerEntity*>& listToFill) {
+void XMLParser::parseListOfIntegerOrInterval(const UTF8String& txt, std::vector<XIntegerEntity*>& listToFill) {
     UTF8String::Tokenizer tokenizer(txt);
     UTF8String dotdot = "..";
     while (tokenizer.hasMoreTokens()) {

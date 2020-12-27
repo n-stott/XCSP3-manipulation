@@ -219,7 +219,7 @@ bool UTF8String::operator<(const UTF8String s) const {
     return (q != s._end && *q != 0) && ((p == _end || *p == 0) || *p < *q);
 }
 
-bool UTF8String::to(string& v) const {
+bool UTF8String::to(std::string& v) const {
     // fill v with the UTF8 encoding
     v.clear();
 
@@ -262,7 +262,7 @@ bool UTF8String::to(int& v) const {
     return it == end || it.firstByte() == 0;
 }
 
-void UTF8String::appendTo(string& v) const {
+void UTF8String::appendTo(std::string& v) const {
     // fill v with the UTF8 encoding
 
     for (const Byte* p = _beg; p != _end && *p; ++p)
@@ -297,7 +297,7 @@ void UTF8String::write(Byte*& p, int ch) {
         *p++ = 0x80 | (ch & 0x3F);
     } else if (ch < 0x10000) {
         if (ch >= 0xD800 && ch <= 0xDFFF)
-            throw runtime_error("invalid UTF8 character");
+            throw std::runtime_error("invalid UTF8 character");
 
         *p++ = 0xE0 | (ch >> 12);
         *p++ = 0x80 | ((ch >> 6) & 0x3F);
@@ -308,7 +308,7 @@ void UTF8String::write(Byte*& p, int ch) {
         *p++ = 0x80 | ((ch >> 6) & 0x3F);
         *p++ = 0x80 | (ch & 0x3F);
     } else
-        throw runtime_error("invalid UTF8 character");
+        throw std::runtime_error("invalid UTF8 character");
 }
 
 //------------------------ ITERATOR INTERN CLASS ------------------------
@@ -333,7 +333,7 @@ int UTF8String::iterator::operator*() {
         return ch;
     case 3:
         if ((ch == 0xE0 && p[1] < 0xA0) || (ch == 0xED && p[1] > 0x9F))
-            throw runtime_error("invalid UTF8 character");
+            throw std::runtime_error("invalid UTF8 character");
 
         ch &= 0x0F;
         addNextByte(ch);
@@ -341,7 +341,7 @@ int UTF8String::iterator::operator*() {
         return ch;
     case 4:
         if ((ch == 0xF0 && p[1] < 0x90) || (ch == 0xF4 && p[1] > 0x8F))
-            throw runtime_error("invalid UTF8 character");
+            throw std::runtime_error("invalid UTF8 character");
 
         ch &= 0x07;
         addNextByte(ch);
@@ -349,7 +349,7 @@ int UTF8String::iterator::operator*() {
         addNextByte(ch);
         return ch;
     default:
-        throw runtime_error("internal bug");
+        throw std::runtime_error("internal bug");
     }
 }
 
@@ -375,7 +375,7 @@ UTF8String::iterator& UTF8String::iterator::operator--() // prefix
     } while ((*p & 0xC0) == 0x80);
 
     if (p + codeLength(*p) != q)
-        throw runtime_error("invalid UTF8 sequence");
+        throw std::runtime_error("invalid UTF8 sequence");
 
     return *this;
 }

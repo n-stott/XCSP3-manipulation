@@ -23,27 +23,24 @@
  *=============================================================================
  */
 
-
 #ifndef XOBJECTIVE_H
-#define	XOBJECTIVE_H
+#define XOBJECTIVE_H
 
-
-#include<vector>
-#include <iostream>
 #include "XCSP3Constants.h"
+#include <iostream>
+#include <vector>
 
 namespace XCSP3Core {
 
     class XObjective {
-    public : 
+    public:
         ObjectiveGoal goal;
         ExpressionObjective type;
-        vector<XVariable *> list; 
-        vector<int> coeffs;
-        string expression;
+        std::vector<XVariable*> list;
+        std::vector<int> coeffs;
+        std::string expression;
     };
 
-}
+} // namespace XCSP3Core
 
-#endif	/* XOBJECTIVE_H */
-
+#endif /* XOBJECTIVE_H */

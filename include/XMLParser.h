@@ -60,8 +60,6 @@
  */
 namespace XCSP3Core {
 
-    using namespace std;
-
     /**
      * @brief contains a parser for the CSP XML format.
      *
@@ -73,9 +71,9 @@ namespace XCSP3Core {
     class XMLParser {
     public:
         // list of attributes and values for a tag
-        map<string, XEntity*> variablesList;
-        vector<XDomainInteger*> allDomains;
-        vector<XConstraint*> constraints;
+        std::map<std::string, XEntity*> variablesList;
+        std::vector<XDomainInteger*> allDomains;
+        std::vector<XConstraint*> constraints;
         XCSP3Manager* manager;
 
         // stack of operands to construct list, dictionaries, predicate
@@ -92,8 +90,8 @@ namespace XCSP3Core {
             XMLParser* parser;
 
         public:
-            string tagName;
-            TagAction(XMLParser* parser, string name) : parser(parser), tagName(name) { activated = false; }
+            std::string tagName;
+            TagAction(XMLParser* parser, std::string name) : parser(parser), tagName(name) { activated = false; }
 
             virtual ~TagAction() {}
 
@@ -118,7 +116,7 @@ namespace XCSP3Core {
             // UTF8String txt, bool last
             virtual void text(const UTF8String txt, bool) {
                 if (!txt.isWhiteSpace())
-                    throw runtime_error("<" + tagName + "> tag should not have meaningful text");
+                    throw std::runtime_error("<" + tagName + "> tag should not have meaningful text");
             }
 
             virtual void endTag() {}
@@ -136,13 +134,13 @@ namespace XCSP3Core {
             void checkParentTag(const char* parentTag, int n = 1) {
                 if (this->parser->getParentTagAction(n) == NULL) {
                     if (parentTag != NULL)
-                        throw runtime_error("tag has no parent but it should have one");
+                        throw std::runtime_error("tag has no parent but it should have one");
                     else
                         return;
                 }
 
                 if (parentTag == NULL)
-                    throw runtime_error("tag should have no parent");
+                    throw std::runtime_error("tag should have no parent");
 
 #ifdef debug
                 cout << "parent tag="
@@ -150,11 +148,11 @@ namespace XCSP3Core {
 #endif
                 if (strcmp(this->parser->getParentTagAction(n)->getTagName(),
                            parentTag) != 0)
-                    throw runtime_error("wrong parent for tag");
+                    throw std::runtime_error("wrong parent for tag");
             }
         };
 
-        typedef map<UTF8String, TagAction*> TagActionList;
+        typedef std::map<UTF8String, TagAction*> TagActionList;
 
         TagActionList tagList;
 
@@ -169,31 +167,31 @@ namespace XCSP3Core {
         class ListTagAction;
 
         // the top of the following stacks is at the FRONT
-        deque<TagAction*> actionStack;
-        deque<State> stateStack;
-        vector<vector<XVariable*>> lists;  // used to store Many lists of variables (usefull with lex, channel....)
-        vector<vector<XVariable*>> matrix; // Used in case of matrix tag
-        vector<vector<int>> patterns;
+        std::deque<TagAction*> actionStack;
+        std::deque<State> stateStack;
+        std::vector<std::vector<XVariable*>> lists;  // used to store Many lists of variables (usefull with lex, channel....)
+        std::vector<std::vector<XVariable*>> matrix; // Used in case of matrix tag
+        std::vector<std::vector<int>> patterns;
 
-        vector<XVariable*> args;   // used to store a list of args
-        vector<XVariable*> values; // used to store a list of variables
-        vector<XVariable*> occurs; // used in cardinality
+        std::vector<XVariable*> args;   // used to store a list of args
+        std::vector<XVariable*> values; // used to store a list of variables
+        std::vector<XVariable*> occurs; // used in cardinality
 
-        vector<int> integers; // used to store a list of coefficients
+        std::vector<int> integers; // used to store a list of coefficients
 
-        vector<XVariable*> origins;     // used to store a origins in noOverlap/cumulative Constraint
-        vector<XVariable*> lengths;     // used to store lengths in noOverlap/cumulative Constraint
-        vector<XVariable*> ends;        // used to store a origins in cumulative Constraint
-        vector<XVariable*> heights;     // used to store a origins in cumulative Constraint
-        vector<XIntegerEntity*> widths; // used to store lengths in stretch constraint
+        std::vector<XVariable*> origins;     // used to store a origins in noOverlap/cumulative Constraint
+        std::vector<XVariable*> lengths;     // used to store lengths in noOverlap/cumulative Constraint
+        std::vector<XVariable*> ends;        // used to store a origins in cumulative Constraint
+        std::vector<XVariable*> heights;     // used to store a origins in cumulative Constraint
+        std::vector<XIntegerEntity*> widths; // used to store lengths in stretch constraint
 
-        vector<int> currentTuple;
+        std::vector<int> currentTuple;
         ListTagAction* listTag; // The List tag action call
 
-        string classes;
+        std::string classes;
 
         bool zeroIgnored;            // for nooverlap
-        string condition;            // used to store a condition in prefix form
+        std::string condition;       // used to store a condition in prefix form
         bool star;                   // true if the extension contain star in tuples
         int startIndex, startIndex2; // used in some list tag
         int startRowIndex, startColIndex;
@@ -201,13 +199,13 @@ namespace XCSP3Core {
         XVariable* index2; // Only for element matrix
         RankType rank;     // used with rank tag
         OrderType op;
-        string expr;
-        string start, final;             // used in regular constraint
-        vector<XTransition> transitions; // used in regular and mdd constraints
+        std::string expr;
+        std::string start, final;             // used in regular constraint
+        std::vector<XTransition> transitions; // used in regular and mdd constraints
         int nbParameters;
         bool closed;
-        vector<XEntity*> toFree;
-        vector<XIntegerEntity*> toFreeEntity;
+        std::vector<XEntity*> toFree;
+        std::vector<XIntegerEntity*> toFreeEntity;
 
         bool keepIntervals;
 
@@ -223,24 +221,24 @@ namespace XCSP3Core {
          * Parse a sequence of tokens. Each token can represent a compact list of array variables, or a basic entity, or a template parameter
          */
 
-        void parseSequence(const UTF8String& txt, vector<XVariable*>& list, vector<char> delimiters = vector<char>());
+        void parseSequence(const UTF8String& txt, std::vector<XVariable*>& list, std::vector<char> delimiters = std::vector<char>());
 
         void parseDomain(const UTF8String& txt, XDomainInteger& domain);
 
-        void parseListOfIntegerOrInterval(const UTF8String& txt, vector<XIntegerEntity*>& listToFill);
+        void parseListOfIntegerOrInterval(const UTF8String& txt, std::vector<XIntegerEntity*>& listToFill);
 
-        bool parseTuples(const UTF8String& txt, vector<vector<int>>& tuples);
+        bool parseTuples(const UTF8String& txt, std::vector<std::vector<int>>& tuples);
 
         /***************************************************************************
              * a handler to silently ignore unkown tags
              ***************************************************************************/
         class UnknownTagAction : public TagAction {
         public:
-            UnknownTagAction(XMLParser* parser, string name) : TagAction(parser, name) {}
+            UnknownTagAction(XMLParser* parser, std::string name) : TagAction(parser, name) {}
 
             // AttributeList &attributes
             virtual void beginTag(const AttributeList&) {
-                throw runtime_error("Unknown Tag");
+                throw std::runtime_error("Unknown Tag");
             }
         };
 
@@ -250,7 +248,7 @@ namespace XCSP3Core {
 
         class InstanceTagAction : public TagAction {
         public:
-            InstanceTagAction(XMLParser* parser, string name) : TagAction(parser, name) {}
+            InstanceTagAction(XMLParser* parser, std::string name) : TagAction(parser, name) {}
             void beginTag(const AttributeList& attributes) override;
             void endTag() override;
         };
@@ -260,7 +258,7 @@ namespace XCSP3Core {
          ***************************************************************************/
         class VariablesTagAction : public TagAction {
         public:
-            VariablesTagAction(XMLParser* parser, string name) : TagAction(parser, name) {}
+            VariablesTagAction(XMLParser* parser, std::string name) : TagAction(parser, name) {}
             virtual void beginTag(const AttributeList& attributes) override;
             virtual void endTag() override;
         };
@@ -274,10 +272,10 @@ namespace XCSP3Core {
             XVariable* variable;
             XVariableArray* variableArray;
             XDomainInteger* domain;
-            string id, classes;
+            std::string id, classes;
 
         public:
-            VarTagAction(XMLParser* parser, string name) : TagAction(parser, name), variable(NULL), variableArray(NULL), domain(NULL) {}
+            VarTagAction(XMLParser* parser, std::string name) : TagAction(parser, name), variable(NULL), variableArray(NULL), domain(NULL) {}
             void beginTag(const AttributeList& attributes) override;
             void text(const UTF8String txt, bool last) override;
             void endTag() override;
@@ -292,10 +290,10 @@ namespace XCSP3Core {
         public:
             XVariableArray* varArray;
             XDomainInteger* domain;
-            string id, classes;
-            vector<int> sizes;
+            std::string id, classes;
+            std::vector<int> sizes;
 
-            ArrayTagAction(XMLParser* parser, string name) : TagAction(parser, name), varArray(NULL), domain(NULL) {}
+            ArrayTagAction(XMLParser* parser, std::string name) : TagAction(parser, name), varArray(NULL), domain(NULL) {}
 
             void beginTag(const AttributeList& attributes) override;
             void endTag() override;
@@ -310,9 +308,9 @@ namespace XCSP3Core {
 
         public:
             XDomainInteger* d;
-            string forAttr;
+            std::string forAttr;
 
-            DomainTagAction(XMLParser* parser, string name) : TagAction(parser, name) {}
+            DomainTagAction(XMLParser* parser, std::string name) : TagAction(parser, name) {}
 
             void beginTag(const AttributeList& attributes) override;
             void text(const UTF8String txt, bool last) override;
@@ -326,7 +324,7 @@ namespace XCSP3Core {
         class ConstraintsTagAction : public TagAction {
 
         public:
-            ConstraintsTagAction(XMLParser* parser, string name) : TagAction(parser, name) {}
+            ConstraintsTagAction(XMLParser* parser, std::string name) : TagAction(parser, name) {}
 
             // AttributeList &attributes
             virtual void beginTag(const AttributeList&) {
@@ -346,8 +344,8 @@ namespace XCSP3Core {
         class BasicConstraintTagAction : public TagAction {
         public:
             XConstraintGroup* group;
-            string id;
-            BasicConstraintTagAction(XMLParser* parser, string name) : TagAction(parser, name) {}
+            std::string id;
+            BasicConstraintTagAction(XMLParser* parser, std::string name) : TagAction(parser, name) {}
             void beginTag(const AttributeList& attributes) override;
         };
 
@@ -358,7 +356,7 @@ namespace XCSP3Core {
         class ExtensionTagAction : public BasicConstraintTagAction {
         public:
             XConstraintExtension* constraint;
-            ExtensionTagAction(XMLParser* parser, string name) : BasicConstraintTagAction(parser, name) {}
+            ExtensionTagAction(XMLParser* parser, std::string name) : BasicConstraintTagAction(parser, name) {}
             void beginTag(const AttributeList& attributes) override;
             void endTag() override;
         };
@@ -372,7 +370,7 @@ namespace XCSP3Core {
 
         public:
             XConstraintIntension* constraint;
-            IntensionTagAction(XMLParser* parser, string name) : BasicConstraintTagAction(parser, name) {}
+            IntensionTagAction(XMLParser* parser, std::string name) : BasicConstraintTagAction(parser, name) {}
             void beginTag(const AttributeList& attributes) override;
             void text(const UTF8String txt, bool last) override;
             void endTag() override;
@@ -391,7 +389,7 @@ namespace XCSP3Core {
         class RegularTagAction : public BasicConstraintTagAction {
         public:
             XConstraintRegular* constraint;
-            RegularTagAction(XMLParser* parser, string name) : BasicConstraintTagAction(parser, name) {}
+            RegularTagAction(XMLParser* parser, std::string name) : BasicConstraintTagAction(parser, name) {}
             void beginTag(const AttributeList& attributes) override;
             void endTag() override;
         };
@@ -403,7 +401,7 @@ namespace XCSP3Core {
         class MDDTagAction : public BasicConstraintTagAction {
         public:
             XConstraintMDD* constraint;
-            MDDTagAction(XMLParser* parser, string name) : BasicConstraintTagAction(parser, name) {}
+            MDDTagAction(XMLParser* parser, std::string name) : BasicConstraintTagAction(parser, name) {}
             void beginTag(const AttributeList& attributes) override;
             void endTag() override;
         };
@@ -424,7 +422,7 @@ namespace XCSP3Core {
             XConstraintAllDiff* alldiff;
             XConstraintAllEqual* allequal;
             XConstraint* ct;
-            AllDiffEqualTagAction(XMLParser* parser, string tag) : BasicConstraintTagAction(parser, tag) {}
+            AllDiffEqualTagAction(XMLParser* parser, std::string tag) : BasicConstraintTagAction(parser, tag) {}
             void beginTag(const AttributeList& attributes) override;
             void text(const UTF8String txt, bool last) override;
             void endTag() override;
@@ -436,7 +434,7 @@ namespace XCSP3Core {
         class OrderedTagAction : public BasicConstraintTagAction {
         public:
             XConstraintOrdered* constraint;
-            OrderedTagAction(XMLParser* parser, string name) : BasicConstraintTagAction(parser, name) {}
+            OrderedTagAction(XMLParser* parser, std::string name) : BasicConstraintTagAction(parser, name) {}
             void beginTag(const AttributeList& attributes) override;
             void text(const UTF8String txt, bool last) override;
             void endTag() override;
@@ -448,7 +446,7 @@ namespace XCSP3Core {
         class LexTagAction : public BasicConstraintTagAction {
         public:
             XConstraintLex* constraint;
-            LexTagAction(XMLParser* parser, string name) : BasicConstraintTagAction(parser, name) {}
+            LexTagAction(XMLParser* parser, std::string name) : BasicConstraintTagAction(parser, name) {}
             void beginTag(const AttributeList& attributes) override;
             void endTag() override;
         };
@@ -466,7 +464,7 @@ namespace XCSP3Core {
         class SumTagAction : public BasicConstraintTagAction {
         public:
             XConstraintSum* constraint;
-            SumTagAction(XMLParser* parser, string name) : BasicConstraintTagAction(parser, name) {}
+            SumTagAction(XMLParser* parser, std::string name) : BasicConstraintTagAction(parser, name) {}
             void beginTag(const AttributeList& attributes) override;
             void endTag() override;
         };
@@ -477,7 +475,7 @@ namespace XCSP3Core {
         class NValuesTagAction : public BasicConstraintTagAction {
         public:
             XConstraintNValues* constraint;
-            NValuesTagAction(XMLParser* parser, string name) : BasicConstraintTagAction(parser, name) {}
+            NValuesTagAction(XMLParser* parser, std::string name) : BasicConstraintTagAction(parser, name) {}
             void beginTag(const AttributeList& attributes) override;
             void endTag() override;
         };
@@ -489,7 +487,7 @@ namespace XCSP3Core {
         class CountTagAction : public BasicConstraintTagAction {
         public:
             XConstraintCount* constraint;
-            CountTagAction(XMLParser* parser, string name) : BasicConstraintTagAction(parser, name) {}
+            CountTagAction(XMLParser* parser, std::string name) : BasicConstraintTagAction(parser, name) {}
             void beginTag(const AttributeList& attributes) override;
             void endTag() override;
         };
@@ -501,7 +499,7 @@ namespace XCSP3Core {
         class CardinalityTagAction : public BasicConstraintTagAction {
         public:
             XConstraintCardinality* constraint;
-            CardinalityTagAction(XMLParser* parser, string name) : BasicConstraintTagAction(parser, name) {}
+            CardinalityTagAction(XMLParser* parser, std::string name) : BasicConstraintTagAction(parser, name) {}
             void beginTag(const AttributeList& attributes) override;
             void endTag() override;
         };
@@ -518,7 +516,7 @@ namespace XCSP3Core {
         class ChannelTagAction : public BasicConstraintTagAction {
         public:
             XConstraintChannel* constraint;
-            ChannelTagAction(XMLParser* parser, string name) : BasicConstraintTagAction(parser, name) {}
+            ChannelTagAction(XMLParser* parser, std::string name) : BasicConstraintTagAction(parser, name) {}
             void beginTag(const AttributeList& attributes) override;
             void text(const UTF8String txt, bool last) override;
             void endTag() override;
@@ -531,7 +529,7 @@ namespace XCSP3Core {
         class ElementTagAction : public BasicConstraintTagAction {
         public:
             XConstraintElement* constraint;
-            ElementTagAction(XMLParser* parser, string name) : BasicConstraintTagAction(parser, name) {}
+            ElementTagAction(XMLParser* parser, std::string name) : BasicConstraintTagAction(parser, name) {}
             void beginTag(const AttributeList& attributes) override;
             void endTag() override;
         };
@@ -544,7 +542,7 @@ namespace XCSP3Core {
 
         public:
             XConstraintMaximum* constraint;
-            MinMaxTagAction(XMLParser* parser, string tag) : BasicConstraintTagAction(parser, tag) {}
+            MinMaxTagAction(XMLParser* parser, std::string tag) : BasicConstraintTagAction(parser, tag) {}
             void beginTag(const AttributeList& attributes) override;
             void endTag() override;
         };
@@ -562,7 +560,7 @@ namespace XCSP3Core {
         class StretchTagAction : public BasicConstraintTagAction {
         public:
             XConstraintStretch* constraint;
-            StretchTagAction(XMLParser* parser, string name) : BasicConstraintTagAction(parser, name) {}
+            StretchTagAction(XMLParser* parser, std::string name) : BasicConstraintTagAction(parser, name) {}
             void beginTag(const AttributeList& attributes) override;
             void endTag() override;
         };
@@ -575,7 +573,7 @@ namespace XCSP3Core {
         public:
             bool diffn;
             XConstraintNoOverlap* constraint;
-            NoOverlapTagAction(XMLParser* parser, string name) : BasicConstraintTagAction(parser, name) {}
+            NoOverlapTagAction(XMLParser* parser, std::string name) : BasicConstraintTagAction(parser, name) {}
             void beginTag(const AttributeList& attributes) override;
             void endTag() override;
         };
@@ -587,7 +585,7 @@ namespace XCSP3Core {
         class CumulativeTagAction : public BasicConstraintTagAction {
         public:
             XConstraintCumulative* constraint;
-            CumulativeTagAction(XMLParser* parser, string name) : BasicConstraintTagAction(parser, name) {}
+            CumulativeTagAction(XMLParser* parser, std::string name) : BasicConstraintTagAction(parser, name) {}
             void beginTag(const AttributeList& attributes) override;
             void endTag() override;
         };
@@ -601,14 +599,14 @@ namespace XCSP3Core {
         class ObjectivesTagAction : public TagAction {
         public:
             XObjective* objective;
-            ObjectivesTagAction(XMLParser* parser, string name) : TagAction(parser, name) {}
+            ObjectivesTagAction(XMLParser* parser, std::string name) : TagAction(parser, name) {}
             void beginTag(const AttributeList& attributes) override;
             void endTag() override;
         };
 
         class MinimizeOrMaximizeTagAction : public TagAction {
         public:
-            MinimizeOrMaximizeTagAction(XMLParser* parser, string name) : TagAction(parser, name) {}
+            MinimizeOrMaximizeTagAction(XMLParser* parser, std::string name) : TagAction(parser, name) {}
             XObjective* obj;
             void beginTag(const AttributeList& attributes) override;
             void text(const UTF8String txt, bool last) override;
@@ -619,7 +617,7 @@ namespace XCSP3Core {
          ****************************************************************************/
         class InstantiationTagAction : public BasicConstraintTagAction {
         public:
-            InstantiationTagAction(XMLParser* parser, string name) : BasicConstraintTagAction(parser, name) {}
+            InstantiationTagAction(XMLParser* parser, std::string name) : BasicConstraintTagAction(parser, name) {}
             XConstraintInstantiation* constraint;
             void beginTag(const AttributeList& attributes) override;
             void endTag() override;
@@ -633,7 +631,7 @@ namespace XCSP3Core {
             UTF8String literals;
 
         public:
-            ClauseTagAction(XMLParser* parser, string name) : BasicConstraintTagAction(parser, name) {}
+            ClauseTagAction(XMLParser* parser, std::string name) : BasicConstraintTagAction(parser, name) {}
             XConstraintClause* constraint;
             void beginTag(const AttributeList& attributes) override;
             void text(const UTF8String txt, bool last) override;
@@ -649,7 +647,7 @@ namespace XCSP3Core {
             int nbCallsToList;
             // The first call stores datas inside this->parser->list
             // the ith call (i>1) stores datas inside this->parser->manyLists[i-1];
-            ListTagAction(XMLParser* parser, string name) : TagAction(parser, name) {}
+            ListTagAction(XMLParser* parser, std::string name) : TagAction(parser, name) {}
             void beginTag(const AttributeList& attributes) override;
             void text(const UTF8String txt, bool last) override;
             void endTag() override;
@@ -662,7 +660,7 @@ namespace XCSP3Core {
         class ConflictOrSupportTagAction : public TagAction {
         protected:
         public:
-            ConflictOrSupportTagAction(XMLParser* parser, string name) : TagAction(parser, name) {}
+            ConflictOrSupportTagAction(XMLParser* parser, std::string name) : TagAction(parser, name) {}
             void beginTag(const AttributeList& attributes) override;
             void text(const UTF8String txt, bool last) override;
         };
@@ -673,7 +671,7 @@ namespace XCSP3Core {
 
         class ConditionTagAction : public TagAction {
         public:
-            ConditionTagAction(XMLParser* parser, string name) : TagAction(parser, name) {}
+            ConditionTagAction(XMLParser* parser, std::string name) : TagAction(parser, name) {}
 
             // UTF8String txt, bool last
             virtual void text(const UTF8String txt, bool) {
@@ -701,7 +699,7 @@ namespace XCSP3Core {
 
         class ListOfIntegerTagAction : public TagAction {
         public:
-            ListOfIntegerTagAction(XMLParser* parser, string name) : TagAction(parser, name) {}
+            ListOfIntegerTagAction(XMLParser* parser, std::string name) : TagAction(parser, name) {}
             virtual void text(const UTF8String txt, bool last) override;
         };
 
@@ -711,20 +709,20 @@ namespace XCSP3Core {
 
         class ListOfVariablesOrIntegerTagAction : public TagAction {
 
-            vector<XVariable*>& listToFill;
+            std::vector<XVariable*>& listToFill;
 
         public:
-            ListOfVariablesOrIntegerTagAction(XMLParser* parser, string nm, vector<XVariable*>& ltf) : TagAction(parser, nm), listToFill(ltf) {}
+            ListOfVariablesOrIntegerTagAction(XMLParser* parser, std::string nm, std::vector<XVariable*>& ltf) : TagAction(parser, nm), listToFill(ltf) {}
             virtual void beginTag(const AttributeList& attributes) override;
             virtual void text(const UTF8String txt, bool last) override;
         };
 
         class ListOfVariablesOrIntegerOrIntervalTagAction : public TagAction {
 
-            vector<XVariable*>& listToFill;
+            std::vector<XVariable*>& listToFill;
 
         public:
-            ListOfVariablesOrIntegerOrIntervalTagAction(XMLParser* parser, string nm, vector<XVariable*>& ltf) : TagAction(parser, nm), listToFill(ltf) {}
+            ListOfVariablesOrIntegerOrIntervalTagAction(XMLParser* parser, std::string nm, std::vector<XVariable*>& ltf) : TagAction(parser, nm), listToFill(ltf) {}
             virtual void beginTag(const AttributeList& attributes) override;
             virtual void text(const UTF8String txt, bool last) override;
         };
@@ -735,10 +733,10 @@ namespace XCSP3Core {
 
         class OriginsTagAction : public TagAction {
 
-            vector<XVariable*>& listToFill;
+            std::vector<XVariable*>& listToFill;
 
         public:
-            OriginsTagAction(XMLParser* parser, string nm, vector<XVariable*>& ltf) : TagAction(parser, nm), listToFill(ltf) {}
+            OriginsTagAction(XMLParser* parser, std::string nm, std::vector<XVariable*>& ltf) : TagAction(parser, nm), listToFill(ltf) {}
             virtual void beginTag(const AttributeList& attributes) override;
             virtual void text(const UTF8String txt, bool last) override;
         };
@@ -749,11 +747,11 @@ namespace XCSP3Core {
 
         class ListOfIntegerOrIntervalTagAction : public TagAction {
 
-            vector<XIntegerEntity*>& listToFill;
+            std::vector<XIntegerEntity*>& listToFill;
 
         public:
-            ListOfIntegerOrIntervalTagAction(XMLParser* parser, string nm,
-                                             vector<XIntegerEntity*>& ltf) : TagAction(parser, nm), listToFill(ltf) {}
+            ListOfIntegerOrIntervalTagAction(XMLParser* parser, std::string nm,
+                                             std::vector<XIntegerEntity*>& ltf) : TagAction(parser, nm), listToFill(ltf) {}
             virtual void beginTag(const AttributeList& attributes) override;
             virtual void text(const UTF8String txt, bool last) override;
         };
@@ -765,7 +763,7 @@ namespace XCSP3Core {
         class GroupTagAction : public TagAction {
         public:
             XConstraintGroup* group;
-            GroupTagAction(XMLParser* parser, string name) : TagAction(parser, name) {}
+            GroupTagAction(XMLParser* parser, std::string name) : TagAction(parser, name) {}
             void beginTag(const AttributeList& attributes) override;
             void endTag() override;
         };
@@ -777,12 +775,12 @@ namespace XCSP3Core {
         class SlideTagAction : public TagAction {
         public:
             XConstraintGroup* group;
-            vector<XVariable*> list;
+            std::vector<XVariable*> list;
 
             int offset = 1;
             bool circular = false;
 
-            SlideTagAction(XMLParser* parser, string name) : TagAction(parser, name) {}
+            SlideTagAction(XMLParser* parser, std::string name) : TagAction(parser, name) {}
             void beginTag(const AttributeList& attributes) override;
             void endTag() override;
         };
@@ -792,8 +790,8 @@ namespace XCSP3Core {
          ****************************************************************************/
         class BlockTagAction : public TagAction {
         public:
-            vector<string> classes; // it is possible to have block inside block
-            BlockTagAction(XMLParser* parser, string name) : TagAction(parser, name) {}
+            std::vector<std::string> classes; // it is possible to have block inside block
+            BlockTagAction(XMLParser* parser, std::string name) : TagAction(parser, name) {}
             void beginTag(const AttributeList& attributes) override;
             void endTag() override;
         };
@@ -804,7 +802,7 @@ namespace XCSP3Core {
 
         class ArgsTagAction : public TagAction {
         public:
-            ArgsTagAction(XMLParser* parser, string name) : TagAction(parser, name) {}
+            ArgsTagAction(XMLParser* parser, std::string name) : TagAction(parser, name) {}
             void beginTag(const AttributeList& attributes) override;
             virtual void text(const UTF8String txt, bool last) override;
             void endTag() override;
@@ -816,7 +814,7 @@ namespace XCSP3Core {
 
         class OperatorTagAction : public TagAction {
         public:
-            OperatorTagAction(XMLParser* parser, string name) : TagAction(parser, name) {}
+            OperatorTagAction(XMLParser* parser, std::string name) : TagAction(parser, name) {}
             void text(const UTF8String txt, bool last) override;
         };
 
@@ -825,7 +823,7 @@ namespace XCSP3Core {
          ****************************************************************************/
         class IndexTagAction : public TagAction {
         public:
-            IndexTagAction(XMLParser* parser, string name) : TagAction(parser, name) {}
+            IndexTagAction(XMLParser* parser, std::string name) : TagAction(parser, name) {}
             void beginTag(const AttributeList& attributes) override;
             void text(const UTF8String txt, bool last) override;
         };
@@ -836,7 +834,7 @@ namespace XCSP3Core {
 
         class MatrixTagAction : public TagAction {
         public:
-            MatrixTagAction(XMLParser* parser, string name) : TagAction(parser, name) {}
+            MatrixTagAction(XMLParser* parser, std::string name) : TagAction(parser, name) {}
             void beginTag(const AttributeList& attributes) override;
             void text(const UTF8String txt, bool last) override;
             void endTag() override;
@@ -848,7 +846,7 @@ namespace XCSP3Core {
 
         class StringTagAction : public TagAction {
         public:
-            StringTagAction(XMLParser* parser, string name) : TagAction(parser, name) {}
+            StringTagAction(XMLParser* parser, std::string name) : TagAction(parser, name) {}
             void text(const UTF8String txt, bool last) override;
         };
 
@@ -860,7 +858,7 @@ namespace XCSP3Core {
         public:
             int nb, val;
             std::string from, to;
-            TransitionsTagAction(XMLParser* parser, string name) : TagAction(parser, name) {}
+            TransitionsTagAction(XMLParser* parser, std::string name) : TagAction(parser, name) {}
             void beginTag(const AttributeList& attributes) override;
             void text(const UTF8String txt, bool last) override;
         };
@@ -871,8 +869,8 @@ namespace XCSP3Core {
 
         class PatternsTagAction : public TagAction {
         public:
-            vector<XVariable*> listToFill;
-            PatternsTagAction(XMLParser* parser, string name) : TagAction(parser, name) {}
+            std::vector<XVariable*> listToFill;
+            PatternsTagAction(XMLParser* parser, std::string name) : TagAction(parser, name) {}
             void beginTag(const AttributeList& attributes) override;
             void text(const UTF8String txt, bool last) override;
         };
@@ -881,7 +879,7 @@ namespace XCSP3Core {
             XConstraintCircuit* constraint;
 
         public:
-            CircuitTagAction(XMLParser* parser, string name) : BasicConstraintTagAction(parser, name) {}
+            CircuitTagAction(XMLParser* parser, std::string name) : BasicConstraintTagAction(parser, name) {}
             void beginTag(const AttributeList& attributes) override;
             void text(const UTF8String txt, bool last) override;
             void endTag() override;
@@ -893,16 +891,16 @@ namespace XCSP3Core {
 
         class AnnotationsTagAction : public TagAction {
         public:
-            AnnotationsTagAction(XMLParser* parser, string name) : TagAction(parser, name) {}
+            AnnotationsTagAction(XMLParser* parser, std::string name) : TagAction(parser, name) {}
             void beginTag(const AttributeList& attributes) override;
             void endTag() override;
         };
 
         class DecisionTagAction : public TagAction {
-            vector<XVariable*> list;
+            std::vector<XVariable*> list;
 
         public:
-            DecisionTagAction(XMLParser* parser, string name) : TagAction(parser, name) {}
+            DecisionTagAction(XMLParser* parser, std::string name) : TagAction(parser, name) {}
             void beginTag(const AttributeList& attributes) override;
             void text(const UTF8String txt, bool last) override;
             void endTag() override;

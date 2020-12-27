@@ -24,43 +24,41 @@
  */
 
 #ifndef TREE_H
-#define    TREE_H
+#define TREE_H
 
-#include<cmath>
-#include <vector>
-#include <map>
-#include<iostream>
-#include<assert.h>
 #include "XCSP3TreeNode.h"
-
+#include <assert.h>
+#include <cmath>
+#include <iostream>
+#include <map>
+#include <vector>
 
 namespace XCSP3Core {
     class Tree {
     protected:
         std::string expr;
 
-        void createOperator(std::string currentElement, std::vector<NodeOperator *> &stack, std::vector<Node *> &params);
-        void closeOperator(std::vector<NodeOperator *> &stack, std::vector<Node *> &params);
-        void createBasicParameter(std::string currentElement, std::vector<NodeOperator *> &stack, std::vector<Node *> &params);
-    public:
-        Node *root;
-        std::vector<std::string> listOfVariables;
+        void createOperator(std::string currentElement, std::vector<NodeOperator*>& stack, std::vector<Node*>& params);
+        void closeOperator(std::vector<NodeOperator*>& stack, std::vector<Node*>& params);
+        void createBasicParameter(std::string currentElement, std::vector<NodeOperator*>& stack, std::vector<Node*>& params);
 
+    public:
+        Node* root;
+        std::vector<std::string> listOfVariables;
 
         Tree(std::string e) : expr(e) {
             root = fromStringToTree(expr);
         }
 
-        Tree(Node *r) : root(r) { }
+        Tree(Node* r) : root(r) {}
 
-        Node *fromStringToTree(std::string);
+        Node* fromStringToTree(std::string);
 
         int arity() {
             return listOfVariables.size();
         }
 
-
-        int evaluate(std::map<std::string, int> &tuple) {
+        int evaluate(std::map<std::string, int>& tuple) {
             return root->evaluate(tuple);
         }
 
@@ -68,17 +66,14 @@ namespace XCSP3Core {
             return root->toString();
         }
 
-        void prefixe()  {
+        void prefixe() {
             std::cout << root->toString();
         }
 
         void canonize() {
-            root =  root->canonize();
+            root = root->canonize();
         }
     };
-}
+} // namespace XCSP3Core
 
-
-
-#endif	/* TREE_H */
-
+#endif /* TREE_H */

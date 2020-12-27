@@ -64,7 +64,7 @@ public:
     XCSP3Manager& manager;
     std::string id;
 
-    PrimitivePattern(XCSP3Manager& m, string expr) : pattern(expr), manager(m) {}
+    PrimitivePattern(XCSP3Manager& m, std::string expr) : pattern(expr), manager(m) {}
 
     virtual ~PrimitivePattern() {}
 
@@ -228,9 +228,9 @@ public:
         if (operators.size() != 1 || isRelationalOperator(operators[0]) == false)
             return false;
         std::vector<XVariable*> list;
-        for (string& s : variables)
+        for (std::string& s : variables)
             list.push_back(static_cast<XVariable*>(manager.mapping[s]));
-        vector<int> coefs;
+        std::vector<int> coefs;
         coefs.push_back(1);
         coefs.push_back(1);
         coefs.push_back(-1);
@@ -318,7 +318,7 @@ void XCSP3Manager::newConstraintExtension(XConstraintExtension* constraint) {
 
     if (constraint->list.size() == 1) {
         std::vector<int> tuples;
-        for (vector<int>& tpl : constraint->tuples)
+        for (std::vector<int>& tpl : constraint->tuples)
             tuples.push_back(tpl[0]);
         callback->buildConstraintExtension(constraint->id, constraint->list[0], tuples, constraint->isSupport,
                                            constraint->containsStar);
@@ -376,7 +376,7 @@ void XCSP3Manager::newConstraintMDD(XConstraintMDD* constraint) {
 // Comparison constraints
 //--------------------------------------------------------------------------------------
 
-void XCSP3Manager::containsTrees(vector<XVariable*>& list, vector<Tree*>& trees) {
+void XCSP3Manager::containsTrees(std::vector<XVariable*>& list, std::vector<Tree*>& trees) {
     trees.clear();
     XTree* xt = nullptr;
     for (XVariable* x : list) {
@@ -402,7 +402,7 @@ void XCSP3Manager::containsTrees(vector<XVariable*>& list, vector<Tree*>& trees)
 }
 
 void XCSP3Manager::newConstraintAllDiff(XConstraintAllDiff* constraint) {
-    vector<Tree*> trees;
+    std::vector<Tree*> trees;
 
     if (discardedClasses(constraint->classes))
         return;
@@ -439,7 +439,7 @@ void XCSP3Manager::newConstraintOrdered(XConstraintOrdered* constraint) {
     if (discardedClasses(constraint->classes))
         return;
     if (constraint->lengths.size() > 0) {
-        vector<int> lengths;
+        std::vector<int> lengths;
         for (XVariable* x : constraint->lengths)
             lengths.push_back((static_cast<XInteger*>(x))->value);
         callback->buildConstraintOrdered(constraint->id, constraint->list, lengths, constraint->op);
@@ -463,7 +463,7 @@ void XCSP3Manager::newConstraintLexMatrix(XConstraintLexMatrix* constraint) {
 // Summin and Counting constraints
 //--------------------------------------------------------------------------------------
 
-void XCSP3Manager::normalizeSum(vector<XVariable*>& list, vector<int>& coefs) {
+void XCSP3Manager::normalizeSum(std::vector<XVariable*>& list, std::vector<int>& coefs) {
     // merge
     for (unsigned int i = 0; i < list.size() - 1; i++) {
         if (coefs[i] == 0)
@@ -475,8 +475,8 @@ void XCSP3Manager::normalizeSum(vector<XVariable*>& list, vector<int>& coefs) {
             }
         }
     }
-    vector<int> tmpc;
-    vector<XVariable*> tmpv;
+    std::vector<int> tmpc;
+    std::vector<XVariable*> tmpv;
     // remove coef=0
     for (unsigned int i = 0; i < list.size(); i++)
         if (coefs[i] != 0) {
@@ -496,13 +496,13 @@ void XCSP3Manager::newConstraintSum(XConstraintSum* constraint) {
     XCondition xc;
     constraint->extractCondition(xc);
 
-    vector<Tree*> trees;
+    std::vector<Tree*> trees;
     containsTrees(constraint->list, trees);
     if (trees.size() > 0) { // alldif over tree
         if (constraint->values.size() == 0)
             callback->buildConstraintSum(constraint->id, trees, xc);
         else {
-            vector<int> coefs;
+            std::vector<int> coefs;
             int v;
             for (XEntity* xe : constraint->values) {
                 isInteger(xe, v);
@@ -533,8 +533,8 @@ void XCSP3Manager::newConstraintSum(XConstraintSum* constraint) {
 
     int v;
     if (isInteger(constraint->values[0], v)) {
-        vector<int> coefs;
-        vector<XVariable*> list;
+        std::vector<int> coefs;
+        std::vector<XVariable*> list;
         for (XEntity* xe : constraint->values) {
             isInteger(xe, v);
             coefs.push_back(v);
@@ -721,7 +721,7 @@ void XCSP3Manager::newConstraintMinimum(XConstraintMinimum* constraint) {
     constraint->extractCondition(xc);
 
     if (constraint->index == NULL) {
-        vector<Tree*> trees;
+        std::vector<Tree*> trees;
         containsTrees(constraint->list, trees);
         if (trees.size() > 0)
             callback->buildConstraintMinimum(constraint->id, trees, xc);
@@ -739,7 +739,7 @@ void XCSP3Manager::newConstraintMaximum(XConstraintMaximum* constraint) {
     constraint->extractCondition(xc);
 
     if (constraint->index == NULL) {
-        vector<Tree*> trees;
+        std::vector<Tree*> trees;
         containsTrees(constraint->list, trees);
         if (trees.size() > 0)
             callback->buildConstraintMaximum(constraint->id, trees, xc);
@@ -754,7 +754,7 @@ void XCSP3Manager::newConstraintElement(XConstraintElement* constraint) {
     if (discardedClasses(constraint->classes))
         return;
     int v;
-    vector<int> listOfIntegers;
+    std::vector<int> listOfIntegers;
     if (isInteger(constraint->list[0], v)) {
         for (XEntity* xe : constraint->list) {
             isInteger(xe, v);
@@ -765,12 +765,12 @@ void XCSP3Manager::newConstraintElement(XConstraintElement* constraint) {
     if (isInteger(constraint->value, v)) {
         if (constraint->index == NULL) {
             if (listOfIntegers.size() > 0)
-                throw runtime_error("Not yet supported");
+                throw std::runtime_error("Not yet supported");
             else
                 callback->buildConstraintElement(constraint->id, constraint->list, v);
         } else {
             if (listOfIntegers.size() > 0)
-                throw runtime_error("Not yet supported");
+                throw std::runtime_error("Not yet supported");
             else
                 callback->buildConstraintElement(constraint->id, constraint->list, constraint->startIndex, constraint->index, constraint->rank, v);
         }
@@ -780,7 +780,7 @@ void XCSP3Manager::newConstraintElement(XConstraintElement* constraint) {
     XVariable* xv = static_cast<XVariable*>(constraint->value);
     if (constraint->index == NULL) {
         if (listOfIntegers.size() > 0)
-            throw runtime_error("Not yet supported");
+            throw std::runtime_error("Not yet supported");
         else
             callback->buildConstraintElement(constraint->id, constraint->list, xv);
     } else {
@@ -796,7 +796,7 @@ void XCSP3Manager::newConstraintElementMatrix(XConstraintElementMatrix* constrai
         return;
     int v;
     if (isInteger(constraint->matrix[0][0], v)) {
-        vector<vector<int>> matrix;
+        std::vector<std::vector<int>> matrix;
         matrix.resize(constraint->matrix.size());
         for (unsigned int i = 0; i < constraint->matrix.size(); i++)
             for (unsigned int j = 0; j < constraint->matrix[i].size(); j++) {
@@ -851,8 +851,8 @@ void XCSP3Manager::newConstraintNoOverlap(XConstraintNoOverlap* constraint) {
     }
 
     int v;
-    vector<int> intLengths;
-    vector<XVariable*> varLengths;
+    std::vector<int> intLengths;
+    std::vector<XVariable*> varLengths;
 
     for (XEntity* xe : constraint->lengths) {
         if (isInteger(xe, v))
@@ -875,13 +875,13 @@ void XCSP3Manager::newConstraintNoOverlapKDim(XConstraintNoOverlap* constraint) 
 
     int v;
     bool isInt = false;
-    vector<vector<int>> intLengths;
-    vector<vector<XVariable*>> varLengths;
-    vector<vector<XVariable*>> origins;
+    std::vector<std::vector<int>> intLengths;
+    std::vector<std::vector<XVariable*>> varLengths;
+    std::vector<std::vector<XVariable*>> origins;
     for (XEntity* xe : constraint->lengths) {
         if (xe == NULL) {
-            varLengths.push_back(vector<XVariable*>());
-            intLengths.push_back(vector<int>());
+            varLengths.push_back(std::vector<XVariable*>());
+            intLengths.push_back(std::vector<int>());
             continue;
         }
         if (isInteger(xe, v)) {
@@ -894,7 +894,7 @@ void XCSP3Manager::newConstraintNoOverlapKDim(XConstraintNoOverlap* constraint) 
     }
     for (XVariable* xe : constraint->origins) {
         if (xe == NULL) {
-            origins.push_back(vector<XVariable*>());
+            origins.push_back(std::vector<XVariable*>());
             continue;
         }
         origins.back().push_back(xe);
@@ -910,8 +910,8 @@ void XCSP3Manager::newConstraintCumulative(XConstraintCumulative* constraint) {
     if (discardedClasses(constraint->classes))
         return;
     int v;
-    vector<int> intLengths;
-    vector<XVariable*> varLengths;
+    std::vector<int> intLengths;
+    std::vector<XVariable*> varLengths;
 
     for (XEntity* xe : constraint->lengths) {
         if (isInteger(xe, v))
@@ -922,8 +922,8 @@ void XCSP3Manager::newConstraintCumulative(XConstraintCumulative* constraint) {
         }
     }
 
-    vector<int> intHeights;
-    vector<XVariable*> varHeights;
+    std::vector<int> intHeights;
+    std::vector<XVariable*> varHeights;
 
     for (XEntity* xe : constraint->heights) {
         if (isInteger(xe, v))
@@ -1012,7 +1012,7 @@ void XCSP3Manager::newConstraintGroup(XConstraintGroup* group) {
     if (discardedClasses(group->classes))
         return;
 
-    vector<XVariable*> previousArguments; // Used to check if extension arguments have same domains
+    std::vector<XVariable*> previousArguments; // Used to check if extension arguments have same domains
     callback->_arguments = &(group->arguments);
 
     for (unsigned int i = 0; i < group->arguments.size(); i++) {
@@ -1037,7 +1037,7 @@ void XCSP3Manager::newConstraintGroup(XConstraintGroup* group) {
             if (i > 0 && previousArguments.size() > 0)
                 newConstraintExtensionAsLastOne(ce);
             else {
-                vector<XVariable*> list;
+                std::vector<XVariable*> list;
                 list.assign(group->constraint->list.begin(), group->constraint->list.end());
                 group->constraint->list.assign(ce->list.begin(), ce->list.end());
                 previousArguments.assign(ce->list.begin(), ce->list.end());
@@ -1091,7 +1091,7 @@ void XCSP3Manager::newConstraintGroup(XConstraintGroup* group) {
             unfoldConstraint<XConstraintCumulative>(group, i, &XCSP3Manager::newConstraintCumulative);
 
         if (group->type == UNKNOWN) {
-            throw runtime_error("Group constraint is badly defined");
+            throw std::runtime_error("Group constraint is badly defined");
         }
     }
     callback->_arguments = nullptr;
@@ -1115,7 +1115,7 @@ void XCSP3Manager::addObjective(XObjective* objective) {
     }
 
     // Expressions ??
-    vector<Tree*> trees;
+    std::vector<Tree*> trees;
     containsTrees(objective->list, trees);
     if (trees.size() > 0) { // alldif over tree
         if (objective->coeffs.size() == 0) {

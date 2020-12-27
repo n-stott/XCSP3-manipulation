@@ -35,24 +35,24 @@ using namespace XCSP3Core;
 
 namespace XCSP3Core {
     // Special global vars...
-    vector<XTransition> tr; // Not beautiful but remove code to fixed data in group constraint.
-    string st;
-    vector<string> fi;
-    vector<int> _except;
+    std::vector<XTransition> tr; // Not beautiful but remove code to fixed data in group constraint.
+    std::string st;
+    std::vector<std::string> fi;
+    std::vector<int> _except;
     OrderType _op;
-    vector<int> _values;
+    std::vector<int> _values;
 
     int XParameterVariable::max;
 
     //------------------------------------------------------------------------------------------
     //  XCSP3Domain.h functions
     //------------------------------------------------------------------------------------------
-    ostream& operator<<(ostream& O, const XIntegerEntity& ie) {
+    std::ostream& operator<<(std::ostream& O, const XIntegerEntity& ie) {
         ie.print(O);
         return O;
     }
 
-    ostream& operator<<(ostream& f, const XDomainInteger& d) {
+    std::ostream& operator<<(std::ostream& f, const XDomainInteger& d) {
         for (XIntegerEntity* xi : d.values)
             f << *xi;
         return f;
@@ -94,12 +94,12 @@ XParameterVariable::XParameterVariable(std::string lid) : XVariable(lid, NULL) {
 }
 
 namespace XCSP3Core {
-    ostream& operator<<(ostream& O, const XVariable& x) {
+    std::ostream& operator<<(std::ostream& O, const XVariable& x) {
         O << x.id;
         return O;
     }
 
-    ostream& operator<<(ostream& O, const XInterval& it) {
+    std::ostream& operator<<(std::ostream& O, const XInterval& it) {
         O << "[" << it.min << "," << it.max << "]";
         return O;
     }
@@ -170,7 +170,7 @@ void XVariableArray::indexesFor(int flatIndex, std::vector<int>& indexes) {
     indexes[0] = flatIndex;
 }
 
-bool XVariableArray::incrementIndexes(vector<int>& indexes, vector<XIntegerEntity*>& ranges) {
+bool XVariableArray::incrementIndexes(std::vector<int>& indexes, std::vector<XIntegerEntity*>& ranges) {
     int j = indexes.size() - 1;
     for (; j >= 0; j--)
         if (ranges[j]->width() == 1)
@@ -182,9 +182,9 @@ bool XVariableArray::incrementIndexes(vector<int>& indexes, vector<XIntegerEntit
     return j >= 0;
 }
 
-void XVariableArray::getVarsFor(vector<XVariable*>& list, string compactForm, vector<int>* flatIndexes, bool storeIndexes) {
-    vector<XIntegerEntity*> ranges;
-    string tmp;
+void XVariableArray::getVarsFor(std::vector<XVariable*>& list, std::string compactForm, std::vector<int>* flatIndexes, bool storeIndexes) {
+    std::vector<XIntegerEntity*> ranges;
+    std::string tmp;
     // Compute the different ranges for all dimension
     for (unsigned int i = 0; i < sizes.size(); i++) {
         int pos = compactForm.find(']');
@@ -194,7 +194,7 @@ void XVariableArray::getVarsFor(vector<XVariable*>& list, string compactForm, ve
             ranges.push_back(new XIntegerInterval(0, sizes[i] - 1));
         } else {
             size_t dot = tmp.find("..");
-            if (dot == string::npos)
+            if (dot == std::string::npos)
                 ranges.push_back(new XIntegerValue(std::stoi(tmp)));
             else {
                 int first = std::stoi(tmp.substr(0, dot));
@@ -204,7 +204,7 @@ void XVariableArray::getVarsFor(vector<XVariable*>& list, string compactForm, ve
         }
     }
     // Compute the first one
-    vector<int> indexes;
+    std::vector<int> indexes;
     for (unsigned int i = 0; i < sizes.size(); i++)
         indexes.push_back(ranges[i]->minimum());
 
@@ -237,7 +237,7 @@ void XVariableArray::buildVarsWith(XDomainInteger* domain) {
     }
 }
 
-int XVariableArray::flatIndexFor(vector<int> indexes) {
+int XVariableArray::flatIndexFor(std::vector<int> indexes) {
     int sum = 0;
     for (int i = indexes.size() - 1, nb = 1; i >= 0; i--) {
         sum += indexes[i] * nb;
@@ -250,7 +250,7 @@ int XVariableArray::flatIndexFor(vector<int> indexes) {
 //  XCSP3Variable.h functions
 //------------------------------------------------------------------------------------------
 
-ostream& operator<<(ostream& O, const XInterval& it) {
+std::ostream& operator<<(std::ostream& O, const XInterval& it) {
     O << "[" << it.min << "," << it.max << "]";
     return O;
 }
@@ -259,11 +259,11 @@ ostream& operator<<(ostream& O, const XInterval& it) {
 //  XCSP3Constraint.h functions
 //------------------------------------------------------------------------------------------
 
-void XConstraint::unfoldParameters(XConstraintGroup* group, vector<XVariable*>& arguments, XConstraint* original) {
+void XConstraint::unfoldParameters(XConstraintGroup* group, std::vector<XVariable*>& arguments, XConstraint* original) {
     group->unfoldVector(list, arguments, original->list);
 }
 
-void XConstraintGroup::unfoldVector(vector<XVariable*>& toUnfold, vector<XVariable*>& args, vector<XVariable*>& initial) {
+void XConstraintGroup::unfoldVector(std::vector<XVariable*>& toUnfold, std::vector<XVariable*>& args, std::vector<XVariable*>& initial) {
     XParameterVariable* xp;
     if (initial.size() == 0)
         return;
@@ -281,16 +281,16 @@ void XConstraintGroup::unfoldVector(vector<XVariable*>& toUnfold, vector<XVariab
     }
 }
 
-void XConstraintGroup::unfoldString(string& toUnfold, vector<XVariable*>& args) {
+void XConstraintGroup::unfoldString(std::string& toUnfold, std::vector<XVariable*>& args) {
     for (int i = args.size() - 1; i >= 0; i--) {
-        string param = "%" + std::to_string(i);
+        std::string param = "%" + std::to_string(i);
         ReplaceStringInPlace(toUnfold, param, args[i]->id);
     }
 }
 
 namespace XCSP3Core {
-    ostream& operator<<(ostream& O, const XCondition& xc) {
-        string sep;
+    std::ostream& operator<<(std::ostream& O, const XCondition& xc) {
+        std::string sep;
         if (xc.op == LT)
             sep = " < ";
         if (xc.op == LE)
@@ -314,7 +314,7 @@ namespace XCSP3Core {
     }
 } // namespace XCSP3Core
 
-void XInitialCondition::unfoldParameters(XConstraintGroup* group, vector<XVariable*>& arguments, XConstraint* original) {
+void XInitialCondition::unfoldParameters(XConstraintGroup* group, std::vector<XVariable*>& arguments, XConstraint* original) {
     XInitialCondition* xi = dynamic_cast<XInitialCondition*>(original);
     condition = xi->condition;
     group->unfoldString(condition, arguments);
@@ -326,12 +326,12 @@ void XInitialCondition::extractCondition(XCondition& xc) { // Create the op and 
     std::regex_match(condition, match, rglt);
 
     if (match.size() != 3)
-        throw runtime_error("condition is malformed\n");
+        throw std::runtime_error("condition is malformed\n");
 
     xc.val = xc.min = xc.max = 0;
     xc.var = "";
-    string tmp0 = match[1].str();
-    string tmp1 = match[2].str();
+    std::string tmp0 = match[1].str();
+    std::string tmp1 = match[2].str();
 
     if (tmp0 == "le")
         xc.op = LE;
@@ -350,7 +350,7 @@ void XInitialCondition::extractCondition(XCondition& xc) { // Create the op and 
     //std::cout << condition <<": "<< tmp0 << " " <<tmp1 << std::endl;
     //printf("%d %d\n",' ',condition[condition.length()-1]);
     size_t dotdot = tmp1.find('.');
-    if (dotdot != string::npos) { // Normal variable
+    if (dotdot != std::string::npos) { // Normal variable
         xc.operandType = INTERVAL;
         xc.min = stoi(tmp1.substr(0, dotdot));
         xc.max = stoi(tmp1.substr(dotdot + 2));
@@ -359,18 +359,18 @@ void XInitialCondition::extractCondition(XCondition& xc) { // Create the op and 
     try {
         xc.val = stoi(tmp1);
         xc.operandType = INTEGER;
-    } catch (const invalid_argument& e) {
+    } catch (const std::invalid_argument& e) {
         xc.var = tmp1;
         xc.operandType = VARIABLE;
     }
 }
 
-void XValues::unfoldParameters(XConstraintGroup* group, vector<XVariable*>& arguments, XConstraint* original) {
+void XValues::unfoldParameters(XConstraintGroup* group, std::vector<XVariable*>& arguments, XConstraint* original) {
     XValues* xv = dynamic_cast<XValues*>(original);
     group->unfoldVector(values, arguments, xv->values);
 }
 
-void XValue::unfoldParameters(XConstraintGroup*, vector<XVariable*>& arguments, XConstraint* original) {
+void XValue::unfoldParameters(XConstraintGroup*, std::vector<XVariable*>& arguments, XConstraint* original) {
     XParameterVariable* xp;
     XValue* xv = dynamic_cast<XValue*>(original);
     if ((xp = dynamic_cast<XParameterVariable*>(xv->value)) == NULL) {
@@ -379,7 +379,7 @@ void XValue::unfoldParameters(XConstraintGroup*, vector<XVariable*>& arguments, 
         value = arguments[xp->number == -1 ? 0 : xp->number];
 }
 
-void XIndex::unfoldParameters(XConstraintGroup*, vector<XVariable*>& arguments, XConstraint* original) {
+void XIndex::unfoldParameters(XConstraintGroup*, std::vector<XVariable*>& arguments, XConstraint* original) {
     XParameterVariable* xp;
     XIndex* xi = dynamic_cast<XIndex*>(original);
     if (xi->index == NULL)
@@ -390,19 +390,19 @@ void XIndex::unfoldParameters(XConstraintGroup*, vector<XVariable*>& arguments, 
         index = arguments[xp->number == -1 ? 0 : xp->number];
 }
 
-void XLengths::unfoldParameters(XConstraintGroup* group, vector<XVariable*>& arguments, XConstraint* original) {
+void XLengths::unfoldParameters(XConstraintGroup* group, std::vector<XVariable*>& arguments, XConstraint* original) {
     XLengths* xl = dynamic_cast<XLengths*>(original);
     group->unfoldVector(lengths, arguments, xl->lengths);
 }
 
-void XConstraintExtension::unfoldParameters(XConstraintGroup* group, vector<XVariable*>& arguments, XConstraint* original) {
+void XConstraintExtension::unfoldParameters(XConstraintGroup* group, std::vector<XVariable*>& arguments, XConstraint* original) {
     XConstraint::unfoldParameters(group, arguments, original);
     XConstraintExtension* xe = dynamic_cast<XConstraintExtension*>(original);
     isSupport = xe->isSupport;
     containsStar = xe->containsStar;
 }
 
-void XConstraintIntension::unfoldParameters(XConstraintGroup* group, vector<XVariable*>& arguments, XConstraint* original) {
+void XConstraintIntension::unfoldParameters(XConstraintGroup* group, std::vector<XVariable*>& arguments, XConstraint* original) {
     XConstraintIntension* xi = dynamic_cast<XConstraintIntension*>(original);
     function = xi->function;
     group->unfoldString(function, arguments);
@@ -413,38 +413,38 @@ void XConstraintGroup::unfoldArgumentNumber(int i, XConstraint* builtConstraint)
     return;
 }
 
-void XConstraintAllDiffMatrix::unfoldParameters(XConstraintGroup*, vector<XVariable*>&, XConstraint*) {
-    throw runtime_error("Group Alldiff Matrix and list is not yet supported");
+void XConstraintAllDiffMatrix::unfoldParameters(XConstraintGroup*, std::vector<XVariable*>&, XConstraint*) {
+    throw std::runtime_error("Group Alldiff Matrix and list is not yet supported");
 }
 
-void XConstraintOrdered::unfoldParameters(XConstraintGroup* group, vector<XVariable*>& arguments, XConstraint* original) {
+void XConstraintOrdered::unfoldParameters(XConstraintGroup* group, std::vector<XVariable*>& arguments, XConstraint* original) {
     XConstraint::unfoldParameters(group, arguments, original);
     XLengths::unfoldParameters(group, arguments, original);
 }
 
-void XConstraintLex::unfoldParameters(XConstraintGroup* group, vector<XVariable*>& arguments, XConstraint* original) {
+void XConstraintLex::unfoldParameters(XConstraintGroup* group, std::vector<XVariable*>& arguments, XConstraint* original) {
     XConstraintLex* xc = dynamic_cast<XConstraintLex*>(original);
     for (unsigned int i = 0; i < lists.size(); i++)
         group->unfoldVector(lists[i], arguments, xc->lists[i]);
 }
 
-void XConstraintLexMatrix::unfoldParameters(XConstraintGroup*, vector<XVariable*>&, XConstraint*) {
-    throw runtime_error("Group lex Matrix  is not yet supported");
+void XConstraintLexMatrix::unfoldParameters(XConstraintGroup*, std::vector<XVariable*>&, XConstraint*) {
+    throw std::runtime_error("Group lex Matrix  is not yet supported");
 }
 
-void XConstraintSum::unfoldParameters(XConstraintGroup* group, vector<XVariable*>& arguments, XConstraint* original) {
+void XConstraintSum::unfoldParameters(XConstraintGroup* group, std::vector<XVariable*>& arguments, XConstraint* original) {
     XConstraint::unfoldParameters(group, arguments, original);
     XValues::unfoldParameters(group, arguments, original);
     XInitialCondition::unfoldParameters(group, arguments, original);
     assert(values.size() == list.size() || values.size() == 0);
 }
 
-void XConstraintNValues::unfoldParameters(XConstraintGroup* group, vector<XVariable*>& arguments, XConstraint* original) {
+void XConstraintNValues::unfoldParameters(XConstraintGroup* group, std::vector<XVariable*>& arguments, XConstraint* original) {
     XConstraint::unfoldParameters(group, arguments, original);
     XInitialCondition::unfoldParameters(group, arguments, original);
 }
 
-void XConstraintCardinality::unfoldParameters(XConstraintGroup* group, vector<XVariable*>& arguments, XConstraint* original) {
+void XConstraintCardinality::unfoldParameters(XConstraintGroup* group, std::vector<XVariable*>& arguments, XConstraint* original) {
     XConstraintCardinality* xc = dynamic_cast<XConstraintCardinality*>(original);
     closed = xc->closed;
     XConstraint::unfoldParameters(group, arguments, original);
@@ -452,13 +452,13 @@ void XConstraintCardinality::unfoldParameters(XConstraintGroup* group, vector<XV
     group->unfoldVector(occurs, arguments, xc->occurs);
 }
 
-void XConstraintCount::unfoldParameters(XConstraintGroup* group, vector<XVariable*>& arguments, XConstraint* original) {
+void XConstraintCount::unfoldParameters(XConstraintGroup* group, std::vector<XVariable*>& arguments, XConstraint* original) {
     XConstraint::unfoldParameters(group, arguments, original);
     XValues::unfoldParameters(group, arguments, original);
     XInitialCondition::unfoldParameters(group, arguments, original);
 }
 
-void XConstraintMaximum::unfoldParameters(XConstraintGroup* group, vector<XVariable*>& arguments, XConstraint* original) {
+void XConstraintMaximum::unfoldParameters(XConstraintGroup* group, std::vector<XVariable*>& arguments, XConstraint* original) {
     XConstraintMaximum* xc = dynamic_cast<XConstraintMaximum*>(original);
     XConstraint::unfoldParameters(group, arguments, original);
     XIndex::unfoldParameters(group, arguments, original);
@@ -467,7 +467,7 @@ void XConstraintMaximum::unfoldParameters(XConstraintGroup* group, vector<XVaria
     rank = xc->rank;
 }
 
-void XConstraintElement::unfoldParameters(XConstraintGroup* group, vector<XVariable*>& arguments, XConstraint* original) {
+void XConstraintElement::unfoldParameters(XConstraintGroup* group, std::vector<XVariable*>& arguments, XConstraint* original) {
     XConstraintElement* xc = dynamic_cast<XConstraintElement*>(original);
     XConstraint::unfoldParameters(group, arguments, original);
     XIndex::unfoldParameters(group, arguments, original);
@@ -476,7 +476,7 @@ void XConstraintElement::unfoldParameters(XConstraintGroup* group, vector<XVaria
     rank = xc->rank;
 }
 
-void XConstraintElementMatrix::unfoldParameters(XConstraintGroup* group, vector<XVariable*>& arguments, XConstraint* original) {
+void XConstraintElementMatrix::unfoldParameters(XConstraintGroup* group, std::vector<XVariable*>& arguments, XConstraint* original) {
     XConstraintElementMatrix* xc = dynamic_cast<XConstraintElementMatrix*>(original);
     XConstraint::unfoldParameters(group, arguments, original);
     XIndex::unfoldParameters(group, arguments, original);
@@ -492,7 +492,7 @@ void XConstraintElementMatrix::unfoldParameters(XConstraintGroup* group, vector<
     matrix = xc->matrix;
 }
 
-void XConstraintChannel::unfoldParameters(XConstraintGroup* group, vector<XVariable*>& arguments, XConstraint* original) {
+void XConstraintChannel::unfoldParameters(XConstraintGroup* group, std::vector<XVariable*>& arguments, XConstraint* original) {
     XConstraintChannel* xc = dynamic_cast<XConstraintChannel*>(original);
     XConstraint::unfoldParameters(group, arguments, original);
     XValue::unfoldParameters(group, arguments, original);
@@ -501,14 +501,14 @@ void XConstraintChannel::unfoldParameters(XConstraintGroup* group, vector<XVaria
     startIndex2 = xc->startIndex2;
 }
 
-void XConstraintNoOverlap::unfoldParameters(XConstraintGroup* group, vector<XVariable*>& arguments, XConstraint* original) {
+void XConstraintNoOverlap::unfoldParameters(XConstraintGroup* group, std::vector<XVariable*>& arguments, XConstraint* original) {
     XConstraint::unfoldParameters(group, arguments, original);
     XLengths::unfoldParameters(group, arguments, original);
     XConstraintNoOverlap* xc = dynamic_cast<XConstraintNoOverlap*>(original);
     zeroIgnored = xc->zeroIgnored;
 }
 
-void XConstraintCumulative::unfoldParameters(XConstraintGroup* group, vector<XVariable*>& arguments, XConstraint* original) {
+void XConstraintCumulative::unfoldParameters(XConstraintGroup* group, std::vector<XVariable*>& arguments, XConstraint* original) {
     XConstraintCumulative* xc = dynamic_cast<XConstraintCumulative*>(original);
     XConstraint::unfoldParameters(group, arguments, original);
     XLengths::unfoldParameters(group, arguments, original);
@@ -518,25 +518,25 @@ void XConstraintCumulative::unfoldParameters(XConstraintGroup* group, vector<XVa
     group->unfoldVector(heights, arguments, xc->heights);
 }
 
-void XConstraintStretch::unfoldParameters(XConstraintGroup*, vector<XVariable*>&, XConstraint*) {
-    throw runtime_error("group is not yet allowed with stretch constraint");
+void XConstraintStretch::unfoldParameters(XConstraintGroup*, std::vector<XVariable*>&, XConstraint*) {
+    throw std::runtime_error("group is not yet allowed with stretch constraint");
 }
 
-void XConstraintCircuit::unfoldParameters(XConstraintGroup* group, vector<XVariable*>& arguments, XConstraint* original) {
+void XConstraintCircuit::unfoldParameters(XConstraintGroup* group, std::vector<XVariable*>& arguments, XConstraint* original) {
     XConstraintCircuit* xc = dynamic_cast<XConstraintCircuit*>(original);
     XConstraint::unfoldParameters(group, arguments, original);
     XValue::unfoldParameters(group, arguments, original);
     startIndex = xc->startIndex;
 }
 
-void XConstraintClause::unfoldParameters(XConstraintGroup* group, vector<XVariable*>& arguments, XConstraint* original) {
+void XConstraintClause::unfoldParameters(XConstraintGroup* group, std::vector<XVariable*>& arguments, XConstraint* original) {
     (void)group;
     (void)original;
     for (XVariable* xv : arguments) {
         if (dynamic_cast<XTree*>(xv) != nullptr) { // not
             if (xv->id.rfind("not(", 0) != 0)
-                throw runtime_error("a clause is malformed in a group: " + xv->id);
-            string name = xv->id.substr(4, xv->id.length() - 5);
+                throw std::runtime_error("a clause is malformed in a group: " + xv->id);
+            std::string name = xv->id.substr(4, xv->id.length() - 5);
             negative.push_back(new XVariable(name, nullptr)); // TODO: improvements needed here
         } else {
             positive.push_back(xv);

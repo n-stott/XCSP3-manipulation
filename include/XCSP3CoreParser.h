@@ -26,21 +26,19 @@
 #ifndef _XMLParser_libxml2_h_
 #define _XMLParser_libxml2_h_
 
-#include <iostream>
-#include <stdexcept>
 #include <cerrno>
 #include <climits>
+#include <iostream>
 #include <libxml/parser.h>
+#include <stdexcept>
 
-#include "XMLParser.h"
-#include "XCSP3CoreCallbacks.h"
-#include "XCSP3Constants.h"
 #include "UTF8String.h"
+#include "XCSP3Constants.h"
+#include "XCSP3CoreCallbacks.h"
+#include "XMLParser.h"
 //#define debug
 
 namespace XCSP3Core {
-    using namespace std;
-
 
     /**
      * @brief the parser using the libxml2 library
@@ -51,43 +49,34 @@ namespace XCSP3Core {
         XMLParser cspParser;
 
     public:
-
-        XCSP3CoreParser(XCSP3CoreCallbacks *cb) : cspParser(cb) {
+        XCSP3CoreParser(XCSP3CoreCallbacks* cb) : cspParser(cb) {
             LIBXML_TEST_VERSION
         }
 
+        int parse(std::istream& in);
 
-        int parse(istream &in);
-
-
-        int parse(const char *filename);
-
+        int parse(const char* filename);
 
     protected:
-
-
         /*************************************************************************
          *
          * SAX Handler
          *
          *************************************************************************/
 
-        static void comment(void *parser, const xmlChar *value);
+        static void comment(void* parser, const xmlChar* value);
 
+        static void startDocument(void* parser);
 
-        static void startDocument(void *parser);
+        static void endDocument(void* parser);
 
+        static void characters(void* parser, const xmlChar* ch, int len);
 
-        static void endDocument(void *parser);
+        static void startElement(void* parser, const xmlChar* name, const xmlChar** attr);
 
-
-        static void characters(void *parser, const xmlChar *ch, int len);
-
-        static void startElement(void *parser, const xmlChar *name, const xmlChar **attr);
-
-        static void endElement(void *parser, const xmlChar *name);
+        static void endElement(void* parser, const xmlChar* name);
     };
 
-}
+} // namespace XCSP3Core
 
 #endif

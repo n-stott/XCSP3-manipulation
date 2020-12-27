@@ -33,17 +33,17 @@ using namespace XCSP3Core;
  ***************************************************************************/
 
 void XMLParser::InstanceTagAction::beginTag(const AttributeList& attributes) {
-    string stringtype;
+    std::string stringtype;
     InstanceType type;
     if (!attributes["type"].to(stringtype))
-        throw runtime_error("expected attribute type for tag <instance>");
+        throw std::runtime_error("expected attribute type for tag <instance>");
 
     if (stringtype == "COP")
         type = COP;
     else if (stringtype == "CSP")
         type = CSP;
     else
-        throw runtime_error("Unknon type for tag <instance>");
+        throw std::runtime_error("Unknon type for tag <instance>");
 
     this->parser->manager->beginInstance(type);
 }
@@ -58,7 +58,7 @@ void XMLParser::InstanceTagAction::endTag() {
     for(XDomainInteger *xdomain :this->parser->allDomains) {
         delete xdomain;
     }
-    for(std::map<string, XEntity *>::iterator it = this->parser->variablesList.begin(); it != this->parser->variablesList.end(); ++it) {
+    for(std::map< std::string, XEntity *>::iterator it = this->parser->variablesList.begin(); it != this->parser->variablesList.end(); ++it) {
         delete it->second;
     }*/
 }
@@ -82,7 +82,7 @@ void XMLParser::VariablesTagAction::endTag() {
  ***************************************************************************/
 
 void XMLParser::VarTagAction::beginTag(const AttributeList& attributes) {
-    string type, as, lid;
+    std::string type, as, lid;
 
     this->checkParentTag("variables");
     this->parser->stateStack.front().subtagAllowed = false;
@@ -90,7 +90,7 @@ void XMLParser::VarTagAction::beginTag(const AttributeList& attributes) {
         variable = NULL;
 
     if (!attributes["id"].to(lid))
-        throw runtime_error("expected attribute id for tag <var>");
+        throw std::runtime_error("expected attribute id for tag <var>");
     id = lid;
 
     if (!attributes["class"].isNull())
@@ -101,14 +101,14 @@ void XMLParser::VarTagAction::beginTag(const AttributeList& attributes) {
     if (!attributes["type"].isNull()) {
         attributes["type"].to(type);
         if (type != "integer")
-            throw runtime_error("XCSP3Core expected type=\"integer\" for tag <var>");
+            throw std::runtime_error("XCSP3Core expected type=\"integer\" for tag <var>");
     }
     if (!attributes["as"].isNull()) {
         // Create a similar Variable
         attributes["as"].to(as);
         XVariableArray* similarArray;
         if (this->parser->variablesList[as] == NULL)
-            throw runtime_error("Variable as \"" + as + "\" does not exist");
+            throw std::runtime_error("Variable as \"" + as + "\" does not exist");
         if ((similarArray = dynamic_cast<XVariableArray*>(this->parser->variablesList[as])) != NULL) {
             variableArray = new XVariableArray(id, similarArray);
         } else {
@@ -125,7 +125,7 @@ void XMLParser::VarTagAction::beginTag(const AttributeList& attributes) {
 void XMLParser::VarTagAction::text(const UTF8String txt, bool) {
 
     if ((variable != NULL || variableArray != NULL) && !txt.isWhiteSpace())
-        throw runtime_error("<var> with attribute 'as' must not have domain declaration");
+        throw std::runtime_error("<var> with attribute 'as' must not have domain declaration");
     this->parser->parseDomain(txt, *domain);
 }
 
@@ -151,7 +151,7 @@ void XMLParser::VarTagAction::endTag() {
  ***************************************************************************/
 
 void XMLParser::ArrayTagAction::beginTag(const AttributeList& attributes) {
-    string type, as, lid, size;
+    std::string type, as, lid, size;
 
     this->checkParentTag("variables");
     varArray = NULL;
@@ -159,7 +159,7 @@ void XMLParser::ArrayTagAction::beginTag(const AttributeList& attributes) {
     sizes.clear();
 
     if (!attributes["id"].to(lid))
-        throw runtime_error("expected attribute id for tag <array>");
+        throw std::runtime_error("expected attribute id for tag <array>");
     id = lid;
 
     if (!attributes["class"].isNull())
@@ -170,20 +170,20 @@ void XMLParser::ArrayTagAction::beginTag(const AttributeList& attributes) {
     if (!attributes["type"].isNull()) {
         attributes["type"].to(type);
         if (type != "integer")
-            throw runtime_error("XCSP3Core expected type=\"integer\" for tag <var>");
+            throw std::runtime_error("XCSP3Core expected type=\"integer\" for tag <var>");
     }
 
     if (!attributes["as"].isNull()) {
         // Create a similar Variable
         attributes["as"].to(as);
         if (this->parser->variablesList[as] == nullptr)
-            throw runtime_error("Matrix variable as \"" + as + "\" does not exist");
+            throw std::runtime_error("Matrix variable as \"" + as + "\" does not exist");
         XVariableArray* similar = static_cast<XVariableArray*>(this->parser->variablesList[as]);
         varArray = new XVariableArray(id, similar);
     } else {
         if (!attributes["size"].to(size))
-            throw runtime_error("expected attribute id for tag <array>");
-        vector<std::string> stringSizes = split(size, '[');
+            throw std::runtime_error("expected attribute id for tag <array>");
+        std::vector<std::string> stringSizes = split(size, '[');
         for (unsigned int i = 0; i < stringSizes.size(); i++) {
             if (stringSizes[i].size() == 0)
                 continue;
@@ -232,18 +232,18 @@ void XMLParser::DomainTagAction::endTag() {
     if (forAttr == "others")
         return;
 
-    string name;
-    vector<string> allCompactForms;
-    vector<XVariable*> vars;
+    std::string name;
+    std::vector<std::string> allCompactForms;
+    std::vector<XVariable*> vars;
     XVariableArray* varArray = static_cast<XMLParser::ArrayTagAction*>(this->parser->getParentTagAction())->varArray;
 
     split(forAttr, ' ', allCompactForms);
     for (unsigned int i = 0; i < allCompactForms.size(); i++) {
         int pos = allCompactForms[i].find('[');
         name = allCompactForms[i].substr(0, pos);
-        string compactForm = allCompactForms[i].substr(pos);
-        vector<int> flatIndexes;
-        vector<int> indexes;
+        std::string compactForm = allCompactForms[i].substr(pos);
+        std::vector<int> flatIndexes;
+        std::vector<int> indexes;
         varArray->getVarsFor(vars, compactForm, &flatIndexes, true);
         for (unsigned int j = 0; j < flatIndexes.size(); j++) {
             varArray->indexesFor(flatIndexes[j], indexes);
@@ -296,7 +296,7 @@ void XMLParser::BasicConstraintTagAction::beginTag(const AttributeList& attribut
 
     this->parser->listTag->nbCallsToList = 0;
     this->parser->lists.clear();
-    this->parser->lists.push_back(vector<XVariable*>());
+    this->parser->lists.push_back(std::vector<XVariable*>());
     this->parser->matrix.clear();
     this->parser->patterns.clear();
 
@@ -342,7 +342,7 @@ void XMLParser::ExtensionTagAction::endTag() {
 
     /*for(unsigned int i = 0; i < constraint->tuples.size(); i++) {
         if ( constraint->tuples[i].size() != this->parser->lists[0].size()) {
-            throw runtime_error("Problem between size of tuples and size of scope");
+            throw  std::runtime_error("Problem between size of tuples and size of scope");
             exit(1);
 
         }
@@ -493,17 +493,17 @@ void XMLParser::AllDiffEqualTagAction::text(const UTF8String txt, bool) {
 
 void XMLParser::AllDiffEqualTagAction::endTag() {
     if ((this->parser->lists.size() > 1 || this->parser->matrix.size() > 0) && this->group != NULL)
-        throw runtime_error("AllDiff matrix and AllDiff lists are not implemented with groups");
+        throw std::runtime_error("AllDiff matrix and AllDiff lists are not implemented with groups");
 
     if (this->group == NULL) {
         if (this->tagName == "allDifferent") {
             if (this->parser->lists.size() > 1) {
                 if (this->parser->integers.size() > 0) // Except not implemented
-                    throw runtime_error("except tag not allowed with alldiff on lists");
+                    throw std::runtime_error("except tag not allowed with alldiff on lists");
 
                 XConstraintAllDiffList* ctl = new XConstraintAllDiffList(this->id, this->parser->classes);
                 for (unsigned int i = 0; i < this->parser->lists.size(); i++)
-                    ctl->matrix.push_back(vector<XVariable*>(this->parser->lists[i].begin(), this->parser->lists[i].end()));
+                    ctl->matrix.push_back(std::vector<XVariable*>(this->parser->lists[i].begin(), this->parser->lists[i].end()));
                 this->parser->manager->newConstraintAllDiffList(ctl);
                 delete ct;
                 ct = ctl;
@@ -544,7 +544,7 @@ void XMLParser::OrderedTagAction::beginTag(const AttributeList& attributes) {
     BasicConstraintTagAction::beginTag(attributes);
 
     constraint = new XConstraintOrdered(this->id, this->parser->classes);
-    string cs;
+    std::string cs;
     attributes["case"].to(cs);
     if (cs == "strictlyDecreasing")
         this->parser->op = GT;
@@ -602,18 +602,18 @@ void XMLParser::LexTagAction::endTag() {
         lexM->op = this->parser->op;
         for (unsigned int i = 0; i < this->parser->matrix.size(); i++)
             lexM->matrix.push_back(
-                vector<XVariable*>(this->parser->matrix[i].begin(), this->parser->matrix[i].end()));
+                std::vector<XVariable*>(this->parser->matrix[i].begin(), this->parser->matrix[i].end()));
 
         this->parser->manager->newConstraintLexMatrix(lexM);
         delete lexM;
         delete constraint;
     } else {
         if (this->parser->lists.size() == 0)
-            throw runtime_error("<lex> tag should  have many lists");
+            throw std::runtime_error("<lex> tag should  have many lists");
 
         for (unsigned int i = 0; i < this->parser->lists.size(); i++)
             constraint->lists.push_back(
-                vector<XVariable*>(this->parser->lists[i].begin(), this->parser->lists[i].end()));
+                std::vector<XVariable*>(this->parser->lists[i].begin(), this->parser->lists[i].end()));
         constraint->op = this->parser->op;
         if (this->group == NULL) {
             this->parser->manager->newConstraintLex(constraint);
@@ -782,7 +782,7 @@ void XMLParser::ChannelTagAction::endTag() {
     if (this->parser->values.size() == 1)
         constraint->value = this->parser->values[0];
     else if (this->parser->values.size() > 1)
-        throw runtime_error("<value> tag accepts only one value");
+        throw std::runtime_error("<value> tag accepts only one value");
 
     if (this->parser->lists.size() == 2) {
         constraint->secondList.assign(this->parser->lists[1].begin(), this->parser->lists[1].end());
@@ -820,7 +820,7 @@ void XMLParser::ElementTagAction::endTag() {
     constraint->rank = this->parser->rank;
 
     if (this->parser->values.size() != 1)
-        throw runtime_error("<element> tag should have one value");
+        throw std::runtime_error("<element> tag should have one value");
     constraint->value = this->parser->values[0];
 
     XConstraintElementMatrix* c = nullptr;
@@ -830,7 +830,7 @@ void XMLParser::ElementTagAction::endTag() {
         c->index = this->parser->index;
         c->rank = this->parser->rank;
         if (this->parser->index2 == NULL)
-            throw runtime_error("<index> tag should have two values in element matrix");
+            throw std::runtime_error("<index> tag should have two values in element matrix");
         c->index2 = this->parser->index2;
         c->startRowIndex = this->parser->startRowIndex;
         c->startColIndex = this->parser->startColIndex;
@@ -946,7 +946,7 @@ void XMLParser::NoOverlapTagAction::beginTag(const AttributeList& attributes) {
     diffn = false;
     constraint = new XConstraintNoOverlap(this->id, this->parser->classes);
     if (!attributes["zeroIgnored"].isNull()) {
-        string tmp;
+        std::string tmp;
         attributes["zeroIgnored"].to(tmp);
         this->parser->zeroIgnored = (tmp == "true");
     } else
@@ -1033,7 +1033,7 @@ void XMLParser::CircuitTagAction::endTag() {
         if (this->parser->values.size() == 0)
             constraint->value = nullptr;
         else
-            throw runtime_error("<size> tag accepts only one value");
+            throw std::runtime_error("<size> tag accepts only one value");
     }
 
     if (this->group == NULL) {
@@ -1057,7 +1057,7 @@ void XMLParser::ObjectivesTagAction::beginTag(const AttributeList&) {
     this->parser->listTag->nbCallsToList = 0;
     this->parser->integers.clear();
     this->parser->values.clear();
-    this->parser->lists.push_back(vector<XVariable*>());
+    this->parser->lists.push_back(std::vector<XVariable*>());
     this->parser->manager->beginObjectives();
 }
 
@@ -1085,7 +1085,7 @@ void XMLParser::ObjectivesTagAction::endTag() {
 void XMLParser::MinimizeOrMaximizeTagAction::beginTag(const AttributeList& attributes) {
     obj = static_cast<XMLParser::ObjectivesTagAction*>(this->parser->getParentTagAction())->objective;
     obj->goal = (this->tagName == "minimize") ? MINIMIZE : MAXIMIZE;
-    string tmp;
+    std::string tmp;
     this->checkParentTag("objectives");
 
     attributes["type"].to(tmp);
@@ -1106,7 +1106,7 @@ void XMLParser::MinimizeOrMaximizeTagAction::beginTag(const AttributeList& attri
 
 // UTF8String txt, bool last
 void XMLParser::MinimizeOrMaximizeTagAction::text(const UTF8String txt, bool) {
-    string op;
+    std::string op;
     txt.to(op);
     if (trim(op) == "")
         return; // skip white space.
@@ -1136,7 +1136,7 @@ void XMLParser::ListOfVariablesOrIntegerTagAction::beginTag(const AttributeList&
 
     listToFill.clear();
     if (!attributes["closed"].isNull()) {
-        string tmp;
+        std::string tmp;
         attributes["closed"].to(tmp);
         this->parser->closed = (tmp == "true");
     }
@@ -1180,7 +1180,7 @@ void XMLParser::OriginsTagAction::beginTag(const AttributeList&) {
 
 // UTF8String txt, bool last
 void XMLParser::OriginsTagAction::text(const UTF8String txt, bool) {
-    vector<char> delims;
+    std::vector<char> delims;
     delims.push_back('(');
     delims.push_back(')');
     delims.push_back(',');
@@ -1203,7 +1203,7 @@ void XMLParser::ArgsTagAction::text(const UTF8String txt, bool) {
 
 void XMLParser::ArgsTagAction::endTag() {
     XConstraintGroup* group = static_cast<GroupTagAction*>(this->parser->getParentTagAction())->group;
-    group->arguments.push_back(vector<XVariable*>(this->parser->args.begin(), this->parser->args.end()));
+    group->arguments.push_back(std::vector<XVariable*>(this->parser->args.begin(), this->parser->args.end()));
 }
 
 /***************************************************************************
@@ -1212,7 +1212,7 @@ void XMLParser::ArgsTagAction::endTag() {
 
 // UTF8String txt, bool last
 void XMLParser::OperatorTagAction::text(const UTF8String txt, bool) {
-    string op;
+    std::string op;
     txt.to(op);
     if (trim(op) == "")
         return; // skip white space.
@@ -1228,7 +1228,7 @@ void XMLParser::OperatorTagAction::text(const UTF8String txt, bool) {
 
 // UTF8String txt, bool last
 void XMLParser::StringTagAction::text(const UTF8String txt, bool) {
-    string tmp;
+    std::string tmp;
     txt.to(tmp);
     tmp = trim(tmp);
     if (tmp == "")
@@ -1297,30 +1297,30 @@ void XMLParser::ClauseTagAction::endTag() {
 
             UTF8String token = tokenizer.nextToken();
 
-            string current;
+            std::string current;
             token.to(current);
             if (current == " ")
                 continue;
             current = trim(current);
             size_t p = current.find('(');
 
-            if (p == string::npos) {
+            if (p == std::string::npos) {
                 if (this->parser->variablesList[current] != NULL)
                     constraint->positive.push_back(static_cast<XVariable*>(this->parser->variablesList[current]));
                 else
-                    throw runtime_error("unknown variable: " + current);
+                    throw std::runtime_error("unknown variable: " + current);
             } else {
                 assert(p == 3);
-                string v = current.substr(p + 1, current.size() - p - 2);
+                std::string v = current.substr(p + 1, current.size() - p - 2);
 
                 if (this->parser->variablesList[v] != NULL)
                     constraint->negative.push_back(static_cast<XVariable*>(this->parser->variablesList[v]));
                 else
-                    throw runtime_error("unknown variable: " + v);
+                    throw std::runtime_error("unknown variable: " + v);
             }
         }
         if (constraint->positive.size() == 0 && constraint->negative.size() == 0)
-            throw runtime_error("clause is empty (currently the tag list inside a clause is not supported...)");
+            throw std::runtime_error("clause is empty (currently the tag list inside a clause is not supported...)");
         this->parser->manager->newConstraintClause(constraint);
         delete constraint;
     }
@@ -1329,7 +1329,7 @@ void XMLParser::ClauseTagAction::endTag() {
 void XMLParser::ListTagAction::beginTag(const AttributeList& attributes) {
     nbCallsToList++;
     if (nbCallsToList > 1) {
-        this->parser->lists.push_back(vector<XVariable*>());
+        this->parser->lists.push_back(std::vector<XVariable*>());
         this->parser->startIndex2 = 0;
         if (!attributes["startIndex"].isNull())
             attributes["startIndex"].to(this->parser->startIndex2);
@@ -1376,11 +1376,11 @@ void XMLParser::ConflictOrSupportTagAction::beginTag(const AttributeList&) {
 void XMLParser::ConflictOrSupportTagAction::text(const UTF8String txt, bool) {
     XConstraintExtension* ctr = static_cast<XMLParser::ExtensionTagAction*>(this->parser->getParentTagAction())->constraint;
     if (this->parser->lists[0].size() == 1 && this->parser->lists[0][0]->id != "%...") {
-        vector<XIntegerEntity*> tmplist;
+        std::vector<XIntegerEntity*> tmplist;
         this->parser->parseListOfIntegerOrInterval(txt, tmplist);
         for (unsigned int i = 0; i < tmplist.size(); i++) {
             for (int val = tmplist[i]->minimum(); val <= tmplist[i]->maximum(); val++) {
-                ctr->tuples.push_back(vector<int>());
+                ctr->tuples.push_back(std::vector<int>());
                 ctr->tuples.back().push_back(val);
             }
         }
@@ -1393,7 +1393,7 @@ void XMLParser::ConflictOrSupportTagAction::text(const UTF8String txt, bool) {
  ****************************************************************************/
 
 void XMLParser::GroupTagAction::beginTag(const AttributeList& attributes) {
-    string lid, tmp;
+    std::string lid, tmp;
     //this->checkParentTag("constraints");
     attributes["id"].to(lid);
 
@@ -1407,7 +1407,7 @@ void XMLParser::GroupTagAction::beginTag(const AttributeList& attributes) {
 
 void XMLParser::GroupTagAction::endTag() {
     if (group->constraint == NULL)
-        throw runtime_error("<group> constraint is not linked to a classical constraint");
+        throw std::runtime_error("<group> constraint is not linked to a classical constraint");
     this->parser->manager->newConstraintGroup(group);
     this->parser->manager->endGroup();
     delete group;
@@ -1418,11 +1418,11 @@ void XMLParser::GroupTagAction::endTag() {
  ****************************************************************************/
 
 void XMLParser::SlideTagAction::beginTag(const AttributeList& attributes) {
-    string lid, tmp;
+    std::string lid, tmp;
     //this->checkParentTag("constraints");
     attributes["id"].to(lid);
     if (!attributes["circular"].isNull()) {
-        string tmp;
+        std::string tmp;
         attributes["circular"].to(tmp);
         circular = (tmp == "true");
     }
@@ -1432,25 +1432,25 @@ void XMLParser::SlideTagAction::beginTag(const AttributeList& attributes) {
     group = new XConstraintGroup(lid, tmp);
     this->parser->lists.clear();
     this->parser->listTag->nbCallsToList = 0;
-    this->parser->lists.push_back(vector<XVariable*>()); // Be careful, why not ?? see after revision e32b7f8
+    this->parser->lists.push_back(std::vector<XVariable*>()); // Be careful, why not ?? see after revision e32b7f8
     list.clear();
     this->parser->manager->beginSlide(lid, circular);
 }
 
 void XMLParser::SlideTagAction::endTag() {
     if (group->constraint == NULL)
-        throw runtime_error("<slide> constraint is not linked to a classical constraint");
+        throw std::runtime_error("<slide> constraint is not linked to a classical constraint");
 
     // Create list of arguments
     if (this->parser->lists.size() != 1)
-        throw runtime_error("Multiple lists in slide constraint is not yet supported");
+        throw std::runtime_error("Multiple lists in slide constraint is not yet supported");
 
     unsigned long arity;
     if (this->parser->nbParameters == 0) {
         XConstraintIntension* c = static_cast<XConstraintIntension*>(group->constraint);
         int ar = 0;
         for (;; ar++) {
-            if (c->function.find("%" + std::to_string(ar)) == string::npos)
+            if (c->function.find("%" + std::to_string(ar)) == std::string::npos)
                 break;
         }
         arity = ar;
@@ -1459,7 +1459,7 @@ void XMLParser::SlideTagAction::endTag() {
 
     unsigned long end = circular ? list.size() - arity + 2 : list.size() - arity + 1;
     for (unsigned int i = 0; i < end; i += offset) {
-        group->arguments.push_back(vector<XVariable*>());
+        group->arguments.push_back(std::vector<XVariable*>());
         for (unsigned int j = 0; j < arity; j++) {
             group->arguments.back().push_back(list[(i + j) % list.size()]);
         }
@@ -1476,7 +1476,7 @@ void XMLParser::SlideTagAction::endTag() {
  ****************************************************************************/
 
 void XMLParser::BlockTagAction::beginTag(const AttributeList& attributes) {
-    string currentClasses, lid;
+    std::string currentClasses, lid;
 
     attributes["id"].to(lid);
     if (!attributes["class"].isNull())
@@ -1497,7 +1497,7 @@ void XMLParser::BlockTagAction::endTag() {
 
 void XMLParser::IndexTagAction::beginTag(const AttributeList& attributes) {
     if (!attributes["rank"].isNull()) {
-        string rank;
+        std::string rank;
         attributes["rank"].to(rank);
         if (rank == "any")
             this->parser->rank = ANY;
@@ -1510,22 +1510,22 @@ void XMLParser::IndexTagAction::beginTag(const AttributeList& attributes) {
 
 // UTF8String txt, bool last
 void XMLParser::IndexTagAction::text(const UTF8String txt, bool) {
-    string tmp;
+    std::string tmp;
     txt.to(tmp);
     tmp = trim(tmp);
     if (tmp == "")
         return;
     if (this->parser->index != NULL && strcmp(this->parser->getParentTagAction(1)->getTagName(), "element") == 0 && this->parser->matrix.size() == 0)
-        throw runtime_error("<index> tag must contain only one variable1");
-    vector<XVariable*> tmpList;
+        throw std::runtime_error("<index> tag must contain only one variable1");
+    std::vector<XVariable*> tmpList;
     this->parser->parseSequence(txt, tmpList);
     if (tmpList.size() > 2 && strcmp(this->parser->getParentTagAction(1)->getTagName(), "element") == 0)
-        throw runtime_error("<index> tag must contain only one variable2");
+        throw std::runtime_error("<index> tag must contain only one variable2");
 
     if (this->parser->index2 != NULL)
-        throw runtime_error("<index> tag must contain only two variables");
+        throw std::runtime_error("<index> tag must contain only two variables");
     if (tmpList.size() > 2)
-        throw runtime_error("<index> tag must contain only two variables");
+        throw std::runtime_error("<index> tag must contain only two variables");
 
     if (this->parser->index == NULL) {
         this->parser->index = tmpList[0];
@@ -1533,7 +1533,7 @@ void XMLParser::IndexTagAction::text(const UTF8String txt, bool) {
             this->parser->index2 = tmpList[1];
     } else {
         if (tmpList.size() > 1)
-            throw runtime_error("<index> tag must contain only two variables");
+            throw std::runtime_error("<index> tag must contain only two variables");
         this->parser->index2 = tmpList[0];
     }
 }
@@ -1545,7 +1545,7 @@ void XMLParser::IndexTagAction::text(const UTF8String txt, bool) {
 // AttributeList &attributes
 void XMLParser::MatrixTagAction::beginTag(const AttributeList& attributes) {
     if (strcmp(this->parser->getParentTagAction(2)->getTagName(), "slide") == 0)
-        throw runtime_error("<matrix> can not be used in a <slide>");
+        throw std::runtime_error("<matrix> can not be used in a <slide>");
 
     this->parser->startRowIndex = 0;
     this->parser->startColIndex = 0;
@@ -1560,23 +1560,23 @@ void XMLParser::MatrixTagAction::beginTag(const AttributeList& attributes) {
 void XMLParser::MatrixTagAction::text(const UTF8String txt, bool) {
     if (txt.isWhiteSpace())
         return;
-    string txt2;
+    std::string txt2;
     txt.to(txt2);
     txt2 = trim(txt2);
     size_t p = txt2.find(("("));
-    if (p == string::npos) {
+    if (p == std::string::npos) {
         size_t pos = txt2.find("[");
-        if (pos == string::npos)
-            throw runtime_error("matrix needs a 2-dim matrix");
-        string name;
-        string compactForm;
+        if (pos == std::string::npos)
+            throw std::runtime_error("matrix needs a 2-dim matrix");
+        std::string name;
+        std::string compactForm;
         name = txt2.substr(0, pos);
         compactForm = txt2.substr(pos);
         if (this->parser->variablesList[name] == NULL)
-            throw runtime_error("Matrix variable " + name + "does not exist");
+            throw std::runtime_error("Matrix variable " + name + "does not exist");
         XVariableArray* varArray = static_cast<XVariableArray*>(this->parser->variablesList[name]);
         int nbV = 0;
-        string tmp;
+        std::string tmp;
         // Find the first interval
         for (unsigned int i = 0; i < varArray->sizes.size(); i++) {
             int pos = compactForm.find(']');
@@ -1587,7 +1587,7 @@ void XMLParser::MatrixTagAction::text(const UTF8String txt, bool) {
                 break;
             }
             size_t dot = tmp.find("..");
-            if (dot == string::npos)
+            if (dot == std::string::npos)
                 continue;
             int first = std::stoi(tmp.substr(0, dot));
             int last = std::stoi(tmp.substr(dot + 2));
@@ -1598,14 +1598,14 @@ void XMLParser::MatrixTagAction::text(const UTF8String txt, bool) {
         this->parser->parseSequence(txt, this->parser->lists[0]);
         int nbCol = this->parser->lists[0].size() / nbV;
         for (int i = 0; i < nbV; i++) {
-            this->parser->matrix.push_back(vector<XVariable*>());
+            this->parser->matrix.push_back(std::vector<XVariable*>());
             for (int j = 0; j < nbCol; j++)
                 this->parser->matrix.back().push_back(this->parser->lists[0][i * nbCol + j]);
         }
 
     } else {
 
-        vector<char> delims;
+        std::vector<char> delims;
         delims.push_back('(');
         delims.push_back(')');
         delims.push_back(',');
@@ -1613,7 +1613,7 @@ void XMLParser::MatrixTagAction::text(const UTF8String txt, bool) {
 
         for (XVariable* x : this->parser->lists[0]) {
             if (x == NULL)
-                this->parser->matrix.push_back(vector<XVariable*>());
+                this->parser->matrix.push_back(std::vector<XVariable*>());
             else
                 this->parser->matrix.back().push_back(x);
         }
@@ -1623,7 +1623,7 @@ void XMLParser::MatrixTagAction::text(const UTF8String txt, bool) {
 void XMLParser::MatrixTagAction::endTag() {
     for (unsigned int i = 0; i < this->parser->matrix.size() - 1; i++)
         if (this->parser->matrix[i].size() != this->parser->matrix[i + 1].size())
-            throw runtime_error("Matrix is not a matrix...");
+            throw std::runtime_error("Matrix is not a matrix...");
 }
 
 // AttributeList &attributes
@@ -1660,7 +1660,7 @@ void XMLParser::TransitionsTagAction::text(const UTF8String txt, bool) {
         if (nb == 2)
             token.to(to);
         if (nb > 2)
-            throw runtime_error("<transitions> tag is malformed");
+            throw std::runtime_error("<transitions> tag is malformed");
         nb++;
     }
 }
@@ -1676,7 +1676,7 @@ void XMLParser::PatternsTagAction::beginTag(const AttributeList&) {
 
 // const UTF8String txt, bool last
 void XMLParser::PatternsTagAction::text(const UTF8String txt, bool) {
-    vector<char> delims;
+    std::vector<char> delims;
     delims.push_back('(');
     delims.push_back(')');
     delims.push_back(',');
@@ -1685,12 +1685,12 @@ void XMLParser::PatternsTagAction::text(const UTF8String txt, bool) {
     for (XVariable* x : listToFill) {
         if (x == NULL) {
             if (this->parser->patterns.size() > 0 && this->parser->patterns.back().size() != 2)
-                throw runtime_error("patterns needs couples of integers");
-            this->parser->patterns.push_back(vector<int>());
+                throw std::runtime_error("patterns needs couples of integers");
+            this->parser->patterns.push_back(std::vector<int>());
         } else {
             int nb;
             if (!isInteger(x, nb))
-                throw runtime_error("patterns accepts only integers:" + x->id);
+                throw std::runtime_error("patterns accepts only integers:" + x->id);
             this->parser->patterns.back().push_back(nb);
         }
     }

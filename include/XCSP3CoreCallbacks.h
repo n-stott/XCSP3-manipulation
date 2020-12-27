@@ -26,25 +26,22 @@
 #define COSOCO_XCSP3CORECALLBACKS_H
 
 #include "XCSP3Constants.h"
-#include "XCSP3Variable.h"
 #include "XCSP3Constraint.h"
 #include "XCSP3Tree.h"
-#include <vector>
+#include "XCSP3Variable.h"
 #include <string>
-
+#include <vector>
 
 namespace XCSP3Core {
-
-    using namespace std;
 
     class XCSP3CoreCallbacks {
         friend class XCSP3Manager;
 
-    protected :
-        vector<string> classesToDiscard;
-        vector<vector<XVariable*> >* _arguments;
-    public :
+    protected:
+        std::vector<std::string> classesToDiscard;
+        std::vector<std::vector<XVariable*>>* _arguments;
 
+    public:
         /**
          * If true, the intension constraint are retrieved with an expression (nothing is done in order to help you)
          * (false by default)
@@ -56,7 +53,6 @@ namespace XCSP3Core {
          * If true, the parse recognizes special intensional constraints such as x + k op y and call a specific callback.
          */
         bool recognizeSpecialIntensionCases;
-
 
         /**
          * If true, the parser recognizes special count constraints: atleast, atmost, exactly, among, exctalyVariable
@@ -75,7 +71,6 @@ namespace XCSP3Core {
          */
         bool normalizeSum;
 
-
         XCSP3CoreCallbacks() {
             intensionUsingString = false;
             recognizeSpecialIntensionCases = true;
@@ -84,30 +79,26 @@ namespace XCSP3Core {
             normalizeSum = true;
         }
 
-
         /**
          * remove specific classes such as symmetryBreaking, clues...
          * @param cl
          */
-        void addClassToDiscard(string cl) {
+        void addClassToDiscard(std::string cl) {
             classesToDiscard.push_back(cl);
         }
 
-
-        bool discardedClasses(string classes) {
-            if(classes == "")
+        bool discardedClasses(std::string classes) {
+            if (classes == "")
                 return false;
 
-            for(string c : classesToDiscard)
-                if(classes.find(c) != std::string::npos)
+            for (std::string c : classesToDiscard)
+                if (classes.find(c) != std::string::npos)
                     return true;
             return false;
         }
 
-
         // All these callbacks are called when the tag starts and when it ends.
         // This is not necessary to override them.
-
 
         /**
          * Start to parse a XCSP instance.
@@ -117,14 +108,12 @@ namespace XCSP3Core {
          */
         virtual void beginInstance(InstanceType type) { (void)type; }
 
-
         /**
          * End of parsing
          * Related to tag </instance>
          * See http://xcsp.org/specifications/skeleton
          */
         virtual void endInstance() {}
-
 
         /**
          * Start to parse variables
@@ -133,14 +122,12 @@ namespace XCSP3Core {
          */
         virtual void beginVariables() {}
 
-
         /**
          * The end of parsing variables
          * Related to tag </variables>
          * See http://xcsp.org/specifications/skeleton
          */
         virtual void endVariables() {}
-
 
         /**
          * Start to parse an array of variables
@@ -150,8 +137,7 @@ namespace XCSP3Core {
          *
          * @param id the id (name) of the array variable
          */
-        virtual void beginVariableArray(string id) { (void)id; } //beginArray
-
+        virtual void beginVariableArray(std::string id) { (void)id; } //beginArray
 
         /**
          * End of parsing an array of variables
@@ -160,7 +146,6 @@ namespace XCSP3Core {
          */
         virtual void endVariableArray() {}
 
-
         /**
          * Start to parse constraints
          * Related to tag <constraints>
@@ -168,14 +153,12 @@ namespace XCSP3Core {
          */
         virtual void beginConstraints() {}
 
-
         /**
          * The end of parsing constraints
          * Related to tag </constraints>
          * See http://xcsp.org/specifications/skeleton
          */
         virtual void endConstraints() {}
-
 
         /**
          * Start to parse a group of constraints
@@ -185,8 +168,7 @@ namespace XCSP3Core {
          *
          * @param id the id (name) of the group
          */
-        virtual void beginGroup(string id) { (void)id; }
-
+        virtual void beginGroup(std::string id) { (void)id; }
 
         /**
          * Retrieve the  arguments of a group/slide  of constraints
@@ -194,7 +176,7 @@ namespace XCSP3Core {
          * that is, after the beginGroup/beginSlide callback
          * @return
          */
-        vector<vector<XVariable*> > *arguments() {
+        std::vector<std::vector<XVariable*>>* arguments() {
             return _arguments;
         }
 
@@ -204,7 +186,6 @@ namespace XCSP3Core {
          * See http://xcsp.org/specifications/groups
          */
         virtual void endGroup() {}
-
 
         /**
          * Start to parse a block of constraints
@@ -216,8 +197,7 @@ namespace XCSP3Core {
          *
          * @param classes the classes related to the block symmetryBreaking, clues...
          */
-        virtual void beginBlock(string classes) { (void)classes; }
-
+        virtual void beginBlock(std::string classes) { (void)classes; }
 
         /**
          * The end of parsing a block of constraints
@@ -225,7 +205,6 @@ namespace XCSP3Core {
          * See http://xcsp.org/specifications/blocks
          */
         virtual void endBlock() {}
-
 
         /**
          * Start to parse a slide constraint
@@ -236,8 +215,10 @@ namespace XCSP3Core {
          * @param id the id (name) of the slide
          * @param circular is the slide circular?
          */
-        virtual void beginSlide(string id, bool circular) { (void)id; (void)circular; }
-
+        virtual void beginSlide(std::string id, bool circular) {
+            (void)id;
+            (void)circular;
+        }
 
         /**
          * The end of parsing a slide constraint
@@ -246,14 +227,12 @@ namespace XCSP3Core {
          */
         virtual void endSlide() {}
 
-
         /**
          * Start to parse objectives
          * Related to tag <objectives>
          * See http://xcsp.org/specifications/objectives
          */
         virtual void beginObjectives() {}
-
 
         /**
          * The end of parsing objectives
@@ -262,13 +241,11 @@ namespace XCSP3Core {
          */
         virtual void endObjectives() {}
 
-
         /**
          * The start of parsing annotations
          * Related to tag </annotations>
          */
         virtual void beginAnnotations() {}
-
 
         /**
          * The end of parsing annotations
@@ -290,8 +267,7 @@ namespace XCSP3Core {
          * @param minValue the minimum value in the range
          * @param maxValue the maxnimum value in the range
          */
-        virtual void buildVariableInteger(string id, int minValue, int maxValue) = 0;
-
+        virtual void buildVariableInteger(std::string id, int minValue, int maxValue) = 0;
 
         /**
          * The callback function related to an integer variable with a domain consisting in a sequence of integers
@@ -302,7 +278,7 @@ namespace XCSP3Core {
          * @param id the id (name) of the group
          * @param values the set of values in the domain
         */
-        virtual void buildVariableInteger(string id, vector<int> &values) = 0;
+        virtual void buildVariableInteger(std::string id, std::vector<int>& values) = 0;
 
         /**
          * All callbacks related to constraints.
@@ -322,8 +298,7 @@ namespace XCSP3Core {
          * @param id
          * @param list
          */
-        virtual void buildConstraintTrue(string id) { (void)id; }
-
+        virtual void buildConstraintTrue(std::string id) { (void)id; }
 
         /**
          * The special constraint always false
@@ -331,11 +306,10 @@ namespace XCSP3Core {
          * @param id
          * @param list
          */
-        virtual void buildConstraintFalse(string id) {
+        virtual void buildConstraintFalse(std::string id) {
             std::cout << "c constraint " + id + " is always false (see during parsing)\n";
             std::cout << "s UNSATISFIABLE\n";
         }
-
 
         //--------------------------------------------------------------------------------------
         // Basic constraints
@@ -357,12 +331,15 @@ namespace XCSP3Core {
          * @param support  support or conflicts?
          * @param hasStar is the tuples contain star values?
          */
-        virtual void buildConstraintExtension(string id, vector<XVariable *> list, vector<vector<int>> &tuples, bool support, bool hasStar) {
-            (void)id; (void)list; (void)tuples; (void)support; (void)hasStar;
+        virtual void buildConstraintExtension(std::string id, std::vector<XVariable*> list, std::vector<std::vector<int>>& tuples, bool support, bool hasStar) {
+            (void)id;
+            (void)list;
+            (void)tuples;
+            (void)support;
+            (void)hasStar;
             std::cout << "WARNING: tuples are not checked wrt domains" << std::endl;
-            throw runtime_error("extension constraint is not yet supported");
+            throw std::runtime_error("extension constraint is not yet supported");
         }
-
 
         /*
          * The callback function related to an constraint in extension
@@ -380,11 +357,14 @@ namespace XCSP3Core {
          * @param support  support or conflicts?
          * @param hasStar is the tuples contain star values?
          */
-        virtual void buildConstraintExtension(string id, XVariable *variable, vector<int> &tuples, bool support, bool hasStar) {
-            (void)id; (void)variable; (void)tuples; (void)support; (void)hasStar;
-            throw runtime_error("unary extension constraint is not yet supported");
+        virtual void buildConstraintExtension(std::string id, XVariable* variable, std::vector<int>& tuples, bool support, bool hasStar) {
+            (void)id;
+            (void)variable;
+            (void)tuples;
+            (void)support;
+            (void)hasStar;
+            throw std::runtime_error("unary extension constraint is not yet supported");
         }
-
 
         /**
          * The callback function related to a constraint in extension where the set of tuples is exactly the same
@@ -397,11 +377,13 @@ namespace XCSP3Core {
          * @param support  support or conflicts?
          * @param hasStar is the tuples contain star values?
          */
-        virtual void buildConstraintExtensionAs(string id, vector<XVariable *> list, bool support, bool hasStar) {
-            (void)id; (void)list; (void)support; (void)hasStar;
-            throw runtime_error("This extension constraint contains exactly the same tuples than previous one");
+        virtual void buildConstraintExtensionAs(std::string id, std::vector<XVariable*> list, bool support, bool hasStar) {
+            (void)id;
+            (void)list;
+            (void)support;
+            (void)hasStar;
+            throw std::runtime_error("This extension constraint contains exactly the same tuples than previous one");
         }
-
 
         /**
          * The callback function related to a constraint in intension
@@ -416,11 +398,11 @@ namespace XCSP3Core {
          * @param id the id (name) of the constraint
          * @param expr the expression
          */
-        virtual void buildConstraintIntension(string id, string expr) {
-            (void)id; (void)expr;
-            throw runtime_error("intension constraint is not yet supported");
+        virtual void buildConstraintIntension(std::string id, std::string expr) {
+            (void)id;
+            (void)expr;
+            throw std::runtime_error("intension constraint is not yet supported");
         }
-
 
         /**
          * The callback function related to a constraint in intension
@@ -432,11 +414,11 @@ namespace XCSP3Core {
          * @param id the id (name) of the constraint
          * @param tree the canonized form related to the tree
          */
-        virtual void buildConstraintIntension(string id, Tree *tree) {
-            (void)id; (void)tree;
-            throw runtime_error("intension constraint using a tree is not yet supported (choose the right way)");
+        virtual void buildConstraintIntension(std::string id, Tree* tree) {
+            (void)id;
+            (void)tree;
+            throw std::runtime_error("intension constraint using a tree is not yet supported (choose the right way)");
         }
-
 
         /**
          * If  #recognizeSpecialIntensionCases is enabled (this is the case by default)
@@ -449,12 +431,15 @@ namespace XCSP3Core {
          * @param k the constant
          * @param y the other variable
          */
-        virtual void buildConstraintPrimitive(string id, OrderType op, XVariable *x, int k, XVariable *y) {
-            (void)id; (void)op; (void)x; (void)k; (void)y;
-            throw runtime_error("primitive constraint x +-k op y  is not yet supported. "
-                                        "You can use classical intension constrain by assigning recognizeSpecialIntensionCases to false ");
+        virtual void buildConstraintPrimitive(std::string id, OrderType op, XVariable* x, int k, XVariable* y) {
+            (void)id;
+            (void)op;
+            (void)x;
+            (void)k;
+            (void)y;
+            throw std::runtime_error("primitive constraint x +-k op y  is not yet supported. "
+                                     "You can use classical intension constrain by assigning recognizeSpecialIntensionCases to false ");
         }
-
 
         /**
          * If  #recognizeSpecialIntensionCases is enabled (this is the case by default)
@@ -466,12 +451,14 @@ namespace XCSP3Core {
          * @param x the variable
          * @param k the constant
          */
-        virtual void buildConstraintPrimitive(string id, OrderType op, XVariable *x, int k) {
-            (void)id; (void)op; (void)x; (void)k;
-            throw runtime_error("primitive constraint x op k  is not yet supported. "
-                                        "You can use classical intension constrain by assigning recognizeSpecialIntensionCases to false ");
+        virtual void buildConstraintPrimitive(std::string id, OrderType op, XVariable* x, int k) {
+            (void)id;
+            (void)op;
+            (void)x;
+            (void)k;
+            throw std::runtime_error("primitive constraint x op k  is not yet supported. "
+                                     "You can use classical intension constrain by assigning recognizeSpecialIntensionCases to false ");
         }
-
 
         /**
          * If  #recognizeSpecialIntensionCases is enabled (this is the case by default)
@@ -485,10 +472,14 @@ namespace XCSP3Core {
          * @param max the constant
          *
          */
-        virtual void buildConstraintPrimitive(string id, XVariable *x, bool in, int min, int max) {
-            (void)id; (void)x; (void)in; (void)min; (void)max;
-            throw runtime_error("primitive constraint x in/notin [min,max]  is not yet supported. "
-                                        "You can use classical intension constrain by assigning recognizeSpecialIntensionCases to false ");
+        virtual void buildConstraintPrimitive(std::string id, XVariable* x, bool in, int min, int max) {
+            (void)id;
+            (void)x;
+            (void)in;
+            (void)min;
+            (void)max;
+            throw std::runtime_error("primitive constraint x in/notin [min,max]  is not yet supported. "
+                                     "You can use classical intension constrain by assigning recognizeSpecialIntensionCases to false ");
         }
 
         /**
@@ -499,10 +490,13 @@ namespace XCSP3Core {
          * @param id the id (name) of the constraint
          * @param x,y,z  the variables
          */
-        virtual void buildConstraintMult(string id, XVariable *x, XVariable *y, XVariable *z) {
-            (void)id; (void)x; (void)y; (void)z;
-            throw runtime_error("primitive constraint x*y=z  is not yet supported. "
-                                "You can use classical intension constrain by assigning recognizeSpecialIntensionCases to false ");
+        virtual void buildConstraintMult(std::string id, XVariable* x, XVariable* y, XVariable* z) {
+            (void)id;
+            (void)x;
+            (void)y;
+            (void)z;
+            throw std::runtime_error("primitive constraint x*y=z  is not yet supported. "
+                                     "You can use classical intension constrain by assigning recognizeSpecialIntensionCases to false ");
         }
 
         //--------------------------------------------------------------------------------------
@@ -521,7 +515,7 @@ namespace XCSP3Core {
          *  <start> a </start>
          *  <final> e </final>
          * </regular>
-         * XTransition is an object with 3 fields: from (string), val(int) and to(string)
+         * XTransition is an object with 3 fields: from (std::string), val(int) and to(std::string)
          * Then, in the first transition of the example from=a, to=a and val=0
          *
          * @param id the id (name) of the constraint
@@ -530,11 +524,14 @@ namespace XCSP3Core {
          * @param final the set of final nodes
          * @param transitions the set of transitions
          */
-        virtual void buildConstraintRegular(string id, vector<XVariable *> &list, string start, vector<string> &final, vector<XTransition> &transitions) {
-            (void)id; (void)list; (void)start; (void)final; (void)transitions;
-            throw runtime_error("regular constraint is not yet supported");
+        virtual void buildConstraintRegular(std::string id, std::vector<XVariable*>& list, std::string start, std::vector<std::string>& final, std::vector<XTransition>& transitions) {
+            (void)id;
+            (void)list;
+            (void)start;
+            (void) final;
+            (void)transitions;
+            throw std::runtime_error("regular constraint is not yet supported");
         }
-
 
         /**
          * The callback function related to a MDD constraint.
@@ -554,15 +551,16 @@ namespace XCSP3Core {
          * @param list the scope of the constraint
          * @param transitions the set of transitions
          */
-        virtual void buildConstraintMDD(string id, vector<XVariable *> &list, vector<XTransition> &transitions) {
-            (void)id; (void)list; (void)transitions;
-            throw runtime_error("MDD constraint is not yet supported");
+        virtual void buildConstraintMDD(std::string id, std::vector<XVariable*>& list, std::vector<XTransition>& transitions) {
+            (void)id;
+            (void)list;
+            (void)transitions;
+            throw std::runtime_error("MDD constraint is not yet supported");
         }
 
-
-//--------------------------------------------------------------------------------------
-// Comparison constraints
-//--------------------------------------------------------------------------------------
+        //--------------------------------------------------------------------------------------
+        // Comparison constraints
+        //--------------------------------------------------------------------------------------
 
         /**
          * The callback function related to a alldifferent constraint.
@@ -576,11 +574,11 @@ namespace XCSP3Core {
          * @param id the id (name) of the constraint
          * @param list the scope of the constraint
          */
-        virtual void buildConstraintAlldifferent(string id, vector<XVariable *> &list) {
-            (void)id; (void)list;
-            throw runtime_error("AllDiff constraint is not yet supported");
+        virtual void buildConstraintAlldifferent(std::string id, std::vector<XVariable*>& list) {
+            (void)id;
+            (void)list;
+            throw std::runtime_error("AllDiff constraint is not yet supported");
         }
-
 
         /**
          * The callback function related to a alldifferent constraint with expression
@@ -594,11 +592,11 @@ namespace XCSP3Core {
          * @param id the id (name) of the constraint
          * @param list the trees of the constraint
          */
-        virtual void buildConstraintAlldifferent(string id, vector<Tree *> &list) {
-            (void)id; (void)list;
-            throw runtime_error("AllDiff constraint with expression is not yet supported");
+        virtual void buildConstraintAlldifferent(std::string id, std::vector<Tree*>& list) {
+            (void)id;
+            (void)list;
+            throw std::runtime_error("AllDiff constraint with expression is not yet supported");
         }
-
 
         /**
          * The callback function related to a alldifferent with some excepted values constraint
@@ -614,11 +612,12 @@ namespace XCSP3Core {
          * @param list the scope of the constraint
          * @param except the set of excepted values
          */
-        virtual void buildConstraintAlldifferentExcept(string id, vector<XVariable *> &list, vector<int> &except) {
-            (void)id; (void)list; (void)except;
-            throw runtime_error("AllDiff constraint with exception is not yet supported");
+        virtual void buildConstraintAlldifferentExcept(std::string id, std::vector<XVariable*>& list, std::vector<int>& except) {
+            (void)id;
+            (void)list;
+            (void)except;
+            throw std::runtime_error("AllDiff constraint with exception is not yet supported");
         }
-
 
         /**
          * The callback function related to a alldifferent  list constraint
@@ -633,11 +632,11 @@ namespace XCSP3Core {
          * @param id the id (name) of the constraint
          * @param lists the set of lists (not the scope, a variable may appear at different place!)
          */
-        virtual void buildConstraintAlldifferentList(string id, vector<vector<XVariable *>> &lists) {
-            (void)id; (void)lists;
-            throw runtime_error("AllDiff list constraint  is not yet supported");
+        virtual void buildConstraintAlldifferentList(std::string id, std::vector<std::vector<XVariable*>>& lists) {
+            (void)id;
+            (void)lists;
+            throw std::runtime_error("AllDiff list constraint  is not yet supported");
         }
-
 
         /**
          * The callback function related to a alldifferent  matrix constraint
@@ -655,11 +654,11 @@ namespace XCSP3Core {
          * @param id the id (name) of the constraint
          * @param matrix the matrix (not the scope, a variable may appear at different place!)
          */
-        virtual void buildConstraintAlldifferentMatrix(string id, vector<vector<XVariable *>> &matrix) {
-            (void)id; (void)matrix;
-            throw runtime_error("AllDiff matrix constraint  is not yet supported");
+        virtual void buildConstraintAlldifferentMatrix(std::string id, std::vector<std::vector<XVariable*>>& matrix) {
+            (void)id;
+            (void)matrix;
+            throw std::runtime_error("AllDiff matrix constraint  is not yet supported");
         }
-
 
         /**
          * The callback function related to a allequal constraint
@@ -674,11 +673,11 @@ namespace XCSP3Core {
          * @param list the scope of the constraint
          *
          */
-        virtual void buildConstraintAllEqual(string id, vector<XVariable *> &list) {
-            (void)id; (void)list;
-            throw runtime_error("Allequal constraint  is not yet supported");
+        virtual void buildConstraintAllEqual(std::string id, std::vector<XVariable*>& list) {
+            (void)id;
+            (void)list;
+            throw std::runtime_error("Allequal constraint  is not yet supported");
         }
-
 
         /**
          * The callback function related to a not all equal constraint
@@ -695,11 +694,11 @@ namespace XCSP3Core {
          * @param id the id (name) of the constraint
          * @param list the scope of the constraint
          */
-        virtual void buildConstraintNotAllEqual(string id, vector<XVariable *> &list) {
-            (void)id; (void)list;
-            throw runtime_error("NotAllequal constraint  is not yet supported");
+        virtual void buildConstraintNotAllEqual(std::string id, std::vector<XVariable*>& list) {
+            (void)id;
+            (void)list;
+            throw std::runtime_error("NotAllequal constraint  is not yet supported");
         }
-
 
         /**
          * The callback function related to an ordered constraint
@@ -717,11 +716,12 @@ namespace XCSP3Core {
          * @param list the scope of the constraint
          * @param order the order LT, LE...
          */
-        virtual void buildConstraintOrdered(string id, vector<XVariable *> &list, OrderType order) {
-            (void)id; (void)list; (void)order;
-            throw runtime_error("Ordered constraint  is not yet supported");
+        virtual void buildConstraintOrdered(std::string id, std::vector<XVariable*>& list, OrderType order) {
+            (void)id;
+            (void)list;
+            (void)order;
+            throw std::runtime_error("Ordered constraint  is not yet supported");
         }
-
 
         /**
          * The callback function related to an ordered constraint
@@ -739,11 +739,13 @@ namespace XCSP3Core {
          * @param list the scope of the constraint
          * @param order the order LT, LE...
          */
-        virtual void buildConstraintOrdered(string id, vector<XVariable *> &list, vector<int> &lengths, OrderType order) {
-            (void)id; (void)list; (void)lengths; (void)order;
-            throw runtime_error("Ordered constraint with lengths is not yet supported");
+        virtual void buildConstraintOrdered(std::string id, std::vector<XVariable*>& list, std::vector<int>& lengths, OrderType order) {
+            (void)id;
+            (void)list;
+            (void)lengths;
+            (void)order;
+            throw std::runtime_error("Ordered constraint with lengths is not yet supported");
         }
-
 
         /**
          * The callback function related to an ordered list constraint (this is a lex constraint)
@@ -761,11 +763,12 @@ namespace XCSP3Core {
          * @param lists the set of lists (not the scope, a variable may appear at different place!)
          * @param order the order LT, LE...
          */
-        virtual void buildConstraintLex(string id, vector<vector<XVariable *>> &lists, OrderType order) {
-            (void)id; (void)lists; (void)order;
-            throw runtime_error("Lex constraint  is not yet supported");
+        virtual void buildConstraintLex(std::string id, std::vector<std::vector<XVariable*>>& lists, OrderType order) {
+            (void)id;
+            (void)lists;
+            (void)order;
+            throw std::runtime_error("Lex constraint  is not yet supported");
         }
-
 
         /**
         * The callback function related to an ordered matrix constraint
@@ -786,14 +789,16 @@ namespace XCSP3Core {
         * @param matrix the matrix (not the scope, a variable may appear at different place!)
         * @param order the order LT, LE...
         */
-        virtual void buildConstraintLexMatrix(string id, vector<vector<XVariable *>> &matrix, OrderType order) {
-            (void)id; (void)matrix; (void)order;
-            throw runtime_error("Lex matrix constraint  is not yet supported");
+        virtual void buildConstraintLexMatrix(std::string id, std::vector<std::vector<XVariable*>>& matrix, OrderType order) {
+            (void)id;
+            (void)matrix;
+            (void)order;
+            throw std::runtime_error("Lex matrix constraint  is not yet supported");
         }
 
-//--------------------------------------------------------------------------------------
-// Summing and counting constraints
-//--------------------------------------------------------------------------------------
+        //--------------------------------------------------------------------------------------
+        // Summing and counting constraints
+        //--------------------------------------------------------------------------------------
 
         /**
         * The callback function related to an sum constraint
@@ -814,11 +819,13 @@ namespace XCSP3Core {
         * @param coeffs the coefficients (here int)
         * @param cond the condition (See XCondition object)
         */
-        virtual void buildConstraintSum(string id, vector<XVariable *> &list, vector<int> &coeffs, XCondition &cond) {
-            (void)id; (void)list; (void)coeffs; (void)cond;
-            throw runtime_error("sum constraint  is not yet supported");
+        virtual void buildConstraintSum(std::string id, std::vector<XVariable*>& list, std::vector<int>& coeffs, XCondition& cond) {
+            (void)id;
+            (void)list;
+            (void)coeffs;
+            (void)cond;
+            throw std::runtime_error("sum constraint  is not yet supported");
         }
-
 
         /**
          * The callback function related to an sum constraint with all coefs are equal to one
@@ -834,11 +841,12 @@ namespace XCSP3Core {
          * @param list the scope of the constraint
          * @param cond the condition (See XCondition object)
          */
-        virtual void buildConstraintSum(string id, vector<XVariable *> &list, XCondition &cond) {
-            (void)id; (void)list; (void)cond;
-            throw runtime_error("unweighted sum constraint  is not yet supported");
+        virtual void buildConstraintSum(std::string id, std::vector<XVariable*>& list, XCondition& cond) {
+            (void)id;
+            (void)list;
+            (void)cond;
+            throw std::runtime_error("unweighted sum constraint  is not yet supported");
         }
-
 
         /**
          * The callback function related to a sum constraint with all coefs are variables
@@ -856,11 +864,13 @@ namespace XCSP3Core {
          * @param coeffs the coefficients (here XVariable)
          * @param cond the condition (See XCondition object)
          */
-        virtual void buildConstraintSum(string id, vector<XVariable *> &list, vector<XVariable *> &coeffs, XCondition &cond) {
-            (void)id; (void)list; (void)coeffs; (void)cond;
-            throw runtime_error("sum constraint with variables weights is not yet supported");
+        virtual void buildConstraintSum(std::string id, std::vector<XVariable*>& list, std::vector<XVariable*>& coeffs, XCondition& cond) {
+            (void)id;
+            (void)list;
+            (void)coeffs;
+            (void)cond;
+            throw std::runtime_error("sum constraint with variables weights is not yet supported");
         }
-
 
         /**
          * The callback function related to a sum constraint with trees in list
@@ -875,11 +885,12 @@ namespace XCSP3Core {
          * @param list the different trees
          * @param cond the condition (See XCondition object)
          */
-        virtual void buildConstraintSum(string id, vector<Tree *> &trees, XCondition &cond) {
-            (void)id; (void)trees; (void)cond;
-            throw runtime_error("sum constraint with expressions not yet supported");
+        virtual void buildConstraintSum(std::string id, std::vector<Tree*>& trees, XCondition& cond) {
+            (void)id;
+            (void)trees;
+            (void)cond;
+            throw std::runtime_error("sum constraint with expressions not yet supported");
         }
-
 
         /**
          * The callback function related to a sum constraint with trees in list
@@ -896,11 +907,13 @@ namespace XCSP3Core {
          * @param coefs the coefs.
          * @param cond the condition (See XCondition object)
          */
-        virtual void buildConstraintSum(string id, vector<Tree *> &trees, vector<int> &coefs, XCondition &cond) {
-            (void)id; (void)trees; (void)coefs; (void)cond;
-            throw runtime_error("sum constraint with expressions and coefs not yet supported");
+        virtual void buildConstraintSum(std::string id, std::vector<Tree*>& trees, std::vector<int>& coefs, XCondition& cond) {
+            (void)id;
+            (void)trees;
+            (void)coefs;
+            (void)cond;
+            throw std::runtime_error("sum constraint with expressions and coefs not yet supported");
         }
-
 
         /**
          * The callback function related to a atmost constraint
@@ -924,11 +937,13 @@ namespace XCSP3Core {
          * @param value the value
          * @param k the maximum number of variables that can take the value
          */
-        virtual void buildConstraintAtMost(string id, vector<XVariable *> &list, int value, int k) {
-            (void)id; (void)list; (void)value; (void)k;
-            throw runtime_error("atmost constraint  is not yet supported");
+        virtual void buildConstraintAtMost(std::string id, std::vector<XVariable*>& list, int value, int k) {
+            (void)id;
+            (void)list;
+            (void)value;
+            (void)k;
+            throw std::runtime_error("atmost constraint  is not yet supported");
         }
-
 
         /**
          * The callback function related to a atleast constraint
@@ -951,11 +966,13 @@ namespace XCSP3Core {
          * @param value the value
          * @param k the minimum number of variables that can take the value
          */
-        virtual void buildConstraintAtLeast(string id, vector<XVariable *> &list, int value, int k) {
-            (void)id; (void)list; (void)value; (void)k;
-            throw runtime_error("atleast constraint  is not yet supported");
+        virtual void buildConstraintAtLeast(std::string id, std::vector<XVariable*>& list, int value, int k) {
+            (void)id;
+            (void)list;
+            (void)value;
+            (void)k;
+            throw std::runtime_error("atleast constraint  is not yet supported");
         }
-
 
         /**
          * The callback function related to a exactly k  constraint
@@ -977,11 +994,13 @@ namespace XCSP3Core {
          * @param value the value
          * @param k the exact number of variables that can take the value
          */
-        virtual void buildConstraintExactlyK(string id, vector<XVariable *> &list, int value, int k) {
-            (void)id; (void)list; (void)value; (void)k;
-            throw runtime_error("exactly K constraint  is not yet supported");
+        virtual void buildConstraintExactlyK(std::string id, std::vector<XVariable*>& list, int value, int k) {
+            (void)id;
+            (void)list;
+            (void)value;
+            (void)k;
+            throw std::runtime_error("exactly K constraint  is not yet supported");
         }
-
 
         /**
          * The callback function related to a exactly k variable constraint
@@ -1002,11 +1021,13 @@ namespace XCSP3Core {
          * @param value the value
          * @param x the exact number of variables that can take the value (here it is a variable)
          */
-        virtual void buildConstraintExactlyVariable(string id, vector<XVariable *> &list, int value, XVariable *x) {
-            (void)id; (void)list; (void)value; (void)x;
-            throw runtime_error("exactly Variable constraint  is not yet supported");
+        virtual void buildConstraintExactlyVariable(std::string id, std::vector<XVariable*>& list, int value, XVariable* x) {
+            (void)id;
+            (void)list;
+            (void)value;
+            (void)x;
+            throw std::runtime_error("exactly Variable constraint  is not yet supported");
         }
-
 
         /**
          * The callback function related to a among constraint
@@ -1027,11 +1048,13 @@ namespace XCSP3Core {
          * @param value the value
          * @param k
          */
-        virtual void buildConstraintAmong(string id, vector<XVariable *> &list, vector<int> &values, int k) {// TODO AMONG
-            (void)id; (void)list; (void)values; (void)k;
-            throw runtime_error("Among constraint  is not yet supported");
+        virtual void buildConstraintAmong(std::string id, std::vector<XVariable*>& list, std::vector<int>& values, int k) { // TODO AMONG
+            (void)id;
+            (void)list;
+            (void)values;
+            (void)k;
+            throw std::runtime_error("Among constraint  is not yet supported");
         }
-
 
         /**
          * The callback function related to a count constraint with integer values
@@ -1049,11 +1072,13 @@ namespace XCSP3Core {
          * @param k the  number of variables
          * @param xc the condition (see #XCondition)
          */
-        virtual void buildConstraintCount(string id, vector<XVariable *> &list, vector<int> &values, XCondition &xc) {
-            (void)id; (void)list; (void)values; (void)xc;
-            throw runtime_error("count with integer values constraint  is not yet supported");
+        virtual void buildConstraintCount(std::string id, std::vector<XVariable*>& list, std::vector<int>& values, XCondition& xc) {
+            (void)id;
+            (void)list;
+            (void)values;
+            (void)xc;
+            throw std::runtime_error("count with integer values constraint  is not yet supported");
         }
-
 
         /**
          * The callback function related to a count constraint with integer variables
@@ -1071,11 +1096,13 @@ namespace XCSP3Core {
          * @param k the  number of variables
          * @param xc the condition (see #XCondition)
          */
-        virtual void buildConstraintCount(string id, vector<XVariable *> &list, vector<XVariable *> &values, XCondition &xc) {
-            (void)id; (void)list; (void)values; (void)xc;
-            throw runtime_error("count with variables values constraint is not yet supported");
+        virtual void buildConstraintCount(std::string id, std::vector<XVariable*>& list, std::vector<XVariable*>& values, XCondition& xc) {
+            (void)id;
+            (void)list;
+            (void)values;
+            (void)xc;
+            throw std::runtime_error("count with variables values constraint is not yet supported");
         }
-
 
         /**
          * The callback function related to a nValues constraint with exception
@@ -1092,11 +1119,13 @@ namespace XCSP3Core {
          * @param except the set of excepted values
          * @param xc the condition (see #XCondition)
          */
-        virtual void buildConstraintNValues(string id, vector<XVariable *> &list, vector<int> &except, XCondition &xc) {
-            (void)id; (void)list; (void)except; (void)xc;
-            throw runtime_error("NValues with exception constraint is not yet supported");
+        virtual void buildConstraintNValues(std::string id, std::vector<XVariable*>& list, std::vector<int>& except, XCondition& xc) {
+            (void)id;
+            (void)list;
+            (void)except;
+            (void)xc;
+            throw std::runtime_error("NValues with exception constraint is not yet supported");
         }
-
 
         /**
          * The callback function related to a nValues constraint with exception
@@ -1111,11 +1140,12 @@ namespace XCSP3Core {
          * @param list the scope of the constraint
          * @param xc the condition (see #XCondition)
          */
-        virtual void buildConstraintNValues(string id, vector<XVariable *> &list, XCondition &xc) {
-            (void)id; (void)list; (void)xc;
-            throw runtime_error("NValues  constraint is not yet supported");
+        virtual void buildConstraintNValues(std::string id, std::vector<XVariable*>& list, XCondition& xc) {
+            (void)id;
+            (void)list;
+            (void)xc;
+            throw std::runtime_error("NValues  constraint is not yet supported");
         }
-
 
         /**
          * The callback function related to a cardinality constraint with int values and int occurs
@@ -1134,13 +1164,16 @@ namespace XCSP3Core {
          * @param occurs the number of occurences (here int)
          * @param closed is the constraint is closed
          */
-        virtual void buildConstraintCardinality(string id, vector<XVariable *> &list, vector<int> values, vector<int> &occurs, bool closed) {
-            (void)id; (void)list; (void)values; (void)occurs; (void)closed;
-            throw runtime_error("cardinality with int values and int occurs constraint is not yet supported");
+        virtual void buildConstraintCardinality(std::string id, std::vector<XVariable*>& list, std::vector<int> values, std::vector<int>& occurs, bool closed) {
+            (void)id;
+            (void)list;
+            (void)values;
+            (void)occurs;
+            (void)closed;
+            throw std::runtime_error("cardinality with int values and int occurs constraint is not yet supported");
         }
 
-
-//
+        //
         /**
          * The callback function related to a cardinality constraint with int values and variable occurs
          * See http://xcsp.org/specifications/cardinality
@@ -1158,13 +1191,16 @@ namespace XCSP3Core {
          * @param occurs the number of occurences (here variables)
          * @param closed is the constraint is closed
          */
-        virtual void buildConstraintCardinality(string id, vector<XVariable *> &list, vector<int> values, vector<XVariable *> &occurs, bool closed) {
-            (void)id; (void)list; (void)values; (void)occurs; (void)closed;
-            throw runtime_error("cardinality with int values and int occurs constraint is not yet supported");
+        virtual void buildConstraintCardinality(std::string id, std::vector<XVariable*>& list, std::vector<int> values, std::vector<XVariable*>& occurs, bool closed) {
+            (void)id;
+            (void)list;
+            (void)values;
+            (void)occurs;
+            (void)closed;
+            throw std::runtime_error("cardinality with int values and int occurs constraint is not yet supported");
         }
 
-
-//
+        //
         /**
          * The callback function related to a cardinality constraint with int values and interval occurs
          * See http://xcsp.org/specifications/cardinality
@@ -1182,11 +1218,14 @@ namespace XCSP3Core {
          * @param occurs the number of occurences (here intervals)
          * @param closed is the constraint is closed
          */
-        virtual void buildConstraintCardinality(string id, vector<XVariable *> &list, vector<int> values, vector<XInterval> &occurs, bool closed) {
-            (void)id; (void)list; (void)values; (void)occurs; (void)closed;
-            throw runtime_error("cardinality with int values and int occurs constraint is not yet supported");
+        virtual void buildConstraintCardinality(std::string id, std::vector<XVariable*>& list, std::vector<int> values, std::vector<XInterval>& occurs, bool closed) {
+            (void)id;
+            (void)list;
+            (void)values;
+            (void)occurs;
+            (void)closed;
+            throw std::runtime_error("cardinality with int values and int occurs constraint is not yet supported");
         }
-
 
         /**
          * The callback function related to a cardinality constraint with variable values and int occurs
@@ -1205,11 +1244,14 @@ namespace XCSP3Core {
          * @param occurs the number of occurences (here int)
          * @param closed is the constraint is closed
          */
-        virtual void buildConstraintCardinality(string id, vector<XVariable *> &list, vector<XVariable *> values, vector<int> &occurs, bool closed) {
-            (void)id; (void)list; (void)values; (void)occurs; (void)closed;
-            throw runtime_error("cardinality with int values and int occurs constraint is not yet supported");
+        virtual void buildConstraintCardinality(std::string id, std::vector<XVariable*>& list, std::vector<XVariable*> values, std::vector<int>& occurs, bool closed) {
+            (void)id;
+            (void)list;
+            (void)values;
+            (void)occurs;
+            (void)closed;
+            throw std::runtime_error("cardinality with int values and int occurs constraint is not yet supported");
         }
-
 
         /**
          * The callback function related to a cardinality constraint with variable values and variable occurs
@@ -1228,11 +1270,14 @@ namespace XCSP3Core {
          * @param occurs the number of occurences (here variables)
          * @param closed is the constraint is closed
          */
-        virtual void buildConstraintCardinality(string id, vector<XVariable *> &list, vector<XVariable *> values, vector<XVariable *> &occurs, bool closed) {
-            (void)id; (void)list; (void)values; (void)occurs; (void)closed;
-            throw runtime_error("cardinality with int values and int occurs constraint is not yet supported");
+        virtual void buildConstraintCardinality(std::string id, std::vector<XVariable*>& list, std::vector<XVariable*> values, std::vector<XVariable*>& occurs, bool closed) {
+            (void)id;
+            (void)list;
+            (void)values;
+            (void)occurs;
+            (void)closed;
+            throw std::runtime_error("cardinality with int values and int occurs constraint is not yet supported");
         }
-
 
         /**
          * The callback function related to a cardinality constraint with variable values and interval occurs
@@ -1251,14 +1296,17 @@ namespace XCSP3Core {
          * @param occurs the number of occurences (here intervals)
          * @param closed is the constraint is closed
          */
-        virtual void buildConstraintCardinality(string id, vector<XVariable *> &list, vector<XVariable *> values, vector<XInterval> &occurs, bool closed) {
-            (void)id; (void)list; (void)values; (void)occurs; (void)closed;
-            throw runtime_error("cardinality with int values and int occurs constraint is not yet supported");
+        virtual void buildConstraintCardinality(std::string id, std::vector<XVariable*>& list, std::vector<XVariable*> values, std::vector<XInterval>& occurs, bool closed) {
+            (void)id;
+            (void)list;
+            (void)values;
+            (void)occurs;
+            (void)closed;
+            throw std::runtime_error("cardinality with int values and int occurs constraint is not yet supported");
         }
-//--------------------------------------------------------------------------------------
-// Connection constraints
-//--------------------------------------------------------------------------------------
-
+        //--------------------------------------------------------------------------------------
+        // Connection constraints
+        //--------------------------------------------------------------------------------------
 
         /**
          * The callback function related to a minimum constraint
@@ -1274,10 +1322,11 @@ namespace XCSP3Core {
          * @param list the scope of the constraint
          * @param xc the condition (see #XCondition)
          */
-        virtual void buildConstraintMinimum(string id, vector<XVariable *> &list, XCondition &xc) {
-            (void)id; (void)list; (void)xc;
-            throw runtime_error("minimum constraint is not yet supported");
-
+        virtual void buildConstraintMinimum(std::string id, std::vector<XVariable*>& list, XCondition& xc) {
+            (void)id;
+            (void)list;
+            (void)xc;
+            throw std::runtime_error("minimum constraint is not yet supported");
         }
 
         /**
@@ -1294,10 +1343,11 @@ namespace XCSP3Core {
          * @param list set of expression
          * @param xc the condition (see #XCondition)
          */
-        virtual void buildConstraintMinimum(string id, vector<Tree *> &list, XCondition &xc) {
-            (void)id; (void)list; (void)xc;
-            throw runtime_error("minimum constraint over trees is not yet supported");
-
+        virtual void buildConstraintMinimum(std::string id, std::vector<Tree*>& list, XCondition& xc) {
+            (void)id;
+            (void)list;
+            (void)xc;
+            throw std::runtime_error("minimum constraint over trees is not yet supported");
         }
 
         /**
@@ -1318,11 +1368,15 @@ namespace XCSP3Core {
          * @param rank ANY, ALL...
          * @param xc the condition (see #XCondition)
          */
-        virtual void buildConstraintMinimum(string id, vector<XVariable *> &list, XVariable *index, int startIndex, RankType rank, XCondition &xc) {
-            (void)id; (void)list; (void)index; (void)startIndex; (void)rank; (void)xc;
-            throw runtime_error("minimum with index constraint is not yet supported");
+        virtual void buildConstraintMinimum(std::string id, std::vector<XVariable*>& list, XVariable* index, int startIndex, RankType rank, XCondition& xc) {
+            (void)id;
+            (void)list;
+            (void)index;
+            (void)startIndex;
+            (void)rank;
+            (void)xc;
+            throw std::runtime_error("minimum with index constraint is not yet supported");
         }
-
 
         /**
          * The callback function related to a maximum constraint
@@ -1338,10 +1392,11 @@ namespace XCSP3Core {
          * @param list the scope of the constraint
          * @param xc the condition (see #XCondition)
          */
-        virtual void buildConstraintMaximum(string id, vector<XVariable *> &list, XCondition &xc) {
-            (void)id; (void)list; (void)xc;
-            throw runtime_error("maximum constraint is not yet supported");
-
+        virtual void buildConstraintMaximum(std::string id, std::vector<XVariable*>& list, XCondition& xc) {
+            (void)id;
+            (void)list;
+            (void)xc;
+            throw std::runtime_error("maximum constraint is not yet supported");
         }
 
         /**
@@ -1358,10 +1413,11 @@ namespace XCSP3Core {
                 * @param list the expressions of the constraint
                 * @param xc the condition (see #XCondition)
                 */
-        virtual void buildConstraintMaximum(string id, vector<Tree*> &list, XCondition &xc) {
-            (void)id; (void)list; (void)xc;
-            throw runtime_error("maximum constraint over trees is not yet supported");
-
+        virtual void buildConstraintMaximum(std::string id, std::vector<Tree*>& list, XCondition& xc) {
+            (void)id;
+            (void)list;
+            (void)xc;
+            throw std::runtime_error("maximum constraint over trees is not yet supported");
         }
 
         /**
@@ -1382,11 +1438,15 @@ namespace XCSP3Core {
          * @param rank ANY, ALL...
          * @param xc the condition (see #XCondition)
          */
-        virtual void buildConstraintMaximum(string id, vector<XVariable *> &list, XVariable *index, int startIndex, RankType rank, XCondition &xc) {
-            (void)id; (void)list; (void)index; (void)startIndex; (void)rank; (void)xc;
-            throw runtime_error("maximum with index constraint is not yet supported");
+        virtual void buildConstraintMaximum(std::string id, std::vector<XVariable*>& list, XVariable* index, int startIndex, RankType rank, XCondition& xc) {
+            (void)id;
+            (void)list;
+            (void)index;
+            (void)startIndex;
+            (void)rank;
+            (void)xc;
+            throw std::runtime_error("maximum with index constraint is not yet supported");
         }
-
 
         /**
          * The callback function related to a element constraint with int value
@@ -1402,13 +1462,14 @@ namespace XCSP3Core {
          * @param list the scope of the constraint
          * @param value the value (here an int)
          */
-        virtual void buildConstraintElement(string id, vector<XVariable *> &list, int value) {
-            (void)id; (void)list; (void)value;
-            throw runtime_error("Element value constraint is not yet supported");
+        virtual void buildConstraintElement(std::string id, std::vector<XVariable*>& list, int value) {
+            (void)id;
+            (void)list;
+            (void)value;
+            throw std::runtime_error("Element value constraint is not yet supported");
         }
 
-
-         /**
+        /**
          * The callback function related to a element constraint matrix
          * See http://xcsp.org/specifications/element
          *
@@ -1427,11 +1488,16 @@ namespace XCSP3Core {
          * @param startColIndex the start index for cols
          * @param value the value (here a variable)
          */
-        virtual void buildConstraintElement(string id, vector<vector<XVariable*> > &matrix, int startRowIndex, XVariable *rowIndex, int startColIndex, XVariable* colIndex, XVariable* value) {
-            (void)id; (void)matrix; (void)startRowIndex; (void)rowIndex; (void)startColIndex; (void)colIndex; (void)value;
-            throw runtime_error("Element matrix constraint is not yet supported");
+        virtual void buildConstraintElement(std::string id, std::vector<std::vector<XVariable*>>& matrix, int startRowIndex, XVariable* rowIndex, int startColIndex, XVariable* colIndex, XVariable* value) {
+            (void)id;
+            (void)matrix;
+            (void)startRowIndex;
+            (void)rowIndex;
+            (void)startColIndex;
+            (void)colIndex;
+            (void)value;
+            throw std::runtime_error("Element matrix constraint is not yet supported");
         }
-
 
         /**
         * The callback function related to a element constraint matrix
@@ -1452,9 +1518,15 @@ namespace XCSP3Core {
         * @param startColIndex the start index for cols
         * @param value the value (here an int)
         */
-        virtual void buildConstraintElement(string id, vector<vector<XVariable*> > &matrix, int startRowIndex, XVariable *rowIndex, int startColIndex, XVariable* colIndex, int value) {
-            (void)id; (void)matrix; (void)startRowIndex; (void)rowIndex; (void)startColIndex; (void)colIndex; (void)value;
-            throw runtime_error("Element matrix constraint is not yet supported");
+        virtual void buildConstraintElement(std::string id, std::vector<std::vector<XVariable*>>& matrix, int startRowIndex, XVariable* rowIndex, int startColIndex, XVariable* colIndex, int value) {
+            (void)id;
+            (void)matrix;
+            (void)startRowIndex;
+            (void)rowIndex;
+            (void)startColIndex;
+            (void)colIndex;
+            (void)value;
+            throw std::runtime_error("Element matrix constraint is not yet supported");
         }
 
         /**
@@ -1477,9 +1549,15 @@ namespace XCSP3Core {
         * @param value the value (here a variable)
         */
 
-        virtual void buildConstraintElement(string id, vector<vector<int> > &matrix, int startRowIndex, XVariable *rowIndex, int startColIndex, XVariable* colIndex, XVariable *value) {
-            (void)id; (void)matrix; (void)startRowIndex; (void)rowIndex; (void)startColIndex; (void)colIndex; (void)value;
-            throw runtime_error("Element matrix constraint is not yet supported");
+        virtual void buildConstraintElement(std::string id, std::vector<std::vector<int>>& matrix, int startRowIndex, XVariable* rowIndex, int startColIndex, XVariable* colIndex, XVariable* value) {
+            (void)id;
+            (void)matrix;
+            (void)startRowIndex;
+            (void)rowIndex;
+            (void)startColIndex;
+            (void)colIndex;
+            (void)value;
+            throw std::runtime_error("Element matrix constraint is not yet supported");
         }
 
         /**
@@ -1496,11 +1574,12 @@ namespace XCSP3Core {
          * @param list the scope of the constraint
          * @param value the value (here a variable)
          */
-        virtual void buildConstraintElement(string id, vector<XVariable *> &list, XVariable *value) {
-            (void)id; (void)list; (void)value;
-            throw runtime_error("Element variable constraint is not yet supported");
+        virtual void buildConstraintElement(std::string id, std::vector<XVariable*>& list, XVariable* value) {
+            (void)id;
+            (void)list;
+            (void)value;
+            throw std::runtime_error("Element variable constraint is not yet supported");
         }
-
 
         /**
          * The callback function related to a element constraint with variable index and  int value
@@ -1520,11 +1599,15 @@ namespace XCSP3Core {
          * @param rank ANY, ALL...
          * @param value the value (here an int)
          */
-        virtual void buildConstraintElement(string id, vector<XVariable *> &list, int startIndex, XVariable *index, RankType rank, int value) {
-            (void)id; (void)list; (void)startIndex; (void)index; (void)rank; (void)value;
-            throw runtime_error("Element value with index constraint is not yet supported");
+        virtual void buildConstraintElement(std::string id, std::vector<XVariable*>& list, int startIndex, XVariable* index, RankType rank, int value) {
+            (void)id;
+            (void)list;
+            (void)startIndex;
+            (void)index;
+            (void)rank;
+            (void)value;
+            throw std::runtime_error("Element value with index constraint is not yet supported");
         }
-
 
         /**
          * The callback function related to a element constraint with variable index and variable value
@@ -1544,11 +1627,15 @@ namespace XCSP3Core {
          * @param rank ANY, ALL...
          * @param value the value (here a variable)
          */
-        virtual void buildConstraintElement(string id, vector<XVariable *> &list, int startIndex, XVariable *index, RankType rank, XVariable *value) {
-            (void)id; (void)list; (void)startIndex; (void)index; (void)rank; (void)value;
-            throw runtime_error("Element variable with index constraint is not yet supported");
+        virtual void buildConstraintElement(std::string id, std::vector<XVariable*>& list, int startIndex, XVariable* index, RankType rank, XVariable* value) {
+            (void)id;
+            (void)list;
+            (void)startIndex;
+            (void)index;
+            (void)rank;
+            (void)value;
+            throw std::runtime_error("Element variable with index constraint is not yet supported");
         }
-
 
         /**
          * The callback function related to a element constraint with int list variable index and variable value
@@ -1568,11 +1655,15 @@ namespace XCSP3Core {
          * @param rank ANY, ALL...
          * @param value the value (here a variable)
          */
-        virtual void buildConstraintElement(string id, vector<int> &list, int startIndex, XVariable *index, RankType rank, XVariable *value) {
-            (void)id; (void)list; (void)startIndex; (void)index; (void)rank; (void)value;
-            throw runtime_error("Element value  (with list of integers)  with index constraint is not yet supported");
+        virtual void buildConstraintElement(std::string id, std::vector<int>& list, int startIndex, XVariable* index, RankType rank, XVariable* value) {
+            (void)id;
+            (void)list;
+            (void)startIndex;
+            (void)index;
+            (void)rank;
+            (void)value;
+            throw std::runtime_error("Element value  (with list of integers)  with index constraint is not yet supported");
         }
-
 
         /**
          * The callback function related to a channel constraint
@@ -1586,11 +1677,12 @@ namespace XCSP3Core {
          * @param id the id (name) of the constraint
          * @param list the scope of the constraint
          */
-        virtual void buildConstraintChannel(string id, vector<XVariable *> &list, int startIndex) {
-            (void)id; (void)list; (void)startIndex;
-            throw runtime_error("channel with 1 list constraint is not yet supported");
+        virtual void buildConstraintChannel(std::string id, std::vector<XVariable*>& list, int startIndex) {
+            (void)id;
+            (void)list;
+            (void)startIndex;
+            throw std::runtime_error("channel with 1 list constraint is not yet supported");
         }
-
 
         /**
          * The callback function related to a channel constraint
@@ -1614,11 +1706,14 @@ namespace XCSP3Core {
          * @param startIndex2 the starting index for list2
          *
          */
-        virtual void buildConstraintChannel(string id, vector<XVariable *> &list1, int startIndex1, vector<XVariable *> &list2, int startIndex2) {
-            (void)id; (void)list1; (void)startIndex1; (void)list2; (void)startIndex2;
-            throw runtime_error("channel with 2 lists constraint is not yet supported");
+        virtual void buildConstraintChannel(std::string id, std::vector<XVariable*>& list1, int startIndex1, std::vector<XVariable*>& list2, int startIndex2) {
+            (void)id;
+            (void)list1;
+            (void)startIndex1;
+            (void)list2;
+            (void)startIndex2;
+            throw std::runtime_error("channel with 2 lists constraint is not yet supported");
         }
-
 
         /**
          * The callback function related to a channel constraint with a value
@@ -1635,16 +1730,17 @@ namespace XCSP3Core {
          * @param startIndex the starting index for list
          * @param value the vaule
          */
-        virtual void buildConstraintChannel(string id, vector<XVariable *> &list, int startIndex, XVariable *value) {
-            (void)id; (void)list; (void)startIndex; (void)value;
-            throw runtime_error("channel with 1 list and 1 value constraint is not yet supported");
+        virtual void buildConstraintChannel(std::string id, std::vector<XVariable*>& list, int startIndex, XVariable* value) {
+            (void)id;
+            (void)list;
+            (void)startIndex;
+            (void)value;
+            throw std::runtime_error("channel with 1 list and 1 value constraint is not yet supported");
         }
 
-//--------------------------------------------------------------------------------------
-// packing and schedulling constraints
-//--------------------------------------------------------------------------------------
-
-
+        //--------------------------------------------------------------------------------------
+        // packing and schedulling constraints
+        //--------------------------------------------------------------------------------------
 
         /**
          * The callback function related to a strectch constraint with values and widths
@@ -1662,11 +1758,13 @@ namespace XCSP3Core {
          * @param values thelist of values
          * @param widths the list of intervals for widths
          */
-        virtual void buildConstraintStretch(string id, vector<XVariable *> &list, vector<int> &values, vector<XInterval> &widths) {
-            (void)id; (void)list; (void)values; (void)widths;
-            throw runtime_error("stretch constraint is not yet supported");
+        virtual void buildConstraintStretch(std::string id, std::vector<XVariable*>& list, std::vector<int>& values, std::vector<XInterval>& widths) {
+            (void)id;
+            (void)list;
+            (void)values;
+            (void)widths;
+            throw std::runtime_error("stretch constraint is not yet supported");
         }
-
 
         /**
          * The callback function related to a strectch constraint with values, widths and patterns
@@ -1680,11 +1778,14 @@ namespace XCSP3Core {
          *
          */
         virtual void
-        buildConstraintStretch(string id, vector<XVariable *> &list, vector<int> &values, vector<XInterval> &widths, vector<vector<int>> &patterns) {
-            (void)id; (void)list; (void)values; (void)widths; (void)patterns;
-            throw runtime_error("stretch constraint is not yet supported");
+        buildConstraintStretch(std::string id, std::vector<XVariable*>& list, std::vector<int>& values, std::vector<XInterval>& widths, std::vector<std::vector<int>>& patterns) {
+            (void)id;
+            (void)list;
+            (void)values;
+            (void)widths;
+            (void)patterns;
+            throw std::runtime_error("stretch constraint is not yet supported");
         }
-
 
         /**
          * The callback function related to a no overlap constraint with variable origins and int lenghts
@@ -1697,15 +1798,17 @@ namespace XCSP3Core {
          * </noOverlap>
          *
          * @param id  the id (name) of the constraint
-         * @param origins the vector of origins
-         * @param lengths the vector of lenghts (here int)
+         * @param origins the std::vector of origins
+         * @param lengths the std::vector of lenghts (here int)
          * @param zeroIgnored are zero ignored?
          */
-        virtual void buildConstraintNoOverlap(string id, vector<XVariable *> &origins, vector<int> &lengths, bool zeroIgnored) {
-            (void)id; (void)origins; (void)lengths; (void)zeroIgnored;
-            throw runtime_error("nooverlap with int lengths constraint is not yet supported");
+        virtual void buildConstraintNoOverlap(std::string id, std::vector<XVariable*>& origins, std::vector<int>& lengths, bool zeroIgnored) {
+            (void)id;
+            (void)origins;
+            (void)lengths;
+            (void)zeroIgnored;
+            throw std::runtime_error("nooverlap with int lengths constraint is not yet supported");
         }
-
 
         /**
          * The callback function related to a no overlap constraint with variable origins and variable lenghts
@@ -1718,15 +1821,17 @@ namespace XCSP3Core {
          * </noOverlap>
          *
          * @param id  the id (name) of the constraint
-         * @param origins the vector of origins
-         * @param lengths the vector of lenghts (here variables)
+         * @param origins the std::vector of origins
+         * @param lengths the std::vector of lenghts (here variables)
          * @param zeroIgnored are zero ignored?
          */
-        virtual void buildConstraintNoOverlap(string id, vector<XVariable *> &origins, vector<XVariable *> &lengths, bool zeroIgnored) {
-            (void)id; (void)origins; (void)lengths; (void)zeroIgnored;
-            throw runtime_error("nooverlap with variable lengths constraint is not yet supported");
+        virtual void buildConstraintNoOverlap(std::string id, std::vector<XVariable*>& origins, std::vector<XVariable*>& lengths, bool zeroIgnored) {
+            (void)id;
+            (void)origins;
+            (void)lengths;
+            (void)zeroIgnored;
+            throw std::runtime_error("nooverlap with variable lengths constraint is not yet supported");
         }
-
 
         /**
          * The callback function related to a no overlap constraint with variable origins and 3 dimensional int  lenghts
@@ -1739,15 +1844,17 @@ namespace XCSP3Core {
          * </noOverlap>
          *
          * @param id  the id (name) of the constraint
-         * @param origins the vector of origins
-         * @param lengths the vector of lenghts (here vector of int)
+         * @param origins the std::vector of origins
+         * @param lengths the std::vector of lenghts (here std::vector of int)
          * @param zeroIgnored are zero ignored?
          */
-        virtual void buildConstraintNoOverlap(string id, vector<vector<XVariable *>> &origins, vector<vector<int>> &lengths, bool zeroIgnored) {
-            (void)id; (void)origins; (void)lengths; (void)zeroIgnored;
-            throw runtime_error("K dim nooverlap with int lengths constraint is not yet supported");
+        virtual void buildConstraintNoOverlap(std::string id, std::vector<std::vector<XVariable*>>& origins, std::vector<std::vector<int>>& lengths, bool zeroIgnored) {
+            (void)id;
+            (void)origins;
+            (void)lengths;
+            (void)zeroIgnored;
+            throw std::runtime_error("K dim nooverlap with int lengths constraint is not yet supported");
         }
-
 
         /**
          * The callback function related to a no overlap constraint with variable origins and 3 dimensional variable  lenghts
@@ -1760,15 +1867,17 @@ namespace XCSP3Core {
          * </noOverlap>
          *
          * @param id  the id (name) of the constraint
-         * @param origins the vector of origins
-         * @param lengths the vector of lenghts (here vector of variables)
+         * @param origins the std::vector of origins
+         * @param lengths the std::vector of lenghts (here std::vector of variables)
          * @param zeroIgnored are zero ignored?
          */
-        virtual void buildConstraintNoOverlap(string id, vector<vector<XVariable *>> &origins, vector<vector<XVariable *>> &lengths, bool zeroIgnored) {
-            (void)id; (void)origins; (void)lengths; (void)zeroIgnored;
-            throw runtime_error("K dim nooverlap with variable lengths constraint is not yet supported");
+        virtual void buildConstraintNoOverlap(std::string id, std::vector<std::vector<XVariable*>>& origins, std::vector<std::vector<XVariable*>>& lengths, bool zeroIgnored) {
+            (void)id;
+            (void)origins;
+            (void)lengths;
+            (void)zeroIgnored;
+            throw std::runtime_error("K dim nooverlap with variable lengths constraint is not yet supported");
         }
-
 
         /**
          * The callback function related to a cumulative constraint with variable origins, int lengths and int heights
@@ -1783,16 +1892,19 @@ namespace XCSP3Core {
          * </cumulative>
          *
          * @param id the id (name) of the constraint
-         * @param origins the vector of origins
-         * @param lengths the vector of lenghts (here ints)
-         * @param heights the vector of heights (here ints)
+         * @param origins the std::vector of origins
+         * @param lengths the std::vector of lenghts (here ints)
+         * @param heights the std::vector of heights (here ints)
          * @param xc the condition (see XCondition)
          */
-        virtual void buildConstraintCumulative(string id, vector<XVariable *> &origins, vector<int> &lengths, vector<int> &heights, XCondition &xc) {
-            (void)id; (void)origins; (void)lengths; (void)heights; (void)xc;
-            throw runtime_error("cumulative (int lengths, int heights) constraint is not yet supported");
+        virtual void buildConstraintCumulative(std::string id, std::vector<XVariable*>& origins, std::vector<int>& lengths, std::vector<int>& heights, XCondition& xc) {
+            (void)id;
+            (void)origins;
+            (void)lengths;
+            (void)heights;
+            (void)xc;
+            throw std::runtime_error("cumulative (int lengths, int heights) constraint is not yet supported");
         }
-
 
         /**
          * The callback function related to a cumulative constraint with variable origin, int lengths and variable heights
@@ -1807,16 +1919,19 @@ namespace XCSP3Core {
          * </cumulative>
          *
          * @param id the id (name) of the constraint
-         * @param origins the vector of origins
-         * @param lengths the vector of lenghts (here ints)
-         * @param heights the vector of heights (here variables)
+         * @param origins the std::vector of origins
+         * @param lengths the std::vector of lenghts (here ints)
+         * @param heights the std::vector of heights (here variables)
          * @param xc the condition (see XCondition)
          */
-        virtual void buildConstraintCumulative(string id, vector<XVariable *> &origins, vector<int> &lengths, vector<XVariable *> &varHeights, XCondition &xc) {
-            (void)id; (void)origins; (void)lengths; (void)varHeights; (void)xc;
-            throw runtime_error("cumulative (int lengths, var heights) constraint is not yet supported");
+        virtual void buildConstraintCumulative(std::string id, std::vector<XVariable*>& origins, std::vector<int>& lengths, std::vector<XVariable*>& varHeights, XCondition& xc) {
+            (void)id;
+            (void)origins;
+            (void)lengths;
+            (void)varHeights;
+            (void)xc;
+            throw std::runtime_error("cumulative (int lengths, var heights) constraint is not yet supported");
         }
-
 
         /**
          * The callback function related to a cumulative constraint with variable origin, variable lengths and int heights
@@ -1831,16 +1946,19 @@ namespace XCSP3Core {
          * </cumulative>
          *
          * @param id the id (name) of the constraint
-         * @param origins the vector of origins
-         * @param lengths the vector of lenghts (here variables)
-         * @param heights the vector of heights (here ints)
+         * @param origins the std::vector of origins
+         * @param lengths the std::vector of lenghts (here variables)
+         * @param heights the std::vector of heights (here ints)
          * @param xc the condition (see XCondition)
          */
-        virtual void buildConstraintCumulative(string id, vector<XVariable *> &origins, vector<XVariable *> &lengths, vector<int> &heights, XCondition &xc) {
-            (void)id; (void)origins; (void)lengths; (void)heights; (void)xc;
-            throw runtime_error("cumulative (var lengths, int heights) constraint is not yet supported");
+        virtual void buildConstraintCumulative(std::string id, std::vector<XVariable*>& origins, std::vector<XVariable*>& lengths, std::vector<int>& heights, XCondition& xc) {
+            (void)id;
+            (void)origins;
+            (void)lengths;
+            (void)heights;
+            (void)xc;
+            throw std::runtime_error("cumulative (var lengths, int heights) constraint is not yet supported");
         }
-
 
         /**
          * The callback function related to a cumulative constraint with variable origin, variable lengths and variable heights
@@ -1855,17 +1973,20 @@ namespace XCSP3Core {
          * </cumulative>
          *
          * @param id the id (name) of the constraint
-         * @param origins the vector of origins
-         * @param lengths the vector of lenghts (here variables)
-         * @param heights the vector of heights (here variables)
+         * @param origins the std::vector of origins
+         * @param lengths the std::vector of lenghts (here variables)
+         * @param heights the std::vector of heights (here variables)
          * @param xc the condition (see XCondition)
          */
         virtual void
-        buildConstraintCumulative(string id, vector<XVariable *> &origins, vector<XVariable *> &lengths, vector<XVariable *> &heights, XCondition &xc) {
-            (void)id; (void)origins; (void)lengths; (void)heights; (void)xc;
-            throw runtime_error("cumulative (var lengths, var heights) constraint is not yet supported");
+        buildConstraintCumulative(std::string id, std::vector<XVariable*>& origins, std::vector<XVariable*>& lengths, std::vector<XVariable*>& heights, XCondition& xc) {
+            (void)id;
+            (void)origins;
+            (void)lengths;
+            (void)heights;
+            (void)xc;
+            throw std::runtime_error("cumulative (var lengths, var heights) constraint is not yet supported");
         }
-
 
         /**
          * The callback function related to a cumulative constraint with variable origin, int lengths and int heights and variable ends
@@ -1881,18 +2002,22 @@ namespace XCSP3Core {
          * </cumulative>
          *
          * @param id the id (name) of the constraint
-         * @param origins the vector of origins
-         * @param lengths the vector of lenghts (here ints)
-         * @param heights the vector of heights (here ints)
-         * @param ends the vector of ends (here variables)
+         * @param origins the std::vector of origins
+         * @param lengths the std::vector of lenghts (here ints)
+         * @param heights the std::vector of heights (here ints)
+         * @param ends the std::vector of ends (here variables)
          * @param xc the condition (see XCondition)
          */
-        virtual void buildConstraintCumulative(string id, vector<XVariable *> &origins, vector<int> &lengths, vector<int> &heights, vector<XVariable *> &ends,
-                                               XCondition &xc) {
-            (void)id; (void)origins; (void)lengths; (void)heights; (void)ends; (void)xc;
-            throw runtime_error("cumulative (int lengths, int heights) constraint is not yet supported");
+        virtual void buildConstraintCumulative(std::string id, std::vector<XVariable*>& origins, std::vector<int>& lengths, std::vector<int>& heights, std::vector<XVariable*>& ends,
+                                               XCondition& xc) {
+            (void)id;
+            (void)origins;
+            (void)lengths;
+            (void)heights;
+            (void)ends;
+            (void)xc;
+            throw std::runtime_error("cumulative (int lengths, int heights) constraint is not yet supported");
         }
-
 
         /**
          * The callback function related to a cumulative constraint with variable origin, int lengths and variable heights and variable ends
@@ -1908,19 +2033,23 @@ namespace XCSP3Core {
          * </cumulative>
          *
          * @param id the id (name) of the constraint
-         * @param origins the vector of origins
-         * @param lengths the vector of lenghts (here ints)
-         * @param heights the vector of heights (here variables)
-         * @param ends the vector of ends (here variables)
+         * @param origins the std::vector of origins
+         * @param lengths the std::vector of lenghts (here ints)
+         * @param heights the std::vector of heights (here variables)
+         * @param ends the std::vector of ends (here variables)
          * @param xc the condition (see XCondition)
          */
         virtual void
-        buildConstraintCumulative(string id, vector<XVariable *> &origins, vector<int> &lengths, vector<XVariable *> &varHeights, vector<XVariable *> &ends,
-                                  XCondition &xc) {
-            (void)id; (void)origins; (void)lengths; (void)varHeights; (void)ends; (void)xc;
-            throw runtime_error("cumulative (int lengths, var heights, ends) constraint is not yet supported");
+        buildConstraintCumulative(std::string id, std::vector<XVariable*>& origins, std::vector<int>& lengths, std::vector<XVariable*>& varHeights, std::vector<XVariable*>& ends,
+                                  XCondition& xc) {
+            (void)id;
+            (void)origins;
+            (void)lengths;
+            (void)varHeights;
+            (void)ends;
+            (void)xc;
+            throw std::runtime_error("cumulative (int lengths, var heights, ends) constraint is not yet supported");
         }
-
 
         /**
          * The callback function related to a cumulative constraint with variable origin, variable lengths and int heights and variable ends
@@ -1936,19 +2065,23 @@ namespace XCSP3Core {
          * </cumulative>
          *
          * @param id the id (name) of the constraint
-         * @param origins the vector of origins
-         * @param lengths the vector of lenghts (here variables)
-         * @param heights the vector of heights (here ints)
-         * @param ends the vector of ends (here variables)
+         * @param origins the std::vector of origins
+         * @param lengths the std::vector of lenghts (here variables)
+         * @param heights the std::vector of heights (here ints)
+         * @param ends the std::vector of ends (here variables)
          * @param xc the condition (see XCondition)
          */
         virtual void
-        buildConstraintCumulative(string id, vector<XVariable *> &origins, vector<XVariable *> &lengths, vector<int> &heights, vector<XVariable *> &ends,
-                                  XCondition &xc) {
-            (void)id; (void)origins; (void)lengths; (void)heights; (void)ends; (void)xc;
-            throw runtime_error("cumulative (var lengths, int heights, ends) constraint is not yet supported");
+        buildConstraintCumulative(std::string id, std::vector<XVariable*>& origins, std::vector<XVariable*>& lengths, std::vector<int>& heights, std::vector<XVariable*>& ends,
+                                  XCondition& xc) {
+            (void)id;
+            (void)origins;
+            (void)lengths;
+            (void)heights;
+            (void)ends;
+            (void)xc;
+            throw std::runtime_error("cumulative (var lengths, int heights, ends) constraint is not yet supported");
         }
-
 
         /**
          * The callback function related to a cumulative constraint with variable origin, variable lengths and variable heights and variable ends
@@ -1964,23 +2097,27 @@ namespace XCSP3Core {
          * </cumulative>
          *
          * @param id the id (name) of the constraint
-         * @param origins the vector of origins
-         * @param lengths the vector of lenghts (here variables)
-         * @param heights the vector of heights (here variables)
-         * @param ends the vector of ends (here variables)
+         * @param origins the std::vector of origins
+         * @param lengths the std::vector of lenghts (here variables)
+         * @param heights the std::vector of heights (here variables)
+         * @param ends the std::vector of ends (here variables)
          * @param xc the condition (see XCondition)
          */
         virtual void
-        buildConstraintCumulative(string id, vector<XVariable *> &origins, vector<XVariable *> &lengths, vector<XVariable *> &heights,
-                                  vector<XVariable *> &ends, XCondition &xc) {
-            (void)id; (void)origins; (void)lengths; (void)heights; (void)ends; (void)xc;
-            throw runtime_error("cumulative (var lengths, var heights, ends) constraint is not yet supported");
+        buildConstraintCumulative(std::string id, std::vector<XVariable*>& origins, std::vector<XVariable*>& lengths, std::vector<XVariable*>& heights,
+                                  std::vector<XVariable*>& ends, XCondition& xc) {
+            (void)id;
+            (void)origins;
+            (void)lengths;
+            (void)heights;
+            (void)ends;
+            (void)xc;
+            throw std::runtime_error("cumulative (var lengths, var heights, ends) constraint is not yet supported");
         }
 
-//--------------------------------------------------------------------------------------
-// instantiation constraints
-//--------------------------------------------------------------------------------------
-
+        //--------------------------------------------------------------------------------------
+        // instantiation constraints
+        //--------------------------------------------------------------------------------------
 
         /**
          * The callback function related to an instantiation  constraint
@@ -1996,15 +2133,16 @@ namespace XCSP3Core {
          * @param list the scope of the constraint
          * @param values the value for each variable
          */
-        virtual void buildConstraintInstantiation(string id, vector<XVariable *> &list, vector<int> &values) {
-            (void)id; (void)list; (void)values;
-            throw runtime_error("instantiation constraint not yet supported");
+        virtual void buildConstraintInstantiation(std::string id, std::vector<XVariable*>& list, std::vector<int>& values) {
+            (void)id;
+            (void)list;
+            (void)values;
+            throw std::runtime_error("instantiation constraint not yet supported");
         }
 
-//--------------------------------------------------------------------------------------
-// Clause constraints
-//--------------------------------------------------------------------------------------
-
+        //--------------------------------------------------------------------------------------
+        // Clause constraints
+        //--------------------------------------------------------------------------------------
 
         /**
          * The callback function related to an clause  constraint
@@ -2018,15 +2156,16 @@ namespace XCSP3Core {
          * @param positive the positive variables in the clause
          * @param negative the negative variables in the clause
          */
-        virtual void buildConstraintClause(string id, vector<XVariable *> &positive, vector<XVariable *> &negative) {
-            (void)id; (void)positive; (void)negative;
-            throw runtime_error("Clause constraint not yet supported");
+        virtual void buildConstraintClause(std::string id, std::vector<XVariable*>& positive, std::vector<XVariable*>& negative) {
+            (void)id;
+            (void)positive;
+            (void)negative;
+            throw std::runtime_error("Clause constraint not yet supported");
         }
 
-//--------------------------------------------------------------------------------------
-// Graph constraints
-//--------------------------------------------------------------------------------------
-
+        //--------------------------------------------------------------------------------------
+        // Graph constraints
+        //--------------------------------------------------------------------------------------
 
         /**
          * The callback function related to circuit   constraint
@@ -2041,11 +2180,12 @@ namespace XCSP3Core {
          * @param list the scope of the constraint
          * @param startIndex the start index for the list
          */
-        virtual void buildConstraintCircuit(string id, vector<XVariable *> &list, int startIndex) {
-            (void)id; (void)list; (void)startIndex;
-            throw runtime_error("circuit constraint not yet supported");
+        virtual void buildConstraintCircuit(std::string id, std::vector<XVariable*>& list, int startIndex) {
+            (void)id;
+            (void)list;
+            (void)startIndex;
+            throw std::runtime_error("circuit constraint not yet supported");
         }
-
 
         /**
          * The callback function related to circuit   constraint with defined int size
@@ -2062,11 +2202,13 @@ namespace XCSP3Core {
          * @param startIndex the start index for the list
          * @param size the size of the circuit (here an int)
          */
-        virtual void buildConstraintCircuit(string id, vector<XVariable *> &list, int startIndex, int size) {
-            (void)id; (void)list; (void)startIndex; (void)size;
-            throw runtime_error("circuit constraint not yet supported");
+        virtual void buildConstraintCircuit(std::string id, std::vector<XVariable*>& list, int startIndex, int size) {
+            (void)id;
+            (void)list;
+            (void)startIndex;
+            (void)size;
+            throw std::runtime_error("circuit constraint not yet supported");
         }
-
 
         /**
          * The callback function related to circuit   constraint with defined variable size
@@ -2083,14 +2225,17 @@ namespace XCSP3Core {
          * @param startIndex the start index for the list
          * @param size the size of the circuit (here an variable)
          */
-        virtual void buildConstraintCircuit(string id, vector<XVariable *> &list, int startIndex, XVariable *size) {
-            (void)id; (void)list; (void)startIndex; (void)size;
-            throw runtime_error("circuit constraint not yet supported");
+        virtual void buildConstraintCircuit(std::string id, std::vector<XVariable*>& list, int startIndex, XVariable* size) {
+            (void)id;
+            (void)list;
+            (void)startIndex;
+            (void)size;
+            throw std::runtime_error("circuit constraint not yet supported");
         }
 
-//--------------------------------------------------------------------------------------
-// Objectives
-//--------------------------------------------------------------------------------------
+        //--------------------------------------------------------------------------------------
+        // Objectives
+        //--------------------------------------------------------------------------------------
 
         /**
          * The callback function related to an objective minimize an expression
@@ -2103,11 +2248,10 @@ namespace XCSP3Core {
          *
          * @param expr the expression
          */
-        virtual void buildObjectiveMinimizeExpression(string expr) {
+        virtual void buildObjectiveMinimizeExpression(std::string expr) {
             (void)expr;
-            throw runtime_error("minimize expression objective not yet supported");
+            throw std::runtime_error("minimize expression objective not yet supported");
         }
-
 
         /**
          * The callback function related to an objective maximize an expression
@@ -2120,11 +2264,10 @@ namespace XCSP3Core {
          *
          * @param expr the expression
          */
-        virtual void buildObjectiveMaximizeExpression(string expr) {
+        virtual void buildObjectiveMaximizeExpression(std::string expr) {
             (void)expr;
-            throw runtime_error("maximize expression objective not yet supported");
+            throw std::runtime_error("maximize expression objective not yet supported");
         }
-
 
         /**
          * The callback function related to an objective minimize a variable
@@ -2137,11 +2280,10 @@ namespace XCSP3Core {
          *
          * @param x the variable
          */
-        virtual void buildObjectiveMinimizeVariable(XVariable *x) {
+        virtual void buildObjectiveMinimizeVariable(XVariable* x) {
             (void)x;
-            throw runtime_error("minimize variable objective not yet supported");
+            throw std::runtime_error("minimize variable objective not yet supported");
         }
-
 
         /**
          * The callback function related to an objective maximize a variable
@@ -2154,11 +2296,10 @@ namespace XCSP3Core {
          *
          * @param x the variable
          */
-        virtual void buildObjectiveMaximizeVariable(XVariable *x) {
+        virtual void buildObjectiveMaximizeVariable(XVariable* x) {
             (void)x;
-            throw runtime_error("maximize variable objective not yet supported");
+            throw std::runtime_error("maximize variable objective not yet supported");
         }
-
 
         /**
          * The callback function related to an objective minimize a sum/product
@@ -2174,13 +2315,14 @@ namespace XCSP3Core {
          *
          * @param type SUM, PRODUCT...
          * @param list the scope
-         * @param coefs the vector of coefficients
+         * @param coefs the std::vector of coefficients
          */
-        virtual void buildObjectiveMinimize(ExpressionObjective type, vector<XVariable *> &list, vector<int> &coefs) {
-            (void)type; (void)list; (void)coefs;
-            throw runtime_error("minimize objective sum...  not yet supported");
+        virtual void buildObjectiveMinimize(ExpressionObjective type, std::vector<XVariable*>& list, std::vector<int>& coefs) {
+            (void)type;
+            (void)list;
+            (void)coefs;
+            throw std::runtime_error("minimize objective sum...  not yet supported");
         }
-
 
         /**
          * The callback function related to an objective maximize a sum/product
@@ -2196,13 +2338,14 @@ namespace XCSP3Core {
          *
          * @param type SUM, PRODUCT...
          * @param list the scope
-         * @param coefs the vector of coefficients
+         * @param coefs the std::vector of coefficients
          */
-        virtual void buildObjectiveMaximize(ExpressionObjective type, vector<XVariable *> &list, vector<int> &coefs) {
-            (void)type; (void)list; (void)coefs;
-            throw runtime_error("maximize objective   not yet supported");
+        virtual void buildObjectiveMaximize(ExpressionObjective type, std::vector<XVariable*>& list, std::vector<int>& coefs) {
+            (void)type;
+            (void)list;
+            (void)coefs;
+            throw std::runtime_error("maximize objective   not yet supported");
         }
-
 
         /**
          * The callback function related to an objective minimize a sum/product with coefs = 1
@@ -2218,11 +2361,11 @@ namespace XCSP3Core {
          * @param type SUM, PRODUCT...
          * @param list the scope
          */
-        virtual void buildObjectiveMinimize(ExpressionObjective type, vector<XVariable *> &list) {
-            (void)type; (void)list;
-            throw runtime_error("minimize objective   not yet supported");
+        virtual void buildObjectiveMinimize(ExpressionObjective type, std::vector<XVariable*>& list) {
+            (void)type;
+            (void)list;
+            throw std::runtime_error("minimize objective   not yet supported");
         }
-
 
         /**
          * The callback function related to an objective maximize a sum/product with coefs = 1
@@ -2238,12 +2381,11 @@ namespace XCSP3Core {
          * @param type SUM, PRODUCT...
          * @param list the scope
          */
-        virtual void buildObjectiveMaximize(ExpressionObjective type, vector<XVariable *> &list) {
-            (void)type; (void)list;
-            throw runtime_error("maximize objective   not yet supported");
+        virtual void buildObjectiveMaximize(ExpressionObjective type, std::vector<XVariable*>& list) {
+            (void)type;
+            (void)list;
+            throw std::runtime_error("maximize objective   not yet supported");
         }
-
-
 
         /**
          * The callback function related to an objective minimize a sum/product
@@ -2259,13 +2401,14 @@ namespace XCSP3Core {
          *
          * @param type SUM, PRODUCT...
          * @param trees the expressions
-         * @param coefs the vector of coefficients
+         * @param coefs the std::vector of coefficients
          */
-        virtual void buildObjectiveMinimize(ExpressionObjective type, vector<Tree *> &trees, vector<int> &coefs) {
-            (void)type; (void)trees; (void)coefs;
-            throw runtime_error("minimize objective sum with expression  not yet supported");
+        virtual void buildObjectiveMinimize(ExpressionObjective type, std::vector<Tree*>& trees, std::vector<int>& coefs) {
+            (void)type;
+            (void)trees;
+            (void)coefs;
+            throw std::runtime_error("minimize objective sum with expression  not yet supported");
         }
-
 
         /**
          * The callback function related to an objective maximize a sum/product
@@ -2281,13 +2424,14 @@ namespace XCSP3Core {
          *
          * @param type SUM, PRODUCT...
          * @param list the scope
-         * @param coefs the vector of coefficients
+         * @param coefs the std::vector of coefficients
          */
-        virtual void buildObjectiveMaximize(ExpressionObjective type, vector<Tree *> &trees, vector<int> &coefs) {
-            (void)type; (void)trees; (void)coefs;
-            throw runtime_error("maximize objective with expression  not yet supported");
+        virtual void buildObjectiveMaximize(ExpressionObjective type, std::vector<Tree*>& trees, std::vector<int>& coefs) {
+            (void)type;
+            (void)trees;
+            (void)coefs;
+            throw std::runtime_error("maximize objective with expression  not yet supported");
         }
-
 
         /**
          * The callback function related to an objective minimize a sum/product with coefs = 1
@@ -2303,11 +2447,11 @@ namespace XCSP3Core {
          * @param type SUM, PRODUCT...
          * @param list the scope
          */
-        virtual void buildObjectiveMinimize(ExpressionObjective type, vector<Tree *> &trees) {
-            (void)type; (void)trees;
-            throw runtime_error("minimize objective with expression  not yet supported");
+        virtual void buildObjectiveMinimize(ExpressionObjective type, std::vector<Tree*>& trees) {
+            (void)type;
+            (void)trees;
+            throw std::runtime_error("minimize objective with expression  not yet supported");
         }
-
 
         /**
          * The callback function related to an objective maximize a sum/product with coefs = 1
@@ -2323,11 +2467,11 @@ namespace XCSP3Core {
          * @param type SUM, PRODUCT...
          * @param list the scope
          */
-        virtual void buildObjectiveMaximize(ExpressionObjective type, vector<Tree *> &trees) {
-            (void)type; (void)trees;
-            throw runtime_error("maximize objective with expression not yet supported");
+        virtual void buildObjectiveMaximize(ExpressionObjective type, std::vector<Tree*>& trees) {
+            (void)type;
+            (void)trees;
+            throw std::runtime_error("maximize objective with expression not yet supported");
         }
-
 
         /**
          * The callback function related to annotations.
@@ -2335,10 +2479,9 @@ namespace XCSP3Core {
          * @param list
          */
 
-        virtual void buildAnnotationDecision(vector<XVariable *> &list) { (void)list; }
+        virtual void buildAnnotationDecision(std::vector<XVariable*>& list) { (void)list; }
     };
 
-}
+} // namespace XCSP3Core
 
 #endif //COSOCO_XCSP3CORECALLBACKS_H
-

@@ -23,48 +23,49 @@
  *=============================================================================
  */
 
-#include <map>
-
 #include "XCSP3Tree.h"
 #include "XCSP3TreeNode.h"
+#include <algorithm>
+#include <limits>
+#include <map>
 #include <sstream>
 #include <vector>
-#include <limits>
-#include <algorithm>
-using namespace XCSP3Core;
-using namespace std;
 
+using namespace XCSP3Core;
 
 // trim from start
 
-static inline std::string &ltrim(std::string &s) {
+static inline std::string& ltrim(std::string& s) {
     s.erase(s.begin(), std::find_if(s.begin(), s.end(), std::not1(std::ptr_fun<int, int>(std::isspace))));
     return s;
 }
 
 // trim from end
 
-static inline std::string &rtrim(std::string &s) {
+static inline std::string& rtrim(std::string& s) {
     s.erase(std::find_if(s.rbegin(), s.rend(), std::not1(std::ptr_fun<int, int>(std::isspace))).base(), s.end());
     return s;
 }
 
 // trim from both ends
 
-static inline std::string &trim(std::string &s) {
+static inline std::string& trim(std::string& s) {
     return ltrim(rtrim(s));
 }
 
 template <typename T>
 static int min(T v1, T v2, T v3) {
-    if (v1 == -1) v1 = std::numeric_limits<T>::max();
-    if (v2 == -1) v2 = std::numeric_limits<T>::max();
-    if (v3 == -1) v3 = std::numeric_limits<T>::max();
+    if (v1 == -1)
+        v1 = std::numeric_limits<T>::max();
+    if (v2 == -1)
+        v2 = std::numeric_limits<T>::max();
+    if (v3 == -1)
+        v3 = std::numeric_limits<T>::max();
 
-    return std::min( { v1, v2, v3 } );
+    return std::min({v1, v2, v3});
 }
 
-Node *Tree::fromStringToTree(std::string current) {
+Node* Tree::fromStringToTree(std::string current) {
 
     current = trim(current);
     std::vector<NodeOperator*> stack;
@@ -75,23 +76,21 @@ Node *Tree::fromStringToTree(std::string current) {
         int posComma = current.find(',');
         int nb = min(posCloseParenthesis, posComma, posOpenParenthesis);
 
-
-        string currentElement = current.substr(0, nb);
+        std::string currentElement = current.substr(0, nb);
         if (currentElement != "" && nb != posOpenParenthesis)
-            createBasicParameter(currentElement,stack,params);
-        
+            createBasicParameter(currentElement, stack, params);
 
         if (nb == posCloseParenthesis)
-            closeOperator(stack,params);
-
+            closeOperator(stack, params);
 
         if (nb == posOpenParenthesis)
-            createOperator(currentElement,stack,params);
-        if(nb == std::numeric_limits<int>::max()) // No operator, just a variable
+            createOperator(currentElement, stack, params);
+        if (nb == std::numeric_limits<int>::max()) // No operator, just a variable
             break;
 
         current = current.substr(nb + 1);
-        if (current == "") break;
+        if (current == "")
+            break;
     }
     assert(params.size() == 1);
     assert(stack.size() == 0);
@@ -100,17 +99,17 @@ Node *Tree::fromStringToTree(std::string current) {
 }
 
 extern NodeOperator* createNodeOperator(std::string currentElement);
-void Tree::createOperator(string currentElement, std::vector<NodeOperator*> &stack,std::vector<Node*> &params) {
+void Tree::createOperator(std::string currentElement, std::vector<NodeOperator*>& stack, std::vector<Node*>& params) {
 
-    NodeOperator *tmp = createNodeOperator(currentElement);
+    NodeOperator* tmp = createNodeOperator(currentElement);
     if (tmp == nullptr)
-        throw runtime_error("Intension constraint. Unknown operator: " + currentElement);
+        throw std::runtime_error("Intension constraint. Unknown operator: " + currentElement);
     stack.push_back(tmp);
     params.push_back(nullptr); // delemitor
 }
 
-void Tree::closeOperator(std::vector<NodeOperator*> &stack,std::vector<Node*> &params) {
-    NodeOperator *tmp = stack.back();
+void Tree::closeOperator(std::vector<NodeOperator*>& stack, std::vector<Node*>& params) {
+    NodeOperator* tmp = stack.back();
 
     int startParams = params.size() - 1;
     while (params[startParams] != nullptr)
@@ -128,11 +127,11 @@ void Tree::closeOperator(std::vector<NodeOperator*> &stack,std::vector<Node*> &p
 }
 
 // string currentElement, std::vector<NodeOperator*> &stack,std::vector<Node*> &params
-void Tree::createBasicParameter(string currentElement, std::vector<NodeOperator*> &,std::vector<Node*> &params) {
+void Tree::createBasicParameter(std::string currentElement, std::vector<NodeOperator*>&, std::vector<Node*>& params) {
     try {
-        int nb = stoi(currentElement);
+        int nb = std::stoi(currentElement);
         params.push_back(new NodeConstant(nb));
-    } catch (invalid_argument const &) {
+    } catch (std::invalid_argument const&) {
         int position = -1;
         for (unsigned int i = 0; i < listOfVariables.size(); i++)
             if (listOfVariables[i] == currentElement) {
