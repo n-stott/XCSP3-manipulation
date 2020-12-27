@@ -65,7 +65,7 @@ include_directories(
 add_library(${LIBRARY_NAME} STATIC ${LIB_SOURCES} ${LIB_HEADERS})
 #add_library(${LIBRARY_NAME} SHARED ${LIB_SOURCES} ${LIB_HEADERS})
 target_link_libraries(${LIBRARY_NAME} ${LIBXML2_LIBRARIES})
-target_compile_options(${LIBRARY_NAME} PRIVATE -Werror -Wall -Wextra -Werror -pedantic -Wundef -Wcast-align -Wcast-qual -Wold-style-cast -Wdouble-promotion)
+target_compile_options(${LIBRARY_NAME} PRIVATE -g -Werror -Wall -Wextra -Werror -pedantic -Wundef -Wcast-align -Wcast-qual -Wold-style-cast -Wdouble-promotion)
 
 set_target_properties(${LIBRARY_NAME} PROPERTIES
         VERSION ${VERSION}
@@ -77,6 +77,6 @@ set(APPLICATION_NAME samplesXcsp3)
 add_executable(${APPLICATION_NAME} ${APP_SOURCES})
 target_link_libraries(${APPLICATION_NAME} ${LIBRARY_NAME} ${LIBXML2_LIBRARIES})
 target_include_directories(${LIBRARY_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
-target_compile_options(${APPLICATION_NAME} PRIVATE -Werror -Wall -Wextra -Werror -pedantic -Wundef -Wcast-align -Wcast-qual -Wold-style-cast -Wdouble-promotion)
+target_compile_options(${APPLICATION_NAME} PRIVATE -g -Werror -Wall -Wextra -Werror -pedantic -Wundef -Wcast-align -Wcast-qual -Wold-style-cast -Wdouble-promotion)
 
 
