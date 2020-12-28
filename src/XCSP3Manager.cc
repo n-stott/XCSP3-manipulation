@@ -346,14 +346,14 @@ void XCSP3Manager::newConstraintIntension(XConstraintIntension* constraint) {
     }
 
     //std::cout << "ROOT1= " << constraint->function << std::endl;
-    Tree* tree = new Tree(constraint->function);
+    std::unique_ptr<Tree> tree(new Tree(constraint->function));
     tree->canonize();
 
     //std::cout << "ROOT2= " ; tree->prefixe();std::cout << std::endl;
-    if (callback->recognizeSpecialIntensionCases && recognizePrimitives(constraint->id, tree))
+    if (callback->recognizeSpecialIntensionCases && recognizePrimitives(constraint->id, tree.get()))
         return;
 
-    callback->buildConstraintIntension(constraint->id, tree);
+    callback->buildConstraintIntension(constraint->id, tree.get());
 }
 
 //--------------------------------------------------------------------------------------

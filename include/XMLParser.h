@@ -37,6 +37,7 @@
 #include <fstream>
 #include <iostream>
 #include <map>
+#include <memory>
 #include <sstream>
 #include <stdexcept>
 #include <string>
@@ -293,7 +294,7 @@ namespace XCSP3Core {
             std::string id, classes;
             std::vector<int> sizes;
 
-            ArrayTagAction(XMLParser* parser, std::string name) : TagAction(parser, name), varArray(NULL), domain(NULL) {}
+            ArrayTagAction(XMLParser* parser, std::string name) : TagAction(parser, name), varArray(), domain(NULL) {}
 
             void beginTag(const AttributeList& attributes) override;
             void endTag() override;

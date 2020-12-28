@@ -130,7 +130,7 @@ void Tree::closeOperator(std::vector<NodeOperator*>& stack, std::vector<Node*>& 
 void Tree::createBasicParameter(std::string currentElement, std::vector<NodeOperator*>&, std::vector<Node*>& params) {
     try {
         int nb = std::stoi(currentElement);
-        params.push_back(new NodeConstant(nb));
+        params.push_back(globalNodePool.make<NodeConstant>(nb));
     } catch (std::invalid_argument const&) {
         int position = -1;
         for (unsigned int i = 0; i < listOfVariables.size(); i++)
@@ -142,6 +142,6 @@ void Tree::createBasicParameter(std::string currentElement, std::vector<NodeOper
             listOfVariables.push_back(currentElement);
             position = listOfVariables.size() - 1;
         }
-        params.push_back(new NodeVariable(currentElement));
+        params.push_back(globalNodePool.make<NodeVariable>(currentElement));
     }
 }
