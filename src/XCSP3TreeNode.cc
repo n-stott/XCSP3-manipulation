@@ -57,139 +57,115 @@ Expr XCSP3Core::arithmeticInversion(Expr type) {
 }
 
 std::string XCSP3Core::operatorToString(Expr op) {
-    if (op == Expr::NEG)
-        return "neg";
-    if (op == Expr::ABS)
-        return "abs";
+    if (op == Expr::NEG) return "neg";
+    if (op == Expr::ABS) return "abs";
 
-    if (op == Expr::ADD)
-        return "add";
-    if (op == Expr::SUB)
-        return "sub";
-    if (op == Expr::MUL)
-        return "mul";
-    if (op == Expr::DIV)
-        return "div";
-    if (op == Expr::MOD)
-        return "mod";
+    if (op == Expr::ADD) return "add";
+    if (op == Expr::SUB) return "sub";
+    if (op == Expr::MUL) return "mul";
+    if (op == Expr::DIV) return "div";
+    if (op == Expr::MOD) return "mod";
 
-    if (op == Expr::SQR)
-        return "sqr";
-    if (op == Expr::POW)
-        return "pow";
+    if (op == Expr::SQR) return "sqr";
+    if (op == Expr::POW) return "pow";
 
-    if (op == Expr::MIN)
-        return "min";
-    if (op == Expr::MAX)
-        return "max";
+    if (op == Expr::MIN) return "min";
+    if (op == Expr::MAX) return "max";
 
-    if (op == Expr::DIST)
-        return "dist";
+    if (op == Expr::DIST) return "dist";
 
-    if (op == Expr::LE)
-        return "le";
-    if (op == Expr::LT)
-        return "lt";
-    if (op == Expr::GE)
-        return "ge";
-    if (op == Expr::GT)
-        return "gt";
+    if (op == Expr::LE) return "le";
+    if (op == Expr::LT) return "lt";
+    if (op == Expr::GE) return "ge";
+    if (op == Expr::GT) return "gt";
 
-    if (op == Expr::NE)
-        return "ne";
-    if (op == Expr::EQ)
-        return "eq";
+    if (op == Expr::NE) return "ne";
+    if (op == Expr::EQ) return "eq";
 
-    if (op == Expr::NOT)
-        return "not";
-    if (op == Expr::AND)
-        return "and";
-    if (op == Expr::OR)
-        return "or";
-    if (op == Expr::XOR)
-        return "xor";
-    if (op == Expr::IMP)
-        return "imp";
-    if (op == Expr::IF)
-        return "if";
-    if (op == Expr::IFF)
-        return "iff";
+    if (op == Expr::NOT) return "not";
+    if (op == Expr::AND) return "and";
+    if (op == Expr::OR) return "or";
+    if (op == Expr::XOR) return "xor";
+    if (op == Expr::IMP) return "imp";
+    if (op == Expr::IF) return "if";
+    if (op == Expr::IFF) return "iff";
 
-    if (op == Expr::IN)
-        return "in";
-    if (op == Expr::NOTIN)
-        return "notin";
-    if (op == Expr::SET)
-        return "set";
+    if (op == Expr::IN) return "in";
+    if (op == Expr::NOTIN) return "notin";
+    if (op == Expr::SET) return "set";
     //assert(false);
     return "oundef";
 }
 
-NodeOperator* createNodeOperator(std::string op) {
+Expr XCSP3Core::stringToOperator(const std::string& op) {
+    if (op == "neg") return Expr::NEG;
+    if (op == "abs") return Expr::ABS;
+    if (op == "add") return Expr::ADD;
+    if (op == "sub") return Expr::SUB;
+    if (op == "mul") return Expr::MUL;
+    if (op == "div") return Expr::DIV;
+    if (op == "mod") return Expr::MOD;
+    if (op == "sqr") return Expr::SQR;
+    if (op == "pow") return Expr::POW;
+    if (op == "min") return Expr::MIN;
+    if (op == "max") return Expr::MAX;
+    if (op == "dist") return Expr::DIST;
+    if (op == "le") return Expr::LE;
+    if (op == "lt") return Expr::LT;
+    if (op == "ge") return Expr::GE;
+    if (op == "gt") return Expr::GT;
+    if (op == "ne") return Expr::NE;
+    if (op == "eq") return Expr::EQ;
+    if (op == "not") return Expr::NOT;
+    if (op == "and") return Expr::AND;
+    if (op == "or") return Expr::OR;
+    if (op == "xor") return Expr::XOR;
+    if (op == "imp") return Expr::IMP;
+    if (op == "if") return Expr::IF;
+    if (op == "iff") return Expr::IFF;
+    if (op == "in") return Expr::IN;
+    if (op == "notin") return Expr::NOTIN;
+    if (op == "set") return Expr::SET;
+    return Expr::UNDEF;
+}
+
+NodeOperator* createNodeOperator(Expr op) {
     NodeOperator* tmp = nullptr;
-    if (op == "neg")
-        tmp = new NodeNeg();
-    if (op == "abs")
-        tmp = new NodeAbs();
+    if (op == Expr::NEG) tmp = new NodeNeg();
+    if (op == Expr::ABS) tmp = new NodeAbs();
 
-    if (op == "add")
-        tmp = new NodeAdd();
-    if (op == "sub")
-        tmp = new NodeSub();
-    if (op == "mul")
-        tmp = new NodeMult();
-    if (op == "div")
-        tmp = new NodeDiv();
-    if (op == "mod")
-        tmp = new NodeMod();
+    if (op == Expr::ADD) tmp = new NodeAdd();
+    if (op == Expr::SUB) tmp = new NodeSub();
+    if (op == Expr::MUL) tmp = new NodeMult();
+    if (op == Expr::DIV) tmp = new NodeDiv();
+    if (op == Expr::MOD) tmp = new NodeMod();
 
-    if (op == "sqr")
-        tmp = new NodeSquare();
-    if (op == "pow")
-        tmp = new NodePow();
+    if (op == Expr::SQR) tmp = new NodeSquare();
+    if (op == Expr::POW) tmp = new NodePow();
 
-    if (op == "min")
-        tmp = new NodeMin();
-    if (op == "max")
-        tmp = new NodeMax();
-    if (op == "dist")
-        tmp = new NodeDist();
+    if (op == Expr::MIN) tmp = new NodeMin();
+    if (op == Expr::MAX) tmp = new NodeMax();
+    if (op == Expr::DIST) tmp = new NodeDist();
 
-    if (op == "le")
-        tmp = new NodeLE();
-    if (op == "lt")
-        tmp = new NodeLT();
-    if (op == "ge")
-        tmp = new NodeGE();
-    if (op == "gt")
-        tmp = new NodeGT();
+    if (op == Expr::LE) tmp = new NodeLE();
+    if (op == Expr::LT) tmp = new NodeLT();
+    if (op == Expr::GE) tmp = new NodeGE();
+    if (op == Expr::GT) tmp = new NodeGT();
 
-    if (op == "ne")
-        tmp = new NodeNE();
-    if (op == "eq")
-        tmp = new NodeEQ();
+    if (op == Expr::NE) tmp = new NodeNE();
+    if (op == Expr::EQ) tmp = new NodeEQ();
 
-    if (op == "not")
-        tmp = new NodeNot();
-    if (op == "and")
-        tmp = new NodeAnd();
-    if (op == "or")
-        tmp = new NodeOr();
-    if (op == "xor")
-        tmp = new NodeXor();
-    if (op == "imp")
-        tmp = new NodeImp();
-    if (op == "if")
-        tmp = new NodeIf();
-    if (op == "iff")
-        tmp = new NodeIff();
+    if (op == Expr::NOT) tmp = new NodeNot();
+    if (op == Expr::AND) tmp = new NodeAnd();
+    if (op == Expr::OR) tmp = new NodeOr();
+    if (op == Expr::XOR) tmp = new NodeXor();
+    if (op == Expr::IMP) tmp = new NodeImp();
+    if (op == Expr::IF) tmp = new NodeIf();
+    if (op == Expr::IFF) tmp = new NodeIff();
 
-    if (op == "in")
-        tmp = new NodeIn();
-    if (op == "notin")
-        tmp = new NodeNotIn();
-    if (op == "set")
-        tmp = new NodeSet();
+    if (op == Expr::IN) tmp = new NodeIn();
+    if (op == Expr::NOTIN) tmp = new NodeNotIn();
+    if (op == Expr::SET) tmp = new NodeSet();
 
     assert(tmp != nullptr);
 
@@ -197,29 +173,36 @@ NodeOperator* createNodeOperator(std::string op) {
 }
 
 Expr XCSP3Core::logicalInversion(Expr type) {
-    return type == Expr::LT ? Expr::GE
-                            : type == Expr::LE ? Expr::GT
-                                               : type == Expr::GE ? Expr::LT
-                                                                  : type == Expr::GT ? Expr::LE
-                                                                                     : type == Expr::NE ? Expr::EQ
-                                                                                                        : type == Expr::EQ ? Expr::NE
-                                                                                                                           : type == Expr::IN ? Expr::NOTIN
-                                                                                                                                              : type ==
-                                                                                                                                                        Expr::NOTIN
-                                                                                                                                                    ? Expr::IN
-                                                                                                                                                    : type ==
-                                                                                                                                                              Expr::SUBSET
-                                                                                                                                                          ? Expr::SUPSEQ
-                                                                                                                                                          : type ==
-                                                                                                                                                                    Expr::SUBSEQ
-                                                                                                                                                                ? Expr::SUPSET
-                                                                                                                                                                : type ==
-                                                                                                                                                                          Expr::SUPSEQ
-                                                                                                                                                                      ? Expr::SUBSET
-                                                                                                                                                                      : type ==
-                                                                                                                                                                                Expr::SUPSET
-                                                                                                                                                                            ? Expr::SUBSEQ
-                                                                                                                                                                            : Expr::UNDEF;
+    switch (type) {
+    case Expr::LT:
+        return Expr::GE;
+    case Expr::LE:
+        return Expr::GT;
+    case Expr::GE:
+        return Expr::LT;
+    case Expr::GT:
+        return Expr::LE;
+    case Expr::NE:
+        return Expr::EQ;
+    case Expr::EQ:
+        return Expr::NE;
+    case Expr::IN:
+        return Expr::NOTIN;
+    case Expr::NOTIN:
+        return Expr::IN;
+    case Expr::SUBSET:
+        return Expr::SUPSEQ;
+    case Expr::SUBSEQ:
+        return Expr::SUPSET;
+    case Expr::SUPSET:
+        return Expr::SUBSEQ;
+    case Expr::SUPSEQ:
+        return Expr::SUBSET;
+    default:
+        assert(false);
+        break;
+    }
+    return Expr::UNDEF;
 }
 
 int equalNodes(Node* a, Node* b) { // return -1 if a<0, 0 if a=b, +1 si a>b
@@ -286,7 +269,7 @@ Node* NodeOperator::canonize() {
         Node* tmp = newParams[0];
         newParams[0] = newParams[1];
         newParams[1] = tmp;
-        return createNodeOperator(operatorToString(newType))->addParameters(newParams)->canonize();
+        return createNodeOperator(newType)->addParameters(newParams)->canonize();
     }
 
     // Now, some specific reformulation rules are applied
@@ -312,7 +295,7 @@ Node* NodeOperator::canonize() {
         return tmp->parameters[0]->canonize();
 
     if (newType == Expr::NOT && logicalInversion(newParams[0]->type) != Expr::UNDEF) // not(lt(...)) becomes ge(...), not(eq(...)) becomes ne(...), and
-        return createNodeOperator(operatorToString(logicalInversion(newParams[0]->type)))->addParameters(tmp->parameters)->canonize();
+        return createNodeOperator(logicalInversion(newParams[0]->type))->addParameters(tmp->parameters)->canonize();
 
     if (newParams.size() == 1 && (newType == Expr::ADD || newType == Expr::MUL || newType == Expr::MIN || newType == Expr::MAX || newType == Expr::EQ || newType == Expr::AND || newType == Expr::OR || newType == Expr::XOR || newType == Expr::IFF)) // certainly can happen during the canonization process
         return newParams[0];
@@ -336,7 +319,7 @@ Node* NodeOperator::canonize() {
     //le(add(y[4],5),7) -> le(y[4],2)
     if (pattern(this, "le(add(y[4],5),7)", operators, constants, variables, true)) {
         if (newType == Expr::EQ || newType == Expr::NE || newType == Expr::LE || newType == Expr::LT)
-            return createNodeOperator(operatorToString(newType))
+            return createNodeOperator(newType)
                 ->addParameter(new NodeVariable(variables[0]))
                 ->addParameter(new NodeConstant(constants[1] - constants[0]))
                 ->canonize();
@@ -345,7 +328,7 @@ Node* NodeOperator::canonize() {
     //le(8,add(5,y[4])) -> le(3, y[4])
     if (pattern(this, "le(8,add(y[4],5))", operators, constants, variables, true)) {
         if (newType == Expr::EQ || newType == Expr::NE || newType == Expr::LE || newType == Expr::LT)
-            return createNodeOperator(operatorToString(newType))
+            return createNodeOperator(newType)
                 ->addParameter(new NodeConstant(constants[0] - constants[1]))
                 ->addParameter(new NodeVariable(variables[0]))
                 ->canonize();
@@ -354,7 +337,7 @@ Node* NodeOperator::canonize() {
     //le(8,add(5,y[4]))->le(3, y[4])
     if (pattern(this, "le(8,add(5,y[4]))", operators, constants, variables, true)) {
         if (newType == Expr::EQ || newType == Expr::NE || newType == Expr::LE || newType == Expr::LT)
-            return createNodeOperator(operatorToString(newType))
+            return createNodeOperator(newType)
                 ->addParameter(new NodeConstant(constants[0] - constants[1]))
                 ->addParameter(new NodeVariable(variables[0]))
                 ->canonize();
@@ -389,7 +372,7 @@ Node* NodeOperator::canonize() {
 
                 for (unsigned int j = i + 1; j < newParams.size(); j++)
                     list.push_back(newParams[j]);
-                return ((createNodeOperator(operatorToString(newType)))->addParameters(list))->canonize();
+                return ((createNodeOperator(newType))->addParameters(list))->canonize();
             }
         }
     }
@@ -400,15 +383,15 @@ Node* NodeOperator::canonize() {
         if (newParams[0]->type == Expr::SUB && newParams[1]->type == Expr::SUB) {
             Node* a = (new NodeAdd())->addParameter(n0->parameters[0])->addParameter(n1->parameters[1]);
             Node* b = (new NodeAdd())->addParameter(n1->parameters[0])->addParameter(n0->parameters[1]);
-            return (createNodeOperator(operatorToString(newType)))->addParameter(a)->addParameter(b)->canonize();
+            return (createNodeOperator(newType))->addParameter(a)->addParameter(b)->canonize();
         } else if (newParams[1]->type == Expr::SUB) {
             Node* a = (new NodeAdd())->addParameter(newParams[0])->addParameter(n1->parameters[1]);
             Node* b = n1->parameters[0];
-            return (createNodeOperator(operatorToString(newType)))->addParameter(a)->addParameter(b)->canonize();
+            return (createNodeOperator(newType))->addParameter(a)->addParameter(b)->canonize();
         } else if (n0 != nullptr && n0->op == "sub") {
             Node* a = n0->parameters[0];
             Node* b = (new NodeAdd())->addParameter(newParams[1])->addParameter(n0->parameters[1]);
-            return (createNodeOperator(operatorToString(newType)))->addParameter(a)->addParameter(b)->canonize();
+            return (createNodeOperator(newType))->addParameter(a)->addParameter(b)->canonize();
         }
 
         // next, we remove some add when possible
@@ -416,7 +399,7 @@ Node* NodeOperator::canonize() {
             if (n0->parameters.size() == 2 && n0->parameters[0]->type == Expr::VAR && n0->parameters[1]->type == Expr::DECIMAL) {
                 NodeConstant* c1 = dynamic_cast<NodeConstant*>(newParams[1]);
                 NodeConstant* c2 = dynamic_cast<NodeConstant*>(n0->parameters[1]);
-                return (createNodeOperator(operatorToString(newType)))->addParameter(n0->parameters[0])->addParameter(new NodeConstant(c1->val - c2->val))->canonize();
+                return (createNodeOperator(newType))->addParameter(n0->parameters[0])->addParameter(new NodeConstant(c1->val - c2->val))->canonize();
             }
         }
 
@@ -427,12 +410,12 @@ Node* NodeOperator::canonize() {
                 (c2 = dynamic_cast<NodeConstant*>(n1->parameters[1])) != nullptr) {
                 c1->val = c1->val - c2->val;
                 newParams[1] = n1->parameters[0];
-                return (createNodeOperator(operatorToString(newType)))->addParameters(newParams)->canonize();
+                return (createNodeOperator(newType))->addParameters(newParams)->canonize();
             }
         }
     }
 
-    return (createNodeOperator(operatorToString(newType)))->addParameters(newParams);
+    return (createNodeOperator(newType))->addParameters(newParams);
 }
 
 // -----------------------------------------

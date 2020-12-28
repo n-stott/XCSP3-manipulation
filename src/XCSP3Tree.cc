@@ -98,10 +98,10 @@ Node* Tree::fromStringToTree(std::string current) {
     return params.back();
 }
 
-extern NodeOperator* createNodeOperator(std::string currentElement);
+extern NodeOperator* createNodeOperator(Expr e);
 void Tree::createOperator(std::string currentElement, std::vector<NodeOperator*>& stack, std::vector<Node*>& params) {
 
-    NodeOperator* tmp = createNodeOperator(currentElement);
+    NodeOperator* tmp = createNodeOperator(stringToOperator(currentElement));
     if (tmp == nullptr)
         throw std::runtime_error("Intension constraint. Unknown operator: " + currentElement);
     stack.push_back(tmp);

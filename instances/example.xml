@@ -262,7 +262,7 @@ x[2]   x[3] </list>
 
 <circuit>
   <list startIndex='1'>x[0..5]</list>
-  <size>x[0..1]</size>
+  <size>x[0]</size>
 </circuit>
 
 <cumulative>

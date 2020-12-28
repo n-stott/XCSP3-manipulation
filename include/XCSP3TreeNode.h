@@ -31,6 +31,8 @@
 #include <cmath>
 #include <iostream>
 #include <map>
+#include <memory>
+#include <utility>
 #include <vector>
 
 namespace XCSP3Core {
@@ -109,6 +111,7 @@ namespace XCSP3Core {
     Expr arithmeticInversion(Expr type);
 
     std::string operatorToString(Expr op);
+    Expr stringToOperator(const std::string& op);
 
     Expr logicalInversion(Expr type);
 
@@ -116,6 +119,17 @@ namespace XCSP3Core {
 
     bool isPredicateOperator(Expr type);
     //-------------------------------------
+
+    class Node;
+    struct NodePool {
+        std::vector<std::unique_ptr<Node>> pool_;
+
+        template <typename T, typename... U>
+        T* make(U&&... us) {
+            pool_.emplace_back(new T*(std::forward<U>(us)...));
+            return pool_.back().get();
+        }
+    };
 
     class Node {
         friend class Intension;
