@@ -137,7 +137,7 @@ namespace XCSP3Core {
          *
          * @param id the id (name) of the array variable
          */
-        virtual void beginVariableArray(std::string id) { (void)id; } //beginArray
+        virtual void beginVariableArray(const std::string& id) { (void)id; } //beginArray
 
         /**
          * End of parsing an array of variables
@@ -168,7 +168,7 @@ namespace XCSP3Core {
          *
          * @param id the id (name) of the group
          */
-        virtual void beginGroup(std::string id) { (void)id; }
+        virtual void beginGroup(const std::string& id) { (void)id; }
 
         /**
          * Retrieve the  arguments of a group/slide  of constraints
@@ -215,7 +215,7 @@ namespace XCSP3Core {
          * @param id the id (name) of the slide
          * @param circular is the slide circular?
          */
-        virtual void beginSlide(std::string id, bool circular) {
+        virtual void beginSlide(const std::string& id, bool circular) {
             (void)id;
             (void)circular;
         }
@@ -267,7 +267,7 @@ namespace XCSP3Core {
          * @param minValue the minimum value in the range
          * @param maxValue the maxnimum value in the range
          */
-        virtual void buildVariableInteger(std::string id, int minValue, int maxValue) = 0;
+        virtual void buildVariableInteger(const std::string& id, int minValue, int maxValue) = 0;
 
         /**
          * The callback function related to an integer variable with a domain consisting in a sequence of integers
@@ -278,7 +278,7 @@ namespace XCSP3Core {
          * @param id the id (name) of the group
          * @param values the set of values in the domain
         */
-        virtual void buildVariableInteger(std::string id, std::vector<int>& values) = 0;
+        virtual void buildVariableInteger(const std::string& id, std::vector<int>& values) = 0;
 
         /**
          * All callbacks related to constraints.
@@ -298,7 +298,7 @@ namespace XCSP3Core {
          * @param id
          * @param list
          */
-        virtual void buildConstraintTrue(std::string id) { (void)id; }
+        virtual void buildConstraintTrue(const std::string& id) { (void)id; }
 
         /**
          * The special constraint always false
@@ -306,7 +306,7 @@ namespace XCSP3Core {
          * @param id
          * @param list
          */
-        virtual void buildConstraintFalse(std::string id) {
+        virtual void buildConstraintFalse(const std::string& id) {
             std::cout << "c constraint " + id + " is always false (see during parsing)\n";
             std::cout << "s UNSATISFIABLE\n";
         }
@@ -331,7 +331,7 @@ namespace XCSP3Core {
          * @param support  support or conflicts?
          * @param hasStar is the tuples contain star values?
          */
-        virtual void buildConstraintExtension(std::string id, std::vector<XVariable*> list, std::vector<std::vector<int>>& tuples, bool support, bool hasStar) {
+        virtual void buildConstraintExtension(const std::string& id, std::vector<XVariable*> list, std::vector<std::vector<int>>& tuples, bool support, bool hasStar) {
             (void)id;
             (void)list;
             (void)tuples;
@@ -357,7 +357,7 @@ namespace XCSP3Core {
          * @param support  support or conflicts?
          * @param hasStar is the tuples contain star values?
          */
-        virtual void buildConstraintExtension(std::string id, XVariable* variable, std::vector<int>& tuples, bool support, bool hasStar) {
+        virtual void buildConstraintExtension(const std::string& id, XVariable* variable, std::vector<int>& tuples, bool support, bool hasStar) {
             (void)id;
             (void)variable;
             (void)tuples;
@@ -377,7 +377,7 @@ namespace XCSP3Core {
          * @param support  support or conflicts?
          * @param hasStar is the tuples contain star values?
          */
-        virtual void buildConstraintExtensionAs(std::string id, std::vector<XVariable*> list, bool support, bool hasStar) {
+        virtual void buildConstraintExtensionAs(const std::string& id, std::vector<XVariable*> list, bool support, bool hasStar) {
             (void)id;
             (void)list;
             (void)support;
@@ -398,7 +398,7 @@ namespace XCSP3Core {
          * @param id the id (name) of the constraint
          * @param expr the expression
          */
-        virtual void buildConstraintIntension(std::string id, std::string expr) {
+        virtual void buildConstraintIntension(const std::string& id, std::string expr) {
             (void)id;
             (void)expr;
             throw std::runtime_error("intension constraint is not yet supported");
@@ -414,7 +414,7 @@ namespace XCSP3Core {
          * @param id the id (name) of the constraint
          * @param tree the canonized form related to the tree
          */
-        virtual void buildConstraintIntension(std::string id, Tree* tree) {
+        virtual void buildConstraintIntension(const std::string& id, Tree* tree) {
             (void)id;
             (void)tree;
             throw std::runtime_error("intension constraint using a tree is not yet supported (choose the right way)");
@@ -431,7 +431,7 @@ namespace XCSP3Core {
          * @param k the constant
          * @param y the other variable
          */
-        virtual void buildConstraintPrimitive(std::string id, OrderType op, XVariable* x, int k, XVariable* y) {
+        virtual void buildConstraintPrimitive(const std::string& id, OrderType op, XVariable* x, int k, XVariable* y) {
             (void)id;
             (void)op;
             (void)x;
@@ -451,7 +451,7 @@ namespace XCSP3Core {
          * @param x the variable
          * @param k the constant
          */
-        virtual void buildConstraintPrimitive(std::string id, OrderType op, XVariable* x, int k) {
+        virtual void buildConstraintPrimitive(const std::string& id, OrderType op, XVariable* x, int k) {
             (void)id;
             (void)op;
             (void)x;
@@ -472,7 +472,7 @@ namespace XCSP3Core {
          * @param max the constant
          *
          */
-        virtual void buildConstraintPrimitive(std::string id, XVariable* x, bool in, int min, int max) {
+        virtual void buildConstraintPrimitive(const std::string& id, XVariable* x, bool in, int min, int max) {
             (void)id;
             (void)x;
             (void)in;
@@ -490,7 +490,7 @@ namespace XCSP3Core {
          * @param id the id (name) of the constraint
          * @param x,y,z  the variables
          */
-        virtual void buildConstraintMult(std::string id, XVariable* x, XVariable* y, XVariable* z) {
+        virtual void buildConstraintMult(const std::string& id, XVariable* x, XVariable* y, XVariable* z) {
             (void)id;
             (void)x;
             (void)y;
@@ -524,7 +524,7 @@ namespace XCSP3Core {
          * @param final the set of final nodes
          * @param transitions the set of transitions
          */
-        virtual void buildConstraintRegular(std::string id, std::vector<XVariable*>& list, std::string start, std::vector<std::string>& final, std::vector<XTransition>& transitions) {
+        virtual void buildConstraintRegular(const std::string& id, std::vector<XVariable*>& list, std::string start, std::vector<std::string>& final, std::vector<XTransition>& transitions) {
             (void)id;
             (void)list;
             (void)start;
@@ -551,7 +551,7 @@ namespace XCSP3Core {
          * @param list the scope of the constraint
          * @param transitions the set of transitions
          */
-        virtual void buildConstraintMDD(std::string id, std::vector<XVariable*>& list, std::vector<XTransition>& transitions) {
+        virtual void buildConstraintMDD(const std::string& id, std::vector<XVariable*>& list, std::vector<XTransition>& transitions) {
             (void)id;
             (void)list;
             (void)transitions;
@@ -574,7 +574,7 @@ namespace XCSP3Core {
          * @param id the id (name) of the constraint
          * @param list the scope of the constraint
          */
-        virtual void buildConstraintAlldifferent(std::string id, std::vector<XVariable*>& list) {
+        virtual void buildConstraintAlldifferent(const std::string& id, std::vector<XVariable*>& list) {
             (void)id;
             (void)list;
             throw std::runtime_error("AllDiff constraint is not yet supported");
@@ -592,7 +592,7 @@ namespace XCSP3Core {
          * @param id the id (name) of the constraint
          * @param list the trees of the constraint
          */
-        virtual void buildConstraintAlldifferent(std::string id, std::vector<Tree*>& list) {
+        virtual void buildConstraintAlldifferent(const std::string& id, std::vector<Tree*>& list) {
             (void)id;
             (void)list;
             throw std::runtime_error("AllDiff constraint with expression is not yet supported");
@@ -612,7 +612,7 @@ namespace XCSP3Core {
          * @param list the scope of the constraint
          * @param except the set of excepted values
          */
-        virtual void buildConstraintAlldifferentExcept(std::string id, std::vector<XVariable*>& list, std::vector<int>& except) {
+        virtual void buildConstraintAlldifferentExcept(const std::string& id, std::vector<XVariable*>& list, std::vector<int>& except) {
             (void)id;
             (void)list;
             (void)except;
@@ -632,7 +632,7 @@ namespace XCSP3Core {
          * @param id the id (name) of the constraint
          * @param lists the set of lists (not the scope, a variable may appear at different place!)
          */
-        virtual void buildConstraintAlldifferentList(std::string id, std::vector<std::vector<XVariable*>>& lists) {
+        virtual void buildConstraintAlldifferentList(const std::string& id, std::vector<std::vector<XVariable*>>& lists) {
             (void)id;
             (void)lists;
             throw std::runtime_error("AllDiff list constraint  is not yet supported");
@@ -654,7 +654,7 @@ namespace XCSP3Core {
          * @param id the id (name) of the constraint
          * @param matrix the matrix (not the scope, a variable may appear at different place!)
          */
-        virtual void buildConstraintAlldifferentMatrix(std::string id, std::vector<std::vector<XVariable*>>& matrix) {
+        virtual void buildConstraintAlldifferentMatrix(const std::string& id, std::vector<std::vector<XVariable*>>& matrix) {
             (void)id;
             (void)matrix;
             throw std::runtime_error("AllDiff matrix constraint  is not yet supported");
@@ -673,7 +673,7 @@ namespace XCSP3Core {
          * @param list the scope of the constraint
          *
          */
-        virtual void buildConstraintAllEqual(std::string id, std::vector<XVariable*>& list) {
+        virtual void buildConstraintAllEqual(const std::string& id, std::vector<XVariable*>& list) {
             (void)id;
             (void)list;
             throw std::runtime_error("Allequal constraint  is not yet supported");
@@ -694,7 +694,7 @@ namespace XCSP3Core {
          * @param id the id (name) of the constraint
          * @param list the scope of the constraint
          */
-        virtual void buildConstraintNotAllEqual(std::string id, std::vector<XVariable*>& list) {
+        virtual void buildConstraintNotAllEqual(const std::string& id, std::vector<XVariable*>& list) {
             (void)id;
             (void)list;
             throw std::runtime_error("NotAllequal constraint  is not yet supported");
@@ -716,7 +716,7 @@ namespace XCSP3Core {
          * @param list the scope of the constraint
          * @param order the order LT, LE...
          */
-        virtual void buildConstraintOrdered(std::string id, std::vector<XVariable*>& list, OrderType order) {
+        virtual void buildConstraintOrdered(const std::string& id, std::vector<XVariable*>& list, OrderType order) {
             (void)id;
             (void)list;
             (void)order;
@@ -739,7 +739,7 @@ namespace XCSP3Core {
          * @param list the scope of the constraint
          * @param order the order LT, LE...
          */
-        virtual void buildConstraintOrdered(std::string id, std::vector<XVariable*>& list, std::vector<int>& lengths, OrderType order) {
+        virtual void buildConstraintOrdered(const std::string& id, std::vector<XVariable*>& list, std::vector<int>& lengths, OrderType order) {
             (void)id;
             (void)list;
             (void)lengths;
@@ -763,7 +763,7 @@ namespace XCSP3Core {
          * @param lists the set of lists (not the scope, a variable may appear at different place!)
          * @param order the order LT, LE...
          */
-        virtual void buildConstraintLex(std::string id, std::vector<std::vector<XVariable*>>& lists, OrderType order) {
+        virtual void buildConstraintLex(const std::string& id, std::vector<std::vector<XVariable*>>& lists, OrderType order) {
             (void)id;
             (void)lists;
             (void)order;
@@ -789,7 +789,7 @@ namespace XCSP3Core {
         * @param matrix the matrix (not the scope, a variable may appear at different place!)
         * @param order the order LT, LE...
         */
-        virtual void buildConstraintLexMatrix(std::string id, std::vector<std::vector<XVariable*>>& matrix, OrderType order) {
+        virtual void buildConstraintLexMatrix(const std::string& id, std::vector<std::vector<XVariable*>>& matrix, OrderType order) {
             (void)id;
             (void)matrix;
             (void)order;
@@ -819,7 +819,7 @@ namespace XCSP3Core {
         * @param coeffs the coefficients (here int)
         * @param cond the condition (See XCondition object)
         */
-        virtual void buildConstraintSum(std::string id, std::vector<XVariable*>& list, std::vector<int>& coeffs, XCondition& cond) {
+        virtual void buildConstraintSum(const std::string& id, std::vector<XVariable*>& list, std::vector<int>& coeffs, XCondition& cond) {
             (void)id;
             (void)list;
             (void)coeffs;
@@ -841,7 +841,7 @@ namespace XCSP3Core {
          * @param list the scope of the constraint
          * @param cond the condition (See XCondition object)
          */
-        virtual void buildConstraintSum(std::string id, std::vector<XVariable*>& list, XCondition& cond) {
+        virtual void buildConstraintSum(const std::string& id, std::vector<XVariable*>& list, XCondition& cond) {
             (void)id;
             (void)list;
             (void)cond;
@@ -864,7 +864,7 @@ namespace XCSP3Core {
          * @param coeffs the coefficients (here XVariable)
          * @param cond the condition (See XCondition object)
          */
-        virtual void buildConstraintSum(std::string id, std::vector<XVariable*>& list, std::vector<XVariable*>& coeffs, XCondition& cond) {
+        virtual void buildConstraintSum(const std::string& id, std::vector<XVariable*>& list, std::vector<XVariable*>& coeffs, XCondition& cond) {
             (void)id;
             (void)list;
             (void)coeffs;
@@ -885,7 +885,7 @@ namespace XCSP3Core {
          * @param list the different trees
          * @param cond the condition (See XCondition object)
          */
-        virtual void buildConstraintSum(std::string id, std::vector<Tree*>& trees, XCondition& cond) {
+        virtual void buildConstraintSum(const std::string& id, std::vector<Tree*>& trees, XCondition& cond) {
             (void)id;
             (void)trees;
             (void)cond;
@@ -907,7 +907,7 @@ namespace XCSP3Core {
          * @param coefs the coefs.
          * @param cond the condition (See XCondition object)
          */
-        virtual void buildConstraintSum(std::string id, std::vector<Tree*>& trees, std::vector<int>& coefs, XCondition& cond) {
+        virtual void buildConstraintSum(const std::string& id, std::vector<Tree*>& trees, std::vector<int>& coefs, XCondition& cond) {
             (void)id;
             (void)trees;
             (void)coefs;
@@ -937,7 +937,7 @@ namespace XCSP3Core {
          * @param value the value
          * @param k the maximum number of variables that can take the value
          */
-        virtual void buildConstraintAtMost(std::string id, std::vector<XVariable*>& list, int value, int k) {
+        virtual void buildConstraintAtMost(const std::string& id, std::vector<XVariable*>& list, int value, int k) {
             (void)id;
             (void)list;
             (void)value;
@@ -966,7 +966,7 @@ namespace XCSP3Core {
          * @param value the value
          * @param k the minimum number of variables that can take the value
          */
-        virtual void buildConstraintAtLeast(std::string id, std::vector<XVariable*>& list, int value, int k) {
+        virtual void buildConstraintAtLeast(const std::string& id, std::vector<XVariable*>& list, int value, int k) {
             (void)id;
             (void)list;
             (void)value;
@@ -994,7 +994,7 @@ namespace XCSP3Core {
          * @param value the value
          * @param k the exact number of variables that can take the value
          */
-        virtual void buildConstraintExactlyK(std::string id, std::vector<XVariable*>& list, int value, int k) {
+        virtual void buildConstraintExactlyK(const std::string& id, std::vector<XVariable*>& list, int value, int k) {
             (void)id;
             (void)list;
             (void)value;
@@ -1021,7 +1021,7 @@ namespace XCSP3Core {
          * @param value the value
          * @param x the exact number of variables that can take the value (here it is a variable)
          */
-        virtual void buildConstraintExactlyVariable(std::string id, std::vector<XVariable*>& list, int value, XVariable* x) {
+        virtual void buildConstraintExactlyVariable(const std::string& id, std::vector<XVariable*>& list, int value, XVariable* x) {
             (void)id;
             (void)list;
             (void)value;
@@ -1048,7 +1048,7 @@ namespace XCSP3Core {
          * @param value the value
          * @param k
          */
-        virtual void buildConstraintAmong(std::string id, std::vector<XVariable*>& list, std::vector<int>& values, int k) { // TODO AMONG
+        virtual void buildConstraintAmong(const std::string& id, std::vector<XVariable*>& list, std::vector<int>& values, int k) { // TODO AMONG
             (void)id;
             (void)list;
             (void)values;
@@ -1072,7 +1072,7 @@ namespace XCSP3Core {
          * @param k the  number of variables
          * @param xc the condition (see #XCondition)
          */
-        virtual void buildConstraintCount(std::string id, std::vector<XVariable*>& list, std::vector<int>& values, XCondition& xc) {
+        virtual void buildConstraintCount(const std::string& id, std::vector<XVariable*>& list, std::vector<int>& values, XCondition& xc) {
             (void)id;
             (void)list;
             (void)values;
@@ -1096,7 +1096,7 @@ namespace XCSP3Core {
          * @param k the  number of variables
          * @param xc the condition (see #XCondition)
          */
-        virtual void buildConstraintCount(std::string id, std::vector<XVariable*>& list, std::vector<XVariable*>& values, XCondition& xc) {
+        virtual void buildConstraintCount(const std::string& id, std::vector<XVariable*>& list, std::vector<XVariable*>& values, XCondition& xc) {
             (void)id;
             (void)list;
             (void)values;
@@ -1119,7 +1119,7 @@ namespace XCSP3Core {
          * @param except the set of excepted values
          * @param xc the condition (see #XCondition)
          */
-        virtual void buildConstraintNValues(std::string id, std::vector<XVariable*>& list, std::vector<int>& except, XCondition& xc) {
+        virtual void buildConstraintNValues(const std::string& id, std::vector<XVariable*>& list, std::vector<int>& except, XCondition& xc) {
             (void)id;
             (void)list;
             (void)except;
@@ -1140,7 +1140,7 @@ namespace XCSP3Core {
          * @param list the scope of the constraint
          * @param xc the condition (see #XCondition)
          */
-        virtual void buildConstraintNValues(std::string id, std::vector<XVariable*>& list, XCondition& xc) {
+        virtual void buildConstraintNValues(const std::string& id, std::vector<XVariable*>& list, XCondition& xc) {
             (void)id;
             (void)list;
             (void)xc;
@@ -1164,7 +1164,7 @@ namespace XCSP3Core {
          * @param occurs the number of occurences (here int)
          * @param closed is the constraint is closed
          */
-        virtual void buildConstraintCardinality(std::string id, std::vector<XVariable*>& list, std::vector<int> values, std::vector<int>& occurs, bool closed) {
+        virtual void buildConstraintCardinality(const std::string& id, std::vector<XVariable*>& list, std::vector<int> values, std::vector<int>& occurs, bool closed) {
             (void)id;
             (void)list;
             (void)values;
@@ -1191,7 +1191,7 @@ namespace XCSP3Core {
          * @param occurs the number of occurences (here variables)
          * @param closed is the constraint is closed
          */
-        virtual void buildConstraintCardinality(std::string id, std::vector<XVariable*>& list, std::vector<int> values, std::vector<XVariable*>& occurs, bool closed) {
+        virtual void buildConstraintCardinality(const std::string& id, std::vector<XVariable*>& list, std::vector<int> values, std::vector<XVariable*>& occurs, bool closed) {
             (void)id;
             (void)list;
             (void)values;
@@ -1218,7 +1218,7 @@ namespace XCSP3Core {
          * @param occurs the number of occurences (here intervals)
          * @param closed is the constraint is closed
          */
-        virtual void buildConstraintCardinality(std::string id, std::vector<XVariable*>& list, std::vector<int> values, std::vector<XInterval>& occurs, bool closed) {
+        virtual void buildConstraintCardinality(const std::string& id, std::vector<XVariable*>& list, std::vector<int> values, std::vector<XInterval>& occurs, bool closed) {
             (void)id;
             (void)list;
             (void)values;
@@ -1244,7 +1244,7 @@ namespace XCSP3Core {
          * @param occurs the number of occurences (here int)
          * @param closed is the constraint is closed
          */
-        virtual void buildConstraintCardinality(std::string id, std::vector<XVariable*>& list, std::vector<XVariable*> values, std::vector<int>& occurs, bool closed) {
+        virtual void buildConstraintCardinality(const std::string& id, std::vector<XVariable*>& list, std::vector<XVariable*> values, std::vector<int>& occurs, bool closed) {
             (void)id;
             (void)list;
             (void)values;
@@ -1270,7 +1270,7 @@ namespace XCSP3Core {
          * @param occurs the number of occurences (here variables)
          * @param closed is the constraint is closed
          */
-        virtual void buildConstraintCardinality(std::string id, std::vector<XVariable*>& list, std::vector<XVariable*> values, std::vector<XVariable*>& occurs, bool closed) {
+        virtual void buildConstraintCardinality(const std::string& id, std::vector<XVariable*>& list, std::vector<XVariable*> values, std::vector<XVariable*>& occurs, bool closed) {
             (void)id;
             (void)list;
             (void)values;
@@ -1296,7 +1296,7 @@ namespace XCSP3Core {
          * @param occurs the number of occurences (here intervals)
          * @param closed is the constraint is closed
          */
-        virtual void buildConstraintCardinality(std::string id, std::vector<XVariable*>& list, std::vector<XVariable*> values, std::vector<XInterval>& occurs, bool closed) {
+        virtual void buildConstraintCardinality(const std::string& id, std::vector<XVariable*>& list, std::vector<XVariable*> values, std::vector<XInterval>& occurs, bool closed) {
             (void)id;
             (void)list;
             (void)values;
@@ -1322,7 +1322,7 @@ namespace XCSP3Core {
          * @param list the scope of the constraint
          * @param xc the condition (see #XCondition)
          */
-        virtual void buildConstraintMinimum(std::string id, std::vector<XVariable*>& list, XCondition& xc) {
+        virtual void buildConstraintMinimum(const std::string& id, std::vector<XVariable*>& list, XCondition& xc) {
             (void)id;
             (void)list;
             (void)xc;
@@ -1343,7 +1343,7 @@ namespace XCSP3Core {
          * @param list set of expression
          * @param xc the condition (see #XCondition)
          */
-        virtual void buildConstraintMinimum(std::string id, std::vector<Tree*>& list, XCondition& xc) {
+        virtual void buildConstraintMinimum(const std::string& id, std::vector<Tree*>& list, XCondition& xc) {
             (void)id;
             (void)list;
             (void)xc;
@@ -1368,7 +1368,7 @@ namespace XCSP3Core {
          * @param rank ANY, ALL...
          * @param xc the condition (see #XCondition)
          */
-        virtual void buildConstraintMinimum(std::string id, std::vector<XVariable*>& list, XVariable* index, int startIndex, RankType rank, XCondition& xc) {
+        virtual void buildConstraintMinimum(const std::string& id, std::vector<XVariable*>& list, XVariable* index, int startIndex, RankType rank, XCondition& xc) {
             (void)id;
             (void)list;
             (void)index;
@@ -1392,7 +1392,7 @@ namespace XCSP3Core {
          * @param list the scope of the constraint
          * @param xc the condition (see #XCondition)
          */
-        virtual void buildConstraintMaximum(std::string id, std::vector<XVariable*>& list, XCondition& xc) {
+        virtual void buildConstraintMaximum(const std::string& id, std::vector<XVariable*>& list, XCondition& xc) {
             (void)id;
             (void)list;
             (void)xc;
@@ -1413,7 +1413,7 @@ namespace XCSP3Core {
                 * @param list the expressions of the constraint
                 * @param xc the condition (see #XCondition)
                 */
-        virtual void buildConstraintMaximum(std::string id, std::vector<Tree*>& list, XCondition& xc) {
+        virtual void buildConstraintMaximum(const std::string& id, std::vector<Tree*>& list, XCondition& xc) {
             (void)id;
             (void)list;
             (void)xc;
@@ -1438,7 +1438,7 @@ namespace XCSP3Core {
          * @param rank ANY, ALL...
          * @param xc the condition (see #XCondition)
          */
-        virtual void buildConstraintMaximum(std::string id, std::vector<XVariable*>& list, XVariable* index, int startIndex, RankType rank, XCondition& xc) {
+        virtual void buildConstraintMaximum(const std::string& id, std::vector<XVariable*>& list, XVariable* index, int startIndex, RankType rank, XCondition& xc) {
             (void)id;
             (void)list;
             (void)index;
@@ -1462,7 +1462,7 @@ namespace XCSP3Core {
          * @param list the scope of the constraint
          * @param value the value (here an int)
          */
-        virtual void buildConstraintElement(std::string id, std::vector<XVariable*>& list, int value) {
+        virtual void buildConstraintElement(const std::string& id, std::vector<XVariable*>& list, int value) {
             (void)id;
             (void)list;
             (void)value;
@@ -1488,7 +1488,7 @@ namespace XCSP3Core {
          * @param startColIndex the start index for cols
          * @param value the value (here a variable)
          */
-        virtual void buildConstraintElement(std::string id, std::vector<std::vector<XVariable*>>& matrix, int startRowIndex, XVariable* rowIndex, int startColIndex, XVariable* colIndex, XVariable* value) {
+        virtual void buildConstraintElement(const std::string& id, std::vector<std::vector<XVariable*>>& matrix, int startRowIndex, XVariable* rowIndex, int startColIndex, XVariable* colIndex, XVariable* value) {
             (void)id;
             (void)matrix;
             (void)startRowIndex;
@@ -1518,7 +1518,7 @@ namespace XCSP3Core {
         * @param startColIndex the start index for cols
         * @param value the value (here an int)
         */
-        virtual void buildConstraintElement(std::string id, std::vector<std::vector<XVariable*>>& matrix, int startRowIndex, XVariable* rowIndex, int startColIndex, XVariable* colIndex, int value) {
+        virtual void buildConstraintElement(const std::string& id, std::vector<std::vector<XVariable*>>& matrix, int startRowIndex, XVariable* rowIndex, int startColIndex, XVariable* colIndex, int value) {
             (void)id;
             (void)matrix;
             (void)startRowIndex;
@@ -1549,7 +1549,7 @@ namespace XCSP3Core {
         * @param value the value (here a variable)
         */
 
-        virtual void buildConstraintElement(std::string id, std::vector<std::vector<int>>& matrix, int startRowIndex, XVariable* rowIndex, int startColIndex, XVariable* colIndex, XVariable* value) {
+        virtual void buildConstraintElement(const std::string& id, std::vector<std::vector<int>>& matrix, int startRowIndex, XVariable* rowIndex, int startColIndex, XVariable* colIndex, XVariable* value) {
             (void)id;
             (void)matrix;
             (void)startRowIndex;
@@ -1574,7 +1574,7 @@ namespace XCSP3Core {
          * @param list the scope of the constraint
          * @param value the value (here a variable)
          */
-        virtual void buildConstraintElement(std::string id, std::vector<XVariable*>& list, XVariable* value) {
+        virtual void buildConstraintElement(const std::string& id, std::vector<XVariable*>& list, XVariable* value) {
             (void)id;
             (void)list;
             (void)value;
@@ -1599,7 +1599,7 @@ namespace XCSP3Core {
          * @param rank ANY, ALL...
          * @param value the value (here an int)
          */
-        virtual void buildConstraintElement(std::string id, std::vector<XVariable*>& list, int startIndex, XVariable* index, RankType rank, int value) {
+        virtual void buildConstraintElement(const std::string& id, std::vector<XVariable*>& list, int startIndex, XVariable* index, RankType rank, int value) {
             (void)id;
             (void)list;
             (void)startIndex;
@@ -1627,7 +1627,7 @@ namespace XCSP3Core {
          * @param rank ANY, ALL...
          * @param value the value (here a variable)
          */
-        virtual void buildConstraintElement(std::string id, std::vector<XVariable*>& list, int startIndex, XVariable* index, RankType rank, XVariable* value) {
+        virtual void buildConstraintElement(const std::string& id, std::vector<XVariable*>& list, int startIndex, XVariable* index, RankType rank, XVariable* value) {
             (void)id;
             (void)list;
             (void)startIndex;
@@ -1655,7 +1655,7 @@ namespace XCSP3Core {
          * @param rank ANY, ALL...
          * @param value the value (here a variable)
          */
-        virtual void buildConstraintElement(std::string id, std::vector<int>& list, int startIndex, XVariable* index, RankType rank, XVariable* value) {
+        virtual void buildConstraintElement(const std::string& id, std::vector<int>& list, int startIndex, XVariable* index, RankType rank, XVariable* value) {
             (void)id;
             (void)list;
             (void)startIndex;
@@ -1677,7 +1677,7 @@ namespace XCSP3Core {
          * @param id the id (name) of the constraint
          * @param list the scope of the constraint
          */
-        virtual void buildConstraintChannel(std::string id, std::vector<XVariable*>& list, int startIndex) {
+        virtual void buildConstraintChannel(const std::string& id, std::vector<XVariable*>& list, int startIndex) {
             (void)id;
             (void)list;
             (void)startIndex;
@@ -1706,7 +1706,7 @@ namespace XCSP3Core {
          * @param startIndex2 the starting index for list2
          *
          */
-        virtual void buildConstraintChannel(std::string id, std::vector<XVariable*>& list1, int startIndex1, std::vector<XVariable*>& list2, int startIndex2) {
+        virtual void buildConstraintChannel(const std::string& id, std::vector<XVariable*>& list1, int startIndex1, std::vector<XVariable*>& list2, int startIndex2) {
             (void)id;
             (void)list1;
             (void)startIndex1;
@@ -1730,7 +1730,7 @@ namespace XCSP3Core {
          * @param startIndex the starting index for list
          * @param value the vaule
          */
-        virtual void buildConstraintChannel(std::string id, std::vector<XVariable*>& list, int startIndex, XVariable* value) {
+        virtual void buildConstraintChannel(const std::string& id, std::vector<XVariable*>& list, int startIndex, XVariable* value) {
             (void)id;
             (void)list;
             (void)startIndex;
@@ -1758,7 +1758,7 @@ namespace XCSP3Core {
          * @param values thelist of values
          * @param widths the list of intervals for widths
          */
-        virtual void buildConstraintStretch(std::string id, std::vector<XVariable*>& list, std::vector<int>& values, std::vector<XInterval>& widths) {
+        virtual void buildConstraintStretch(const std::string& id, std::vector<XVariable*>& list, std::vector<int>& values, std::vector<XInterval>& widths) {
             (void)id;
             (void)list;
             (void)values;
@@ -1778,7 +1778,7 @@ namespace XCSP3Core {
          *
          */
         virtual void
-        buildConstraintStretch(std::string id, std::vector<XVariable*>& list, std::vector<int>& values, std::vector<XInterval>& widths, std::vector<std::vector<int>>& patterns) {
+        buildConstraintStretch(const std::string& id, std::vector<XVariable*>& list, std::vector<int>& values, std::vector<XInterval>& widths, std::vector<std::vector<int>>& patterns) {
             (void)id;
             (void)list;
             (void)values;
@@ -1802,7 +1802,7 @@ namespace XCSP3Core {
          * @param lengths the std::vector of lenghts (here int)
          * @param zeroIgnored are zero ignored?
          */
-        virtual void buildConstraintNoOverlap(std::string id, std::vector<XVariable*>& origins, std::vector<int>& lengths, bool zeroIgnored) {
+        virtual void buildConstraintNoOverlap(const std::string& id, std::vector<XVariable*>& origins, std::vector<int>& lengths, bool zeroIgnored) {
             (void)id;
             (void)origins;
             (void)lengths;
@@ -1825,7 +1825,7 @@ namespace XCSP3Core {
          * @param lengths the std::vector of lenghts (here variables)
          * @param zeroIgnored are zero ignored?
          */
-        virtual void buildConstraintNoOverlap(std::string id, std::vector<XVariable*>& origins, std::vector<XVariable*>& lengths, bool zeroIgnored) {
+        virtual void buildConstraintNoOverlap(const std::string& id, std::vector<XVariable*>& origins, std::vector<XVariable*>& lengths, bool zeroIgnored) {
             (void)id;
             (void)origins;
             (void)lengths;
@@ -1848,7 +1848,7 @@ namespace XCSP3Core {
          * @param lengths the std::vector of lenghts (here std::vector of int)
          * @param zeroIgnored are zero ignored?
          */
-        virtual void buildConstraintNoOverlap(std::string id, std::vector<std::vector<XVariable*>>& origins, std::vector<std::vector<int>>& lengths, bool zeroIgnored) {
+        virtual void buildConstraintNoOverlap(const std::string& id, std::vector<std::vector<XVariable*>>& origins, std::vector<std::vector<int>>& lengths, bool zeroIgnored) {
             (void)id;
             (void)origins;
             (void)lengths;
@@ -1871,7 +1871,7 @@ namespace XCSP3Core {
          * @param lengths the std::vector of lenghts (here std::vector of variables)
          * @param zeroIgnored are zero ignored?
          */
-        virtual void buildConstraintNoOverlap(std::string id, std::vector<std::vector<XVariable*>>& origins, std::vector<std::vector<XVariable*>>& lengths, bool zeroIgnored) {
+        virtual void buildConstraintNoOverlap(const std::string& id, std::vector<std::vector<XVariable*>>& origins, std::vector<std::vector<XVariable*>>& lengths, bool zeroIgnored) {
             (void)id;
             (void)origins;
             (void)lengths;
@@ -1897,7 +1897,7 @@ namespace XCSP3Core {
          * @param heights the std::vector of heights (here ints)
          * @param xc the condition (see XCondition)
          */
-        virtual void buildConstraintCumulative(std::string id, std::vector<XVariable*>& origins, std::vector<int>& lengths, std::vector<int>& heights, XCondition& xc) {
+        virtual void buildConstraintCumulative(const std::string& id, std::vector<XVariable*>& origins, std::vector<int>& lengths, std::vector<int>& heights, XCondition& xc) {
             (void)id;
             (void)origins;
             (void)lengths;
@@ -1924,7 +1924,7 @@ namespace XCSP3Core {
          * @param heights the std::vector of heights (here variables)
          * @param xc the condition (see XCondition)
          */
-        virtual void buildConstraintCumulative(std::string id, std::vector<XVariable*>& origins, std::vector<int>& lengths, std::vector<XVariable*>& varHeights, XCondition& xc) {
+        virtual void buildConstraintCumulative(const std::string& id, std::vector<XVariable*>& origins, std::vector<int>& lengths, std::vector<XVariable*>& varHeights, XCondition& xc) {
             (void)id;
             (void)origins;
             (void)lengths;
@@ -1951,7 +1951,7 @@ namespace XCSP3Core {
          * @param heights the std::vector of heights (here ints)
          * @param xc the condition (see XCondition)
          */
-        virtual void buildConstraintCumulative(std::string id, std::vector<XVariable*>& origins, std::vector<XVariable*>& lengths, std::vector<int>& heights, XCondition& xc) {
+        virtual void buildConstraintCumulative(const std::string& id, std::vector<XVariable*>& origins, std::vector<XVariable*>& lengths, std::vector<int>& heights, XCondition& xc) {
             (void)id;
             (void)origins;
             (void)lengths;
@@ -1979,7 +1979,7 @@ namespace XCSP3Core {
          * @param xc the condition (see XCondition)
          */
         virtual void
-        buildConstraintCumulative(std::string id, std::vector<XVariable*>& origins, std::vector<XVariable*>& lengths, std::vector<XVariable*>& heights, XCondition& xc) {
+        buildConstraintCumulative(const std::string& id, std::vector<XVariable*>& origins, std::vector<XVariable*>& lengths, std::vector<XVariable*>& heights, XCondition& xc) {
             (void)id;
             (void)origins;
             (void)lengths;
@@ -2008,7 +2008,7 @@ namespace XCSP3Core {
          * @param ends the std::vector of ends (here variables)
          * @param xc the condition (see XCondition)
          */
-        virtual void buildConstraintCumulative(std::string id, std::vector<XVariable*>& origins, std::vector<int>& lengths, std::vector<int>& heights, std::vector<XVariable*>& ends,
+        virtual void buildConstraintCumulative(const std::string& id, std::vector<XVariable*>& origins, std::vector<int>& lengths, std::vector<int>& heights, std::vector<XVariable*>& ends,
                                                XCondition& xc) {
             (void)id;
             (void)origins;
@@ -2040,7 +2040,7 @@ namespace XCSP3Core {
          * @param xc the condition (see XCondition)
          */
         virtual void
-        buildConstraintCumulative(std::string id, std::vector<XVariable*>& origins, std::vector<int>& lengths, std::vector<XVariable*>& varHeights, std::vector<XVariable*>& ends,
+        buildConstraintCumulative(const std::string& id, std::vector<XVariable*>& origins, std::vector<int>& lengths, std::vector<XVariable*>& varHeights, std::vector<XVariable*>& ends,
                                   XCondition& xc) {
             (void)id;
             (void)origins;
@@ -2072,7 +2072,7 @@ namespace XCSP3Core {
          * @param xc the condition (see XCondition)
          */
         virtual void
-        buildConstraintCumulative(std::string id, std::vector<XVariable*>& origins, std::vector<XVariable*>& lengths, std::vector<int>& heights, std::vector<XVariable*>& ends,
+        buildConstraintCumulative(const std::string& id, std::vector<XVariable*>& origins, std::vector<XVariable*>& lengths, std::vector<int>& heights, std::vector<XVariable*>& ends,
                                   XCondition& xc) {
             (void)id;
             (void)origins;
@@ -2104,7 +2104,7 @@ namespace XCSP3Core {
          * @param xc the condition (see XCondition)
          */
         virtual void
-        buildConstraintCumulative(std::string id, std::vector<XVariable*>& origins, std::vector<XVariable*>& lengths, std::vector<XVariable*>& heights,
+        buildConstraintCumulative(const std::string& id, std::vector<XVariable*>& origins, std::vector<XVariable*>& lengths, std::vector<XVariable*>& heights,
                                   std::vector<XVariable*>& ends, XCondition& xc) {
             (void)id;
             (void)origins;
@@ -2133,7 +2133,7 @@ namespace XCSP3Core {
          * @param list the scope of the constraint
          * @param values the value for each variable
          */
-        virtual void buildConstraintInstantiation(std::string id, std::vector<XVariable*>& list, std::vector<int>& values) {
+        virtual void buildConstraintInstantiation(const std::string& id, std::vector<XVariable*>& list, std::vector<int>& values) {
             (void)id;
             (void)list;
             (void)values;
@@ -2156,7 +2156,7 @@ namespace XCSP3Core {
          * @param positive the positive variables in the clause
          * @param negative the negative variables in the clause
          */
-        virtual void buildConstraintClause(std::string id, std::vector<XVariable*>& positive, std::vector<XVariable*>& negative) {
+        virtual void buildConstraintClause(const std::string& id, std::vector<XVariable*>& positive, std::vector<XVariable*>& negative) {
             (void)id;
             (void)positive;
             (void)negative;
@@ -2180,7 +2180,7 @@ namespace XCSP3Core {
          * @param list the scope of the constraint
          * @param startIndex the start index for the list
          */
-        virtual void buildConstraintCircuit(std::string id, std::vector<XVariable*>& list, int startIndex) {
+        virtual void buildConstraintCircuit(const std::string& id, std::vector<XVariable*>& list, int startIndex) {
             (void)id;
             (void)list;
             (void)startIndex;
@@ -2202,7 +2202,7 @@ namespace XCSP3Core {
          * @param startIndex the start index for the list
          * @param size the size of the circuit (here an int)
          */
-        virtual void buildConstraintCircuit(std::string id, std::vector<XVariable*>& list, int startIndex, int size) {
+        virtual void buildConstraintCircuit(const std::string& id, std::vector<XVariable*>& list, int startIndex, int size) {
             (void)id;
             (void)list;
             (void)startIndex;
@@ -2225,7 +2225,7 @@ namespace XCSP3Core {
          * @param startIndex the start index for the list
          * @param size the size of the circuit (here an variable)
          */
-        virtual void buildConstraintCircuit(std::string id, std::vector<XVariable*>& list, int startIndex, XVariable* size) {
+        virtual void buildConstraintCircuit(const std::string& id, std::vector<XVariable*>& list, int startIndex, XVariable* size) {
             (void)id;
             (void)list;
             (void)startIndex;
