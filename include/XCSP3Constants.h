@@ -27,12 +27,13 @@
 #include <climits>
 
 namespace XCSP3Core {
-    typedef enum {
+
+    enum class InstanceType {
         CSP,
         COP
-    } InstanceType;
+    };
 
-    typedef enum CONSTRAINTS {
+    enum class ConstraintType {
         UNKNOWN,
         EXTENSION,
         INTENSION,
@@ -57,9 +58,9 @@ namespace XCSP3Core {
         INSTANTIATION,
         CIRCUIT,
         CLAUSE
-    } ConstraintType;
+    };
 
-    typedef enum order {
+    enum class OrderType {
         LE,
         LT,
         GE,
@@ -67,14 +68,15 @@ namespace XCSP3Core {
         IN,
         EQ,
         NE
-    } OrderType;
-    typedef enum operantype {
+    };
+
+    enum class OperandType {
         INTEGER,
         INTERVAL,
         VARIABLE
-    } OperandType;
+    };
 
-    typedef enum tag {
+    enum class Tag {
         UNKNOWNTAG,
         LISTTAG,
         FUNCTIONALTAG,
@@ -83,20 +85,20 @@ namespace XCSP3Core {
         CONDITIONTAG,
         INDEXTAG,
         LENGTHSTAG
-    } Tag;
+    };
 
-    typedef enum ranktype {
+    enum class RankType {
         ANY,
         FIRST,
         LAST
-    } RankType;
+    };
 
-    typedef enum objective {
+    enum class ObjectiveGoal {
         MINIMIZE,
         MAXIMIZE
-    } ObjectiveGoal;
+    };
 
-    typedef enum expressionObjective {
+    enum class ExpressionObjective {
         EXPRESSION_O,
         SUM_O,
         PRODUCT_O,
@@ -104,7 +106,7 @@ namespace XCSP3Core {
         MAXIMUM_O,
         NVALUES_O,
         LEX_O
-    } ExpressionObjective;
+    };
 
 #define STAR INT_MAX
 } // namespace XCSP3Core

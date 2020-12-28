@@ -291,24 +291,24 @@ void XConstraintGroup::unfoldString(std::string& toUnfold, std::vector<XVariable
 namespace XCSP3Core {
     std::ostream& operator<<(std::ostream& O, const XCondition& xc) {
         std::string sep;
-        if (xc.op == LT)
+        if (xc.op == OrderType::LT)
             sep = " < ";
-        if (xc.op == LE)
+        if (xc.op == OrderType::LE)
             sep = " <= ";
-        if (xc.op == GT)
+        if (xc.op == OrderType::GT)
             sep = " > ";
-        if (xc.op == GE)
+        if (xc.op == OrderType::GE)
             sep = " >= ";
-        if (xc.op == EQ)
+        if (xc.op == OrderType::EQ)
             sep = " = ";
 
-        if (xc.operandType == INTEGER)
+        if (xc.operandType == OperandType::INTEGER)
             O << sep << xc.val;
 
-        if (xc.operandType == INTERVAL)
+        if (xc.operandType == OperandType::INTERVAL)
             O << sep << "in [" << xc.min << "," << xc.max << "]";
 
-        if (xc.operandType == VARIABLE)
+        if (xc.operandType == OperandType::VARIABLE)
             O << sep << xc.var;
         return O;
     }
@@ -334,34 +334,34 @@ void XInitialCondition::extractCondition(XCondition& xc) { // Create the op and 
     std::string tmp1 = match[2].str();
 
     if (tmp0 == "le")
-        xc.op = LE;
+        xc.op = OrderType::LE;
     if (tmp0 == "lt")
-        xc.op = LT;
+        xc.op = OrderType::LT;
     if (tmp0 == "ge")
-        xc.op = GE;
+        xc.op = OrderType::GE;
     if (tmp0 == "gt")
-        xc.op = GT;
+        xc.op = OrderType::GT;
     if (tmp0 == "in")
-        xc.op = IN;
+        xc.op = OrderType::IN;
     if (tmp0 == "eq")
-        xc.op = EQ;
+        xc.op = OrderType::EQ;
     if (tmp0 == "ne")
-        xc.op = NE;
+        xc.op = OrderType::NE;
     //std::cout << condition <<": "<< tmp0 << " " <<tmp1 << std::endl;
     //printf("%d %d\n",' ',condition[condition.length()-1]);
     size_t dotdot = tmp1.find('.');
     if (dotdot != std::string::npos) { // Normal variable
-        xc.operandType = INTERVAL;
+        xc.operandType = OperandType::INTERVAL;
         xc.min = stoi(tmp1.substr(0, dotdot));
         xc.max = stoi(tmp1.substr(dotdot + 2));
         return;
     }
     try {
         xc.val = stoi(tmp1);
-        xc.operandType = INTEGER;
+        xc.operandType = OperandType::INTEGER;
     } catch (const std::invalid_argument& e) {
         xc.var = tmp1;
-        xc.operandType = VARIABLE;
+        xc.operandType = OperandType::VARIABLE;
     }
 }
 

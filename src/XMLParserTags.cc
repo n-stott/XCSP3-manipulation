@@ -39,9 +39,9 @@ void XMLParser::InstanceTagAction::beginTag(const AttributeList& attributes) {
         throw std::runtime_error("expected attribute type for tag <instance>");
 
     if (stringtype == "COP")
-        type = COP;
+        type = InstanceType::COP;
     else if (stringtype == "CSP")
-        type = CSP;
+        type = InstanceType::CSP;
     else
         throw std::runtime_error("Unknon type for tag <instance>");
 
@@ -312,7 +312,7 @@ void XMLParser::BasicConstraintTagAction::beginTag(const AttributeList& attribut
     this->parser->star = false;
     this->parser->zeroIgnored = false;
     this->parser->condition = "";
-    this->parser->rank = ANY;
+    this->parser->rank = RankType::ANY;
     this->parser->index = NULL;
     this->parser->index2 = NULL;
     this->parser->closed = true;
@@ -332,7 +332,7 @@ void XMLParser::ExtensionTagAction::beginTag(const AttributeList& attributes) {
     // Link constraint to group
     if (this->group != NULL) {
         this->group->constraint = constraint;
-        this->group->type = EXTENSION;
+        this->group->type = ConstraintType::EXTENSION;
     }
 }
 
@@ -364,7 +364,7 @@ void XMLParser::IntensionTagAction::beginTag(const AttributeList& attributes) {
     // Link constraint to group
     if (this->group != NULL) {
         this->group->constraint = constraint;
-        this->group->type = INTENSION;
+        this->group->type = ConstraintType::INTENSION;
     }
     fnc.clear();
 }
@@ -404,7 +404,7 @@ void XMLParser::RegularTagAction::beginTag(const AttributeList& attributes) {
     // Link constraint to group
     if (this->group != NULL) {
         this->group->constraint = constraint;
-        this->group->type = REGULAR;
+        this->group->type = ConstraintType::REGULAR;
     }
 }
 
@@ -435,7 +435,7 @@ void XMLParser::MDDTagAction::beginTag(const AttributeList& attributes) {
     // Link constraint to group
     if (this->group != NULL) {
         this->group->constraint = constraint;
-        this->group->type = MDD;
+        this->group->type = ConstraintType::MDD;
     }
 }
 
@@ -479,9 +479,9 @@ void XMLParser::AllDiffEqualTagAction::beginTag(const AttributeList& attributes)
     // Link constraint to group
     if (this->group != NULL) {
         if (this->tagName == "allDifferent")
-            this->group->type = ALLDIFF;
+            this->group->type = ConstraintType::ALLDIFF;
         else
-            this->group->type = ALLEQUAL;
+            this->group->type = ConstraintType::ALLEQUAL;
         this->group->constraint = ct;
     }
 }
@@ -547,18 +547,18 @@ void XMLParser::OrderedTagAction::beginTag(const AttributeList& attributes) {
     std::string cs;
     attributes["case"].to(cs);
     if (cs == "strictlyDecreasing")
-        this->parser->op = GT;
+        this->parser->op = OrderType::GT;
     if (cs == "decreasing")
-        this->parser->op = GE;
+        this->parser->op = OrderType::GE;
     if (cs == "strictlyIncreasing")
-        this->parser->op = LT;
+        this->parser->op = OrderType::LT;
     if (cs == "increasing")
-        this->parser->op = LE;
+        this->parser->op = OrderType::LE;
 
     // Link constraint to group
     if (this->group != NULL) {
         this->group->constraint = constraint;
-        this->group->type = ORDERED;
+        this->group->type = ConstraintType::ORDERED;
     }
 }
 
@@ -592,7 +592,7 @@ void XMLParser::LexTagAction::beginTag(const AttributeList& attributes) {
     // Link constraint to group
     if (this->group != NULL) {
         this->group->constraint = constraint;
-        this->group->type = LEX;
+        this->group->type = ConstraintType::LEX;
     }
 }
 
@@ -642,7 +642,7 @@ void XMLParser::SumTagAction::beginTag(const AttributeList& attributes) {
     // Link constraint to group
     if (this->group != NULL) {
         this->group->constraint = constraint;
-        this->group->type = SUM;
+        this->group->type = ConstraintType::SUM;
     }
 }
 
@@ -675,7 +675,7 @@ void XMLParser::NValuesTagAction::beginTag(const AttributeList& attributes) {
     // Link constraint to group
     if (this->group != NULL) {
         this->group->constraint = constraint;
-        this->group->type = NVALUES;
+        this->group->type = ConstraintType::NVALUES;
     }
 }
 
@@ -703,7 +703,7 @@ void XMLParser::CountTagAction::beginTag(const AttributeList& attributes) {
     // Link constraint to group
     if (this->group != NULL) {
         this->group->constraint = constraint;
-        this->group->type = COUNT;
+        this->group->type = ConstraintType::COUNT;
     }
 }
 
@@ -731,7 +731,7 @@ void XMLParser::CardinalityTagAction::beginTag(const AttributeList& attributes) 
     // Link constraint to group
     if (this->group != NULL) {
         this->group->constraint = constraint;
-        this->group->type = CARDINALITY;
+        this->group->type = ConstraintType::CARDINALITY;
     }
 }
 
@@ -765,7 +765,7 @@ void XMLParser::ChannelTagAction::beginTag(const AttributeList& attributes) {
     // Link constraint to group
     if (this->group != NULL) {
         this->group->constraint = constraint;
-        this->group->type = CHANNEL;
+        this->group->type = ConstraintType::CHANNEL;
     }
 }
 
@@ -809,7 +809,7 @@ void XMLParser::ElementTagAction::beginTag(const AttributeList& attributes) {
     // Link constraint to group
     if (this->group != NULL) {
         this->group->constraint = constraint;
-        this->group->type = ELEMENT;
+        this->group->type = ConstraintType::ELEMENT;
     }
 }
 
@@ -835,7 +835,7 @@ void XMLParser::ElementTagAction::endTag() {
         c->startRowIndex = this->parser->startRowIndex;
         c->startColIndex = this->parser->startColIndex;
         if (this->group != nullptr) {
-            this->group->type = ELEMENTMATRIX;
+            this->group->type = ConstraintType::ELEMENTMATRIX;
             this->group->constraint = c;
         }
         delete constraint;
@@ -867,9 +867,9 @@ void XMLParser::MinMaxTagAction::beginTag(const AttributeList& attributes) {
     if (this->group != NULL) {
         this->group->constraint = constraint;
         if (this->tagName == "maximum")
-            this->group->type = MAXIMUM;
+            this->group->type = ConstraintType::MAXIMUM;
         else
-            this->group->type = MINIMUM;
+            this->group->type = ConstraintType::MINIMUM;
     }
 }
 
@@ -906,7 +906,7 @@ void XMLParser::StretchTagAction::beginTag(const AttributeList& attributes) {
     // Link constraint to group
     if (this->group != NULL) {
         this->group->constraint = constraint;
-        this->group->type = STRETCH;
+        this->group->type = ConstraintType::STRETCH;
     }
 }
 
@@ -955,7 +955,7 @@ void XMLParser::NoOverlapTagAction::beginTag(const AttributeList& attributes) {
     // Link constraint to group
     if (this->group != NULL) {
         this->group->constraint = constraint;
-        this->group->type = NOOVERLAP;
+        this->group->type = ConstraintType::NOOVERLAP;
     }
 }
 
@@ -983,7 +983,7 @@ void XMLParser::CumulativeTagAction::beginTag(const AttributeList& attributes) {
     // Link constraint to group
     if (this->group != NULL) {
         this->group->constraint = constraint;
-        this->group->type = CUMULATIVE;
+        this->group->type = ConstraintType::CUMULATIVE;
     }
 }
 
@@ -1014,7 +1014,7 @@ void XMLParser::CircuitTagAction::beginTag(const AttributeList& attributes) {
     // Link constraint to group
     if (this->group != NULL) {
         this->group->constraint = constraint;
-        this->group->type = CIRCUIT;
+        this->group->type = ConstraintType::CIRCUIT;
     }
     this->parser->values.clear();
 }
@@ -1073,7 +1073,7 @@ void XMLParser::ObjectivesTagAction::endTag() {
             isInteger(xe, value);
             objective->coeffs.push_back(value);
         }
-    } else if (objective->type != EXPRESSION_O) {
+    } else if (objective->type != ExpressionObjective::EXPRESSION_O) {
         objective->coeffs.assign(objective->list.size(), 1);
     }
 
@@ -1084,24 +1084,24 @@ void XMLParser::ObjectivesTagAction::endTag() {
 
 void XMLParser::MinimizeOrMaximizeTagAction::beginTag(const AttributeList& attributes) {
     obj = static_cast<XMLParser::ObjectivesTagAction*>(this->parser->getParentTagAction())->objective;
-    obj->goal = (this->tagName == "minimize") ? MINIMIZE : MAXIMIZE;
+    obj->goal = (this->tagName == "minimize") ? ObjectiveGoal::MINIMIZE : ObjectiveGoal::MAXIMIZE;
     std::string tmp;
     this->checkParentTag("objectives");
 
     attributes["type"].to(tmp);
-    obj->type = EXPRESSION_O;
+    obj->type = ExpressionObjective::EXPRESSION_O;
     if (tmp == "sum")
-        obj->type = SUM_O;
+        obj->type = ExpressionObjective::SUM_O;
     if (tmp == "product")
-        obj->type = PRODUCT_O;
+        obj->type = ExpressionObjective::PRODUCT_O;
     if (tmp == "minimum")
-        obj->type = MINIMUM_O;
+        obj->type = ExpressionObjective::MINIMUM_O;
     if (tmp == "maximum")
-        obj->type = MAXIMUM_O;
+        obj->type = ExpressionObjective::MAXIMUM_O;
     if (tmp == "nValues")
-        obj->type = NVALUES_O;
+        obj->type = ExpressionObjective::NVALUES_O;
     if (tmp == "lex")
-        obj->type = LEX_O;
+        obj->type = ExpressionObjective::LEX_O;
 }
 
 // UTF8String txt, bool last
@@ -1111,7 +1111,7 @@ void XMLParser::MinimizeOrMaximizeTagAction::text(const UTF8String txt, bool) {
     if (trim(op) == "")
         return; // skip white space.
 
-    if (obj->type == EXPRESSION_O)
+    if (obj->type == ExpressionObjective::EXPRESSION_O)
         this->parser->expr = op;
     else
         this->parser->parseSequence(txt, this->parser->lists[0]);
@@ -1217,13 +1217,13 @@ void XMLParser::OperatorTagAction::text(const UTF8String txt, bool) {
     if (trim(op) == "")
         return; // skip white space.
     if (op == "lt")
-        this->parser->op = LT;
+        this->parser->op = OrderType::LT;
     if (op == "le")
-        this->parser->op = LE;
+        this->parser->op = OrderType::LE;
     if (op == "gt")
-        this->parser->op = GT;
+        this->parser->op = OrderType::GT;
     if (op == "ge")
-        this->parser->op = GE;
+        this->parser->op = OrderType::GE;
 }
 
 // UTF8String txt, bool last
@@ -1251,7 +1251,7 @@ void XMLParser::InstantiationTagAction::beginTag(const AttributeList& attributes
     // Link constraint to group
     if (this->group != NULL) {
         this->group->constraint = constraint;
-        this->group->type = INSTANTIATION;
+        this->group->type = ConstraintType::INSTANTIATION;
     }
 }
 
@@ -1281,7 +1281,7 @@ void XMLParser::ClauseTagAction::beginTag(const AttributeList& attributes) {
     // Link constraint to group
     if (this->group != NULL) {
         this->group->constraint = constraint;
-        this->group->type = CLAUSE;
+        this->group->type = ConstraintType::CLAUSE;
     }
 }
 
@@ -1500,11 +1500,11 @@ void XMLParser::IndexTagAction::beginTag(const AttributeList& attributes) {
         std::string rank;
         attributes["rank"].to(rank);
         if (rank == "any")
-            this->parser->rank = ANY;
+            this->parser->rank = RankType::ANY;
         if (rank == "first")
-            this->parser->rank = FIRST;
+            this->parser->rank = RankType::FIRST;
         if (rank == "last")
-            this->parser->rank = LAST;
+            this->parser->rank = RankType::LAST;
     }
 }
 

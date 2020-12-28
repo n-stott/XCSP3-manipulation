@@ -66,7 +66,7 @@ namespace XCSP3Core {
         ConstraintType type;                            // Use it to discover the type of constraint... and perform cast
         std::map<std::string, XVariable*> toArguments;
 
-        XConstraintGroup(std::string idd, std::string c) : XConstraint(idd, c), constraint(NULL), type(UNKNOWN) {}
+        XConstraintGroup(std::string idd, std::string c) : XConstraint(idd, c), constraint(NULL), type(ConstraintType::UNKNOWN) {}
 
         virtual ~XConstraintGroup() { delete constraint; }
 
@@ -333,7 +333,7 @@ namespace XCSP3Core {
         int startIndex;
         RankType rank;
 
-        XConstraintMaximum(std::string idd, std::string c) : XConstraint(idd, c), startIndex(0), rank(ANY) {}
+        XConstraintMaximum(std::string idd, std::string c) : XConstraint(idd, c), startIndex(0), rank(RankType::ANY) {}
 
         void unfoldParameters(XConstraintGroup* group, std::vector<XVariable*>& arguments, XConstraint* original) override;
     };
@@ -349,7 +349,7 @@ namespace XCSP3Core {
         int startIndex;
         RankType rank;
 
-        XConstraintElement(std::string idd, std::string c) : XConstraint(idd, c), startIndex(0), rank(ANY) {}
+        XConstraintElement(std::string idd, std::string c) : XConstraint(idd, c), startIndex(0), rank(RankType::ANY) {}
 
         void unfoldParameters(XConstraintGroup* group, std::vector<XVariable*>& arguments, XConstraint* original) override;
     };

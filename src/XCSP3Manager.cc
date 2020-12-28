@@ -20,7 +20,8 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
- *=============================================================================*/
+ *=============================================================================
+ */
 
 #include "XCSP3Manager.h"
 #include "XCSP3Constants.h"
@@ -34,21 +35,21 @@
 
 using namespace XCSP3Core;
 
-static OrderType expressionTypeToOrderType(ExpressionType e) {
-    if (e == OLE)
-        return LE;
-    if (e == OLT)
-        return LT;
-    if (e == OGE)
-        return GE;
-    if (e == OGT)
-        return GT;
-    if (e == OEQ)
-        return EQ;
-    if (e == ONE)
-        return NE;
+static OrderType expressionTypeToOrderType(Expr e) {
+    if (e == Expr::LE)
+        return OrderType::LE;
+    if (e == Expr::LT)
+        return OrderType::LT;
+    if (e == Expr::GE)
+        return OrderType::GE;
+    if (e == Expr::GT)
+        return OrderType::GT;
+    if (e == Expr::EQ)
+        return OrderType::EQ;
+    if (e == Expr::NE)
+        return OrderType::NE;
     assert(false);
-    return LE;
+    return OrderType::LE;
 }
 
 //--------------------------------------------------------------------------------------
@@ -60,7 +61,7 @@ public:
     Tree *canonized, pattern;
     std::vector<int> constants;
     std::vector<std::string> variables;
-    std::vector<ExpressionType> operators;
+    std::vector<Expr> operators;
     XCSP3Manager& manager;
     std::string id;
 
@@ -91,20 +92,20 @@ public:
 class PrimitiveUnary1 : public XCSP3Core::PrimitivePattern { // x op k
 public:
     PrimitiveUnary1(XCSP3Manager& m) : PrimitivePattern(m, "eq(x,3)") {
-        pattern.root->type = OFAKEOP;
+        pattern.root->type = Expr::FAKEOP;
     }
 
     bool post() override {
         if (operators.size() != 1 || isRelationalOperator(operators[0]) == false)
             return false;
-        if (operators[0] == OEQ || operators[0] == ONE) {
+        if (operators[0] == Expr::EQ || operators[0] == Expr::NE) {
             std::vector<int> values;
             values.push_back(constants[0]);
-            manager.callback->buildConstraintExtension(id, static_cast<XVariable*>(manager.mapping[variables[0]]), values, operators[0] == OEQ, false);
+            manager.callback->buildConstraintExtension(id, static_cast<XVariable*>(manager.mapping[variables[0]]), values, operators[0] == Expr::EQ, false);
             return true;
         }
-        if (operators[0] == OLE) {
-            manager.callback->buildConstraintPrimitive(id, LE, static_cast<XVariable*>(manager.mapping[variables[0]]), constants[0]);
+        if (operators[0] == Expr::LE) {
+            manager.callback->buildConstraintPrimitive(id, OrderType::LE, static_cast<XVariable*>(manager.mapping[variables[0]]), constants[0]);
             return true;
         }
         return false;
@@ -116,7 +117,7 @@ public:
     PrimitiveUnary2(XCSP3Manager& m) : PrimitivePattern(m, "le(3,x)") {}
 
     bool post() override {
-        manager.callback->buildConstraintPrimitive(id, GE, static_cast<XVariable*>(manager.mapping[variables[0]]), constants[0]);
+        manager.callback->buildConstraintPrimitive(id, OrderType::GE, static_cast<XVariable*>(manager.mapping[variables[0]]), constants[0]);
         return true;
     }
 };
@@ -124,24 +125,24 @@ public:
 class PrimitiveUnary3 : public XCSP3Core::PrimitivePattern { // x in {1,3 5...}
 public:
     PrimitiveUnary3(XCSP3Manager& m) : PrimitivePattern(m, "in(x,set(1,3,5))") {
-        pattern.root->type = OFAKEOP;
+        pattern.root->type = Expr::FAKEOP;
     }
 
     bool post() override {
-        if (operators.size() != 1 || (operators[0] != OIN && operators[0] != ONOTIN))
+        if (operators.size() != 1 || (operators[0] != Expr::IN && operators[0] != Expr::NOTIN))
             return false;
 
         std::vector<int> values;
         for (Node* n : canonized->root->parameters[1]->parameters)
             values.push_back((dynamic_cast<NodeConstant*>(n))->val);
         if (values.size() == 0) {
-            if (operators[0] == OIN)
+            if (operators[0] == Expr::IN)
                 manager.callback->buildConstraintFalse(id);
             else
                 manager.callback->buildConstraintTrue(id);
             return true;
         }
-        manager.callback->buildConstraintExtension(id, static_cast<XVariable*>(manager.mapping[variables[0]]), values, operators[0] == OIN, false);
+        manager.callback->buildConstraintExtension(id, static_cast<XVariable*>(manager.mapping[variables[0]]), values, operators[0] == Expr::IN, false);
         return true;
     }
 };
@@ -149,13 +150,13 @@ public:
 class PrimitiveUnary4 : public XCSP3Core::PrimitivePattern { // x>=1 and x<=4
 public:
     PrimitiveUnary4(XCSP3Manager& m) : PrimitivePattern(m, "and(le(x,1),le(4,x))") {
-        pattern.root->type = OFAKEOP;
+        pattern.root->type = Expr::FAKEOP;
     }
 
     bool post() override {
-        if (variables[0] != variables[1] || operators.size() != 1 || (operators[0] != OAND && operators[0] != OOR))
+        if (variables[0] != variables[1] || operators.size() != 1 || (operators[0] != Expr::AND && operators[0] != Expr::OR))
             return false;
-        if (operators[0] == OAND) {
+        if (operators[0] == Expr::AND) {
             if (constants[1] > constants[0])
                 manager.callback->buildConstraintFalse(id);
             else
@@ -173,7 +174,7 @@ public:
 class PrimitiveBinary1 : public XCSP3Core::PrimitivePattern { // x <op> y
 public:
     PrimitiveBinary1(XCSP3Manager& m) : PrimitivePattern(m, "eq(x,y)") {
-        pattern.root->type = OFAKEOP;
+        pattern.root->type = Expr::FAKEOP;
     }
 
     bool post() override {
@@ -188,7 +189,7 @@ public:
 class PrimitiveBinary2 : public XCSP3Core::PrimitivePattern { // x + 3 <op> y
 public:
     PrimitiveBinary2(XCSP3Manager& m) : PrimitivePattern(m, "eq(add(x,3),y)") {
-        pattern.root->type = OFAKEOP; // We do not care between logical operator
+        pattern.root->type = Expr::FAKEOP; // We do not care between logical operator
     }
 
     bool post() override {
@@ -204,7 +205,7 @@ public:
 class PrimitiveBinary3 : public XCSP3Core::PrimitivePattern { // x = y <op> 3
 public:
     PrimitiveBinary3(XCSP3Manager& m) : PrimitivePattern(m, "eq(y,add(x,3))") {
-        pattern.root->type = OFAKEOP; // We do not care between logical operator
+        pattern.root->type = Expr::FAKEOP; // We do not care between logical operator
     }
 
     bool post() override {
@@ -221,7 +222,7 @@ public:
 class PrimitiveTernary1 : public XCSP3Core::PrimitivePattern { // x = y <op> 3
 public:
     PrimitiveTernary1(XCSP3Manager& m) : PrimitivePattern(m, "eq(add(y,z),x)") {
-        pattern.root->type = OFAKEOP; // We do not care between logical operator
+        pattern.root->type = Expr::FAKEOP; // We do not care between logical operator
     }
 
     bool post() override {
@@ -235,7 +236,7 @@ public:
         coefs.push_back(1);
         coefs.push_back(-1);
         XCondition cond;
-        cond.operandType = INTEGER;
+        cond.operandType = OperandType::INTEGER;
         cond.op = expressionTypeToOrderType(operators[0]);
         cond.val = 0;
         manager.callback->buildConstraintSum(id, list, coefs, cond);
@@ -566,34 +567,34 @@ void XCSP3Manager::newConstraintCount(XConstraintCount* constraint) {
     // One integer value
     // Special cases AtLeastK, ATMostK, ..
     if (callback->recognizeSpecialCountCases && constraint->values.size() == 1 && isInteger(constraint->values[0], value)) {
-        if (xc.operandType == INTEGER && xc.op == OrderType::LE) {
+        if (xc.operandType == OperandType::INTEGER && xc.op == OrderType::LE) {
             callback->buildConstraintAtMost(constraint->id, constraint->list, value, xc.val);
             return;
         }
-        if (xc.operandType == INTEGER && xc.op == OrderType::LT) {
+        if (xc.operandType == OperandType::INTEGER && xc.op == OrderType::LT) {
             callback->buildConstraintAtMost(constraint->id, constraint->list, value, xc.val - 1);
             return;
         }
-        if (xc.operandType == INTEGER && xc.op == OrderType::GE) {
+        if (xc.operandType == OperandType::INTEGER && xc.op == OrderType::GE) {
             callback->buildConstraintAtLeast(constraint->id, constraint->list, value, xc.val);
             return;
         }
-        if (xc.operandType == INTEGER && xc.op == OrderType::LT) {
+        if (xc.operandType == OperandType::INTEGER && xc.op == OrderType::LT) {
             callback->buildConstraintAtLeast(constraint->id, constraint->list, value, xc.val + 1);
             return;
         }
-        if (xc.operandType == INTEGER && xc.op == OrderType::EQ) {
+        if (xc.operandType == OperandType::INTEGER && xc.op == OrderType::EQ) {
             callback->buildConstraintExactlyK(constraint->id, constraint->list, value, xc.val);
             return;
         }
-        if (xc.operandType == VARIABLE && xc.op == OrderType::EQ) {
+        if (xc.operandType == OperandType::VARIABLE && xc.op == OrderType::EQ) {
             callback->buildConstraintExactlyVariable(constraint->id, constraint->list, value, static_cast<XVariable*>(mapping[xc.var]));
             return;
         }
     }
 
     // Among
-    if (callback->recognizeSpecialCountCases && xc.op == OrderType::EQ && xc.operandType == INTEGER &&
+    if (callback->recognizeSpecialCountCases && xc.op == OrderType::EQ && xc.operandType == OperandType::INTEGER &&
         isInteger(constraint->values[0], value)) {
         for (XEntity* xe : constraint->values) {
             isInteger(xe, value);
@@ -626,20 +627,20 @@ void XCSP3Manager::newConstraintNValues(XConstraintNValues* constraint) {
     constraint->extractCondition(xc);
 
     // Special NotAllEqual case
-    if (callback->recognizeNValuesCases && xc.operandType == INTEGER && constraint->except.size() == 0 && ((xc.op == GE && xc.val == 2) || (xc.op == GT && xc.val == 1))) {
+    if (callback->recognizeNValuesCases && xc.operandType == OperandType::INTEGER && constraint->except.size() == 0 && ((xc.op == OrderType::GE && xc.val == 2) || (xc.op == OrderType::GT && xc.val == 1))) {
         callback->buildConstraintNotAllEqual(constraint->id, constraint->list);
         return;
     }
 
     // Special AllEqual case
-    if (callback->recognizeNValuesCases && xc.operandType == INTEGER &&
+    if (callback->recognizeNValuesCases && xc.operandType == OperandType::INTEGER &&
         constraint->except.size() == 0 && (xc.op == OrderType::EQ && xc.val == 1)) {
         callback->buildConstraintAllEqual(constraint->id, constraint->list);
         return;
     }
 
     // Special AllDiff case
-    if (callback->recognizeNValuesCases && xc.operandType == INTEGER && constraint->except.size() == 0 && (xc.op == OrderType::EQ && (static_cast<unsigned int>(xc.val)) == constraint->list.size())) {
+    if (callback->recognizeNValuesCases && xc.operandType == OperandType::INTEGER && constraint->except.size() == 0 && (xc.op == OrderType::EQ && (static_cast<unsigned int>(xc.val)) == constraint->list.size())) {
         callback->buildConstraintAlldifferent(constraint->id, constraint->list);
         return;
     }
@@ -1016,9 +1017,9 @@ void XCSP3Manager::newConstraintGroup(XConstraintGroup* group) {
     callback->_arguments = &(group->arguments);
 
     for (unsigned int i = 0; i < group->arguments.size(); i++) {
-        if (group->type == INTENSION)
+        if (group->type == ConstraintType::INTENSION)
             unfoldConstraint<XConstraintIntension>(group, i, &XCSP3Manager::newConstraintIntension);
-        if (group->type == EXTENSION) {
+        if (group->type == ConstraintType::EXTENSION) {
             XConstraintExtension* ce = new XConstraintExtension(group->constraint->id, group->constraint->classes);
             group->unfoldArgumentNumber(i, ce);
 
@@ -1047,50 +1048,50 @@ void XCSP3Manager::newConstraintGroup(XConstraintGroup* group) {
             delete ce;
         }
 
-        if (group->type == CLAUSE)
+        if (group->type == ConstraintType::CLAUSE)
             unfoldConstraint<XConstraintClause>(group, i, &XCSP3Manager::newConstraintClause);
-        if (group->type == INSTANTIATION)
+        if (group->type == ConstraintType::INSTANTIATION)
             unfoldConstraint<XConstraintInstantiation>(group, i, &XCSP3Manager::newConstraintInstantiation);
-        if (group->type == ALLDIFF)
+        if (group->type == ConstraintType::ALLDIFF)
             unfoldConstraint<XConstraintAllDiff>(group, i, &XCSP3Manager::newConstraintAllDiff);
-        if (group->type == ALLEQUAL)
+        if (group->type == ConstraintType::ALLEQUAL)
             unfoldConstraint<XConstraintAllEqual>(group, i, &XCSP3Manager::newConstraintAllEqual);
-        if (group->type == SUM)
+        if (group->type == ConstraintType::SUM)
             unfoldConstraint<XConstraintSum>(group, i, &XCSP3Manager::newConstraintSum);
-        if (group->type == ORDERED)
+        if (group->type == ConstraintType::ORDERED)
             unfoldConstraint<XConstraintOrdered>(group, i, &XCSP3Manager::newConstraintOrdered);
-        if (group->type == COUNT)
+        if (group->type == ConstraintType::COUNT)
             unfoldConstraint<XConstraintCount>(group, i, &XCSP3Manager::newConstraintCount);
-        if (group->type == NVALUES)
+        if (group->type == ConstraintType::NVALUES)
             unfoldConstraint<XConstraintNValues>(group, i, &XCSP3Manager::newConstraintNValues);
-        if (group->type == CARDINALITY)
+        if (group->type == ConstraintType::CARDINALITY)
             unfoldConstraint<XConstraintCardinality>(group, i, &XCSP3Manager::newConstraintCardinality);
-        if (group->type == MAXIMUM)
+        if (group->type == ConstraintType::MAXIMUM)
             unfoldConstraint<XConstraintMaximum>(group, i, &XCSP3Manager::newConstraintMaximum);
-        if (group->type == MINIMUM)
+        if (group->type == ConstraintType::MINIMUM)
             unfoldConstraint<XConstraintMinimum>(group, i, &XCSP3Manager::newConstraintMinimum);
-        if (group->type == ELEMENT)
+        if (group->type == ConstraintType::ELEMENT)
             unfoldConstraint<XConstraintElement>(group, i, &XCSP3Manager::newConstraintElement);
-        if (group->type == ELEMENTMATRIX)
+        if (group->type == ConstraintType::ELEMENTMATRIX)
             unfoldConstraint<XConstraintElementMatrix>(group, i, &XCSP3Manager::newConstraintElementMatrix);
-        if (group->type == NOOVERLAP)
+        if (group->type == ConstraintType::NOOVERLAP)
             unfoldConstraint<XConstraintNoOverlap>(group, i, &XCSP3Manager::newConstraintNoOverlap);
-        if (group->type == STRETCH)
+        if (group->type == ConstraintType::STRETCH)
             unfoldConstraint<XConstraintStretch>(group, i, &XCSP3Manager::newConstraintStretch);
-        if (group->type == LEX)
+        if (group->type == ConstraintType::LEX)
             unfoldConstraint<XConstraintLex>(group, i, &XCSP3Manager::newConstraintLex);
-        if (group->type == CHANNEL)
+        if (group->type == ConstraintType::CHANNEL)
             unfoldConstraint<XConstraintChannel>(group, i, &XCSP3Manager::newConstraintChannel);
-        if (group->type == REGULAR)
+        if (group->type == ConstraintType::REGULAR)
             unfoldConstraint<XConstraintRegular>(group, i, &XCSP3Manager::newConstraintRegular);
-        if (group->type == MDD)
+        if (group->type == ConstraintType::MDD)
             unfoldConstraint<XConstraintMDD>(group, i, &XCSP3Manager::newConstraintMDD);
-        if (group->type == CIRCUIT)
+        if (group->type == ConstraintType::CIRCUIT)
             unfoldConstraint<XConstraintCircuit>(group, i, &XCSP3Manager::newConstraintCircuit);
-        if (group->type == CUMULATIVE)
+        if (group->type == ConstraintType::CUMULATIVE)
             unfoldConstraint<XConstraintCumulative>(group, i, &XCSP3Manager::newConstraintCumulative);
 
-        if (group->type == UNKNOWN) {
+        if (group->type == ConstraintType::UNKNOWN) {
             throw std::runtime_error("Group constraint is badly defined");
         }
     }
@@ -1098,16 +1099,16 @@ void XCSP3Manager::newConstraintGroup(XConstraintGroup* group) {
 }
 
 void XCSP3Manager::addObjective(XObjective* objective) {
-    if (objective->type == EXPRESSION_O) {
+    if (objective->type == ExpressionObjective::EXPRESSION_O) {
         XVariable* x = static_cast<XVariable*>(mapping[objective->expression]);
         if (x != NULL) {
-            if (objective->goal == MINIMIZE)
+            if (objective->goal == ObjectiveGoal::MINIMIZE)
                 callback->buildObjectiveMinimizeVariable(x);
             else
                 callback->buildObjectiveMaximizeVariable(x);
             return;
         }
-        if (objective->goal == MINIMIZE)
+        if (objective->goal == ObjectiveGoal::MINIMIZE)
             callback->buildObjectiveMinimizeExpression(objective->expression);
         else
             callback->buildObjectiveMaximizeExpression(objective->expression);
@@ -1119,13 +1120,13 @@ void XCSP3Manager::addObjective(XObjective* objective) {
     containsTrees(objective->list, trees);
     if (trees.size() > 0) { // alldif over tree
         if (objective->coeffs.size() == 0) {
-            if (objective->goal == MINIMIZE)
+            if (objective->goal == ObjectiveGoal::MINIMIZE)
                 callback->buildObjectiveMinimize(objective->type, trees);
             else
                 callback->buildObjectiveMaximize(objective->type, trees);
             return;
         }
-        if (objective->goal == MINIMIZE)
+        if (objective->goal == ObjectiveGoal::MINIMIZE)
             callback->buildObjectiveMinimize(objective->type, trees, objective->coeffs);
         else
             callback->buildObjectiveMaximize(objective->type, trees, objective->coeffs);
@@ -1133,7 +1134,7 @@ void XCSP3Manager::addObjective(XObjective* objective) {
         return;
     }
 
-    if (objective->type == SUM_O && callback->normalizeSum) {
+    if (objective->type == ExpressionObjective::SUM_O && callback->normalizeSum) {
         if (objective->coeffs.size() == 0) {
             bool toModify = false;
             // Check if a variable appears two times
@@ -1150,13 +1151,13 @@ void XCSP3Manager::addObjective(XObjective* objective) {
     }
 
     if (objective->coeffs.size() == 0) {
-        if (objective->goal == MINIMIZE)
+        if (objective->goal == ObjectiveGoal::MINIMIZE)
             callback->buildObjectiveMinimize(objective->type, objective->list);
         else
             callback->buildObjectiveMaximize(objective->type, objective->list);
         return;
     }
-    if (objective->goal == MINIMIZE)
+    if (objective->goal == ObjectiveGoal::MINIMIZE)
         callback->buildObjectiveMinimize(objective->type, objective->list, objective->coeffs);
     else
         callback->buildObjectiveMaximize(objective->type, objective->list, objective->coeffs);

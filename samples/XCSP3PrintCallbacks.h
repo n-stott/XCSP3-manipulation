@@ -281,7 +281,7 @@ void displayList(std::vector<XVariable*>& list, std::string separator = " ") {
 }
 
 void XCSP3PrintCallbacks::beginInstance(InstanceType type) {
-    std::cout << "Start Instance - type=" << type << std::endl;
+    std::cout << "Start Instance - type=" << static_cast<int>(type) << std::endl;
 }
 
 void XCSP3PrintCallbacks::endInstance() {
@@ -493,13 +493,13 @@ void XCSP3PrintCallbacks::buildConstraintNotAllEqual(std::string id, std::vector
 void XCSP3PrintCallbacks::buildConstraintOrdered(std::string, std::vector<XVariable*>& list, OrderType order) {
     std::cout << "\n    ordered constraint" << std::endl;
     std::string sep;
-    if (order == LT)
+    if (order == OrderType::LT)
         sep = " < ";
-    if (order == LE)
+    if (order == OrderType::LE)
         sep = " <= ";
-    if (order == GT)
+    if (order == OrderType::GT)
         sep = " > ";
-    if (order == GE)
+    if (order == OrderType::GE)
         sep = " >= ";
     std::cout << "        ";
     displayList(list, sep);
@@ -509,13 +509,13 @@ void XCSP3PrintCallbacks::buildConstraintOrdered(std::string, std::vector<XVaria
 void XCSP3PrintCallbacks::buildConstraintOrdered(std::string, std::vector<XVariable*>& list, std::vector<int>& lengths, OrderType order) {
     std::cout << "\n    ordered constraint with lengths" << std::endl;
     std::string sep;
-    if (order == LT)
+    if (order == OrderType::LT)
         sep = " < ";
-    if (order == LE)
+    if (order == OrderType::LE)
         sep = " <= ";
-    if (order == GT)
+    if (order == OrderType::GT)
         sep = " > ";
-    if (order == GE)
+    if (order == OrderType::GE)
         sep = " >= ";
     std::cout << "        ";
     displayList(lengths);
@@ -527,13 +527,13 @@ void XCSP3PrintCallbacks::buildConstraintOrdered(std::string, std::vector<XVaria
 void XCSP3PrintCallbacks::buildConstraintLex(std::string, std::vector<std::vector<XVariable*>>& lists, OrderType order) {
     std::cout << "\n    lex constraint   nb lists: " << lists.size() << std::endl;
     std::string sep;
-    if (order == LT)
+    if (order == OrderType::LT)
         sep = " < ";
-    if (order == LE)
+    if (order == OrderType::LE)
         sep = " <= ";
-    if (order == GT)
+    if (order == OrderType::GT)
         sep = " > ";
-    if (order == GE)
+    if (order == OrderType::GE)
         sep = " >= ";
     std::cout << "        operator: " << sep << std::endl;
     for (unsigned int i = 0; i < lists.size(); i++) {
@@ -547,13 +547,13 @@ void XCSP3PrintCallbacks::buildConstraintLex(std::string, std::vector<std::vecto
 void XCSP3PrintCallbacks::buildConstraintLexMatrix(std::string, std::vector<std::vector<XVariable*>>& matrix, OrderType order) {
     std::cout << "\n    lex matrix constraint   matrix  " << std::endl;
     std::string sep;
-    if (order == LT)
+    if (order == OrderType::LT)
         sep = " < ";
-    if (order == LE)
+    if (order == OrderType::LE)
         sep = " <= ";
-    if (order == GT)
+    if (order == OrderType::GT)
         sep = " > ";
-    if (order == GE)
+    if (order == OrderType::GE)
         sep = " >= ";
 
     for (unsigned int i = 0; i < (matrix.size() < 4 ? matrix.size() : 3); i++) {
