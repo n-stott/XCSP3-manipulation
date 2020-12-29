@@ -41,7 +41,7 @@ namespace XCSP3Core {
     class XCSP3Manager {
 
     public:
-        XCSP3CoreCallbacks* callback;
+        XCSP3CoreCallbacksBase* callback;
         std::map<std::string, XEntity*>& mapping;
         std::string blockClasses;
 
@@ -58,8 +58,8 @@ namespace XCSP3Core {
         void containsTrees(std::vector<XVariable*>& list, std::vector<Tree*>& newlist);
 
     public:
-        // XCSP3CoreCallbacks *c, std::map<std::string, XEntity *> &m, bool
-        XCSP3Manager(XCSP3CoreCallbacks* c, std::map<std::string, XEntity*>& m, bool = true) : callback(c), mapping(m), blockClasses("") {}
+        // XCSP3CoreCallbacksBase *c, std::map<std::string, XEntity *> &m, bool
+        XCSP3Manager(XCSP3CoreCallbacksBase* c, std::map<std::string, XEntity*>& m, bool = true) : callback(c), mapping(m), blockClasses("") {}
 
         void beginInstance(InstanceType type) {
             callback->_arguments = nullptr;

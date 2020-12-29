@@ -49,7 +49,7 @@ namespace XCSP3Core {
         XMLParser cspParser;
 
     public:
-        XCSP3CoreParser(XCSP3CoreCallbacks* cb) : cspParser(cb) {
+        XCSP3CoreParser(XCSP3CoreCallbacksBase* cb) : cspParser(cb) {
             LIBXML_TEST_VERSION
         }
 

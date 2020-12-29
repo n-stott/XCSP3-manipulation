@@ -345,7 +345,7 @@ void XMLParser::parseListOfIntegerOrInterval(const UTF8String& txt, std::vector<
 //    Constructor and destructor
 //------------------------------------------------------------------------------------------
 
-XMLParser::XMLParser(XCSP3CoreCallbacks* cb) {
+XMLParser::XMLParser(XCSP3CoreCallbacksBase* cb) {
     keepIntervals = false;
     this->manager = new XCSP3Manager(cb, variablesList);
     unknownTagHandler = new UnknownTagAction(this, "unknown");

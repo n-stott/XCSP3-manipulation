@@ -908,7 +908,7 @@ namespace XCSP3Core {
         };
 
     public:
-        XMLParser(XCSP3CoreCallbacks* cb);
+        XMLParser(XCSP3CoreCallbacksBase* cb);
         ~XMLParser();
 
         /**

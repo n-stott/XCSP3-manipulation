@@ -41,205 +41,174 @@
 
 namespace XCSP3Core {
 
-    class XCSP3PrintCallbacks : public XCSP3CoreCallbacks {
+    class XCSP3PrintCallbacks : public XCSP3CoreCallbacksBase {
     public:
         XCSP3PrintCallbacks();
 
-        virtual void beginInstance(InstanceType type) override;
+        void beginInstance(InstanceType type) override;
+        void endInstance() override;
 
-        virtual void endInstance() override;
+        void beginVariables() override;
+        void endVariables() override;
 
-        virtual void beginVariables() override;
+        void beginVariableArray(const std::string& id) override;
+        void endVariableArray() override;
 
-        virtual void endVariables() override;
+        void beginConstraints() override;
+        void endConstraints() override;
 
-        virtual void beginVariableArray(const std::string& id) override;
+        void beginGroup(const std::string& id) override;
+        void endGroup() override;
 
-        virtual void endVariableArray() override;
+        void beginBlock(const std::string& classes) override;
+        void endBlock() override;
 
-        virtual void beginConstraints() override;
+        void beginSlide(const std::string& id, bool circular) override;
+        void endSlide() override;
 
-        virtual void endConstraints() override;
+        void beginObjectives() override;
+        void endObjectives() override;
 
-        virtual void beginGroup(const std::string& id) override;
+        void beginAnnotations() override;
+        void endAnnotations() override;
 
-        virtual void endGroup() override;
+        void buildVariableInteger(const std::string& id, int minValue, int maxValue) override;
+        void buildVariableInteger(const std::string& id, std::vector<int>& values) override;
 
-        virtual void beginBlock(std::string classes) override;
+        void buildAnnotationDecision(std::vector<XVariable*>& list) override;
 
-        virtual void endBlock() override;
+        void buildConstraintTrue(const std::string& id) override;
+        void buildConstraintFalse(const std::string& id) override;
 
-        virtual void beginSlide(const std::string& id, bool circular) override;
+        void buildConstraintExtension(const std::string& id, std::vector<XVariable*> list, std::vector<std::vector<int>>& tuples, bool support, bool hasStar) override;
+        void buildConstraintExtension(const std::string& id, XVariable* variable, std::vector<int>& tuples, bool support, bool hasStar) override;
 
-        virtual void endSlide() override;
+        void buildConstraintExtensionAs(const std::string& id, std::vector<XVariable*> list, bool support, bool hasStar) override;
 
-        virtual void beginObjectives() override;
+        void buildConstraintIntension(const std::string& id, std::string expr) override;
+        void buildConstraintIntension(const std::string& id, Tree* tree) override;
 
-        virtual void endObjectives() override;
+        void buildConstraintPrimitive(const std::string& id, OrderType op, XVariable* x, int k, XVariable* y) override;
+        void buildConstraintPrimitive(const std::string& id, OrderType op, XVariable* x, int k) override;
+        void buildConstraintPrimitive(const std::string& id, XVariable* x, bool in, int min, int max) override;
 
-        virtual void beginAnnotations() override;
+        void buildConstraintRegular(const std::string& id, std::vector<XVariable*>& list, std::string st, std::vector<std::string>& final, std::vector<XTransition>& transitions) override;
 
-        virtual void endAnnotations() override;
+        void buildConstraintMDD(const std::string& id, std::vector<XVariable*>& list, std::vector<XTransition>& transitions) override;
 
-        virtual void buildVariableInteger(const std::string& id, int minValue, int maxValue) override;
+        void buildConstraintAlldifferent(const std::string& id, std::vector<XVariable*>& list) override;
+        void buildConstraintAlldifferentExcept(const std::string& id, std::vector<XVariable*>& list, std::vector<int>& except) override;
+        void buildConstraintAlldifferent(const std::string& id, std::vector<Tree*>& list) override;
+        void buildConstraintAlldifferentList(const std::string& id, std::vector<std::vector<XVariable*>>& lists) override;
+        void buildConstraintAlldifferentMatrix(const std::string& id, std::vector<std::vector<XVariable*>>& matrix) override;
 
-        virtual void buildVariableInteger(const std::string& id, std::vector<int>& values) override;
+        void buildConstraintAllEqual(const std::string& id, std::vector<XVariable*>& list) override;
 
-        virtual void buildConstraintExtension(const std::string& id, std::vector<XVariable*> list, std::vector<std::vector<int>>& tuples, bool support, bool hasStar) override;
+        void buildConstraintNotAllEqual(const std::string& id, std::vector<XVariable*>& list) override;
 
-        virtual void buildConstraintExtension(const std::string& id, XVariable* variable, std::vector<int>& tuples, bool support, bool hasStar) override;
+        void buildConstraintOrdered(const std::string& id, std::vector<XVariable*>& list, OrderType order) override;
+        void buildConstraintOrdered(const std::string& id, std::vector<XVariable*>& list, std::vector<int>& lengths, OrderType order) override;
 
-        virtual void buildConstraintExtensionAs(const std::string& id, std::vector<XVariable*> list, bool support, bool hasStar) override;
+        void buildConstraintLex(const std::string& id, std::vector<std::vector<XVariable*>>& lists, OrderType order) override;
+        void buildConstraintLexMatrix(const std::string& id, std::vector<std::vector<XVariable*>>& matrix, OrderType order) override;
 
-        virtual void buildConstraintIntension(const std::string& id, std::string expr) override;
+        void buildConstraintSum(const std::string& id, std::vector<XVariable*>& list, std::vector<int>& coeffs, XCondition& cond) override;
+        void buildConstraintSum(const std::string& id, std::vector<XVariable*>& list, XCondition& cond) override;
+        void buildConstraintSum(const std::string& id, std::vector<XVariable*>& list, std::vector<XVariable*>& coeffs, XCondition& cond) override;
+        void buildConstraintSum(const std::string& id, std::vector<Tree*>& list, std::vector<int>& coeffs, XCondition& cond) override;
+        void buildConstraintSum(const std::string& id, std::vector<Tree*>& list, XCondition& cond) override;
 
-        virtual void buildConstraintIntension(const std::string& id, Tree* tree) override;
+        void buildConstraintMult(const std::string& id, XVariable* x, XVariable* y, XVariable* z) override;
 
-        virtual void buildConstraintPrimitive(const std::string& id, OrderType op, XVariable* x, int k, XVariable* y) override;
+        void buildConstraintAtMost(const std::string& id, std::vector<XVariable*>& list, int value, int k) override;
+        void buildConstraintAtLeast(const std::string& id, std::vector<XVariable*>& list, int value, int k) override;
+        void buildConstraintExactlyK(const std::string& id, std::vector<XVariable*>& list, int value, int k) override;
+        void buildConstraintAmong(const std::string& id, std::vector<XVariable*>& list, std::vector<int>& values, int k) override;
+        void buildConstraintExactlyVariable(const std::string& id, std::vector<XVariable*>& list, int value, XVariable* x) override;
 
-        virtual void buildConstraintPrimitive(const std::string& id, OrderType op, XVariable* x, int k) override;
+        void buildConstraintCount(const std::string& id, std::vector<XVariable*>& list, std::vector<int>& values, XCondition& xc) override;
+        void buildConstraintCount(const std::string& id, std::vector<XVariable*>& list, std::vector<XVariable*>& values, XCondition& xc) override;
 
-        virtual void buildConstraintPrimitive(const std::string& id, XVariable* x, bool in, int min, int max) override;
+        void buildConstraintNValues(const std::string& id, std::vector<XVariable*>& list, std::vector<int>& except, XCondition& xc) override;
+        void buildConstraintNValues(const std::string& id, std::vector<XVariable*>& list, XCondition& xc) override;
 
-        virtual void buildConstraintRegular(const std::string& id, std::vector<XVariable*>& list, std::string st, std::vector<std::string>& final, std::vector<XTransition>& transitions) override;
+        void buildConstraintCardinality(const std::string& id, std::vector<XVariable*>& list, std::vector<int> values, std::vector<int>& occurs, bool closed) override;
+        void buildConstraintCardinality(const std::string& id, std::vector<XVariable*>& list, std::vector<int> values, std::vector<XVariable*>& occurs, bool closed) override;
+        void buildConstraintCardinality(const std::string& id, std::vector<XVariable*>& list, std::vector<int> values, std::vector<XInterval>& occurs, bool closed) override;
+        void buildConstraintCardinality(const std::string& id, std::vector<XVariable*>& list, std::vector<XVariable*> values, std::vector<int>& occurs, bool closed) override;
+        void buildConstraintCardinality(const std::string& id, std::vector<XVariable*>& list, std::vector<XVariable*> values, std::vector<XVariable*>& occurs, bool closed) override;
+        void buildConstraintCardinality(const std::string& id, std::vector<XVariable*>& list, std::vector<XVariable*> values, std::vector<XInterval>& occurs, bool closed) override;
 
-        virtual void buildConstraintMDD(const std::string& id, std::vector<XVariable*>& list, std::vector<XTransition>& transitions) override;
+        void buildConstraintMinimum(const std::string& id, std::vector<XVariable*>& list, XCondition& xc) override;
+        void buildConstraintMinimum(const std::string& id, std::vector<XVariable*>& list, XVariable* index, int startIndex, RankType rank, XCondition& xc) override;
+        void buildConstraintMinimum(const std::string& id, std::vector<Tree*>& list, XCondition& xc) override;
 
-        virtual void buildConstraintAlldifferent(const std::string& id, std::vector<XVariable*>& list) override;
-
-        virtual void buildConstraintAlldifferentExcept(const std::string& id, std::vector<XVariable*>& list, std::vector<int>& except) override;
-
-        virtual void buildConstraintAlldifferent(const std::string& id, std::vector<Tree*>& list) override;
-
-        virtual void buildConstraintAlldifferentList(const std::string& id, std::vector<std::vector<XVariable*>>& lists) override;
-
-        virtual void buildConstraintAlldifferentMatrix(const std::string& id, std::vector<std::vector<XVariable*>>& matrix) override;
-
-        virtual void buildConstraintAllEqual(const std::string& id, std::vector<XVariable*>& list) override;
-
-        virtual void buildConstraintNotAllEqual(const std::string& id, std::vector<XVariable*>& list) override;
-
-        virtual void buildConstraintOrdered(const std::string& id, std::vector<XVariable*>& list, OrderType order) override;
-
-        virtual void buildConstraintOrdered(const std::string& id, std::vector<XVariable*>& list, std::vector<int>& lengths, OrderType order) override;
-
-        virtual void buildConstraintLex(const std::string& id, std::vector<std::vector<XVariable*>>& lists, OrderType order) override;
-
-        virtual void buildConstraintLexMatrix(const std::string& id, std::vector<std::vector<XVariable*>>& matrix, OrderType order) override;
-
-        virtual void buildConstraintSum(const std::string& id, std::vector<XVariable*>& list, std::vector<int>& coeffs, XCondition& cond) override;
-
-        virtual void buildConstraintSum(const std::string& id, std::vector<XVariable*>& list, XCondition& cond) override;
-
-        virtual void buildConstraintSum(const std::string& id, std::vector<XVariable*>& list, std::vector<XVariable*>& coeffs, XCondition& cond) override;
-
-        virtual void buildConstraintSum(const std::string& id, std::vector<Tree*>& list, std::vector<int>& coeffs, XCondition& cond) override;
-
-        virtual void buildConstraintSum(const std::string& id, std::vector<Tree*>& list, XCondition& cond) override;
-
-        virtual void buildConstraintAtMost(const std::string& id, std::vector<XVariable*>& list, int value, int k) override;
-
-        virtual void buildConstraintAtLeast(const std::string& id, std::vector<XVariable*>& list, int value, int k) override;
-
-        virtual void buildConstraintExactlyK(const std::string& id, std::vector<XVariable*>& list, int value, int k) override;
-
-        virtual void buildConstraintAmong(const std::string& id, std::vector<XVariable*>& list, std::vector<int>& values, int k) override;
-
-        virtual void buildConstraintExactlyVariable(const std::string& id, std::vector<XVariable*>& list, int value, XVariable* x) override;
-
-        virtual void buildConstraintCount(const std::string& id, std::vector<XVariable*>& list, std::vector<int>& values, XCondition& xc) override;
-
-        virtual void buildConstraintCount(const std::string& id, std::vector<XVariable*>& list, std::vector<XVariable*>& values, XCondition& xc) override;
-
-        virtual void buildConstraintNValues(const std::string& id, std::vector<XVariable*>& list, std::vector<int>& except, XCondition& xc) override;
-
-        virtual void buildConstraintNValues(const std::string& id, std::vector<XVariable*>& list, XCondition& xc) override;
-
-        virtual void buildConstraintCardinality(const std::string& id, std::vector<XVariable*>& list, std::vector<int> values, std::vector<int>& occurs, bool closed) override;
-
-        virtual void buildConstraintCardinality(const std::string& id, std::vector<XVariable*>& list, std::vector<int> values, std::vector<XVariable*>& occurs, bool closed) override;
-
-        virtual void buildConstraintCardinality(const std::string& id, std::vector<XVariable*>& list, std::vector<int> values, std::vector<XInterval>& occurs, bool closed) override;
-
-        virtual void buildConstraintCardinality(const std::string& id, std::vector<XVariable*>& list, std::vector<XVariable*> values, std::vector<int>& occurs, bool closed) override;
-
-        virtual void buildConstraintCardinality(const std::string& id, std::vector<XVariable*>& list, std::vector<XVariable*> values, std::vector<XVariable*>& occurs, bool closed) override;
-
-        virtual void buildConstraintCardinality(const std::string& id, std::vector<XVariable*>& list, std::vector<XVariable*> values, std::vector<XInterval>& occurs, bool closed) override;
-
-        virtual void buildConstraintMinimum(const std::string& id, std::vector<XVariable*>& list, XCondition& xc) override;
-
-        virtual void buildConstraintMinimum(const std::string& id, std::vector<XVariable*>& list, XVariable* index, int startIndex, RankType rank, XCondition& xc) override;
-
-        virtual void buildConstraintMaximum(const std::string& id, std::vector<XVariable*>& list, XCondition& xc) override;
-
-        virtual void buildConstraintMaximum(const std::string& id, std::vector<XVariable*>& list, XVariable* index, int startIndex, RankType rank, XCondition& xc) override;
-
-        virtual void buildConstraintElement(const std::string& id, std::vector<XVariable*>& list, int value) override;
-
-        virtual void buildConstraintElement(const std::string& id, std::vector<XVariable*>& list, XVariable* value) override;
-
-        virtual void buildConstraintElement(const std::string& id, std::vector<XVariable*>& list, int startIndex, XVariable* index, RankType rank, int value) override;
-
-        virtual void buildConstraintElement(const std::string& id, std::vector<XVariable*>& list, int startIndex, XVariable* index, RankType rank, XVariable* value) override;
-
-        virtual void buildConstraintElement(const std::string& id, std::vector<int>& list, int startIndex, XVariable* index, RankType rank, XVariable* value) override;
-
-        virtual void buildConstraintElement(const std::string& id, std::vector<std::vector<int>>& matrix, int startRowIndex, XVariable* rowIndex, int startColIndex, XVariable* colIndex, XVariable* value) override;
-
-        virtual void buildConstraintChannel(const std::string& id, std::vector<XVariable*>& list, int startIndex) override;
-
-        virtual void buildConstraintChannel(const std::string& id, std::vector<XVariable*>& list1, int startIndex1, std::vector<XVariable*>& list2, int startIndex2) override;
-
-        virtual void buildConstraintChannel(const std::string& id, std::vector<XVariable*>& list, int startIndex, XVariable* value) override;
-
-        virtual void buildConstraintStretch(const std::string& id, std::vector<XVariable*>& list, std::vector<int>& values, std::vector<XInterval>& widths) override;
-
-        virtual void buildConstraintStretch(const std::string& id, std::vector<XVariable*>& list, std::vector<int>& values, std::vector<XInterval>& widths, std::vector<std::vector<int>>& patterns) override;
-
-        virtual void buildConstraintNoOverlap(const std::string& id, std::vector<XVariable*>& origins, std::vector<int>& lengths, bool zeroIgnored) override;
-
-        virtual void buildConstraintNoOverlap(const std::string& id, std::vector<XVariable*>& origins, std::vector<XVariable*>& lengths, bool zeroIgnored) override;
-
-        virtual void buildConstraintNoOverlap(const std::string& id, std::vector<std::vector<XVariable*>>& origins, std::vector<std::vector<int>>& lengths, bool zeroIgnored) override;
-
-        virtual void buildConstraintNoOverlap(const std::string& id, std::vector<std::vector<XVariable*>>& origins, std::vector<std::vector<XVariable*>>& lengths, bool zeroIgnored) override;
-
-        virtual void buildConstraintInstantiation(const std::string& id, std::vector<XVariable*>& list, std::vector<int>& values) override;
-
-        virtual void buildConstraintClause(const std::string& id, std::vector<XVariable*>& positive, std::vector<XVariable*>& negative) override;
-
-        virtual void buildConstraintCircuit(const std::string& id, std::vector<XVariable*>& list, int startIndex) override;
-
-        virtual void buildConstraintCircuit(const std::string& id, std::vector<XVariable*>& list, int startIndex, int size) override;
-
-        virtual void buildConstraintCircuit(const std::string& id, std::vector<XVariable*>& list, int startIndex, XVariable* size) override;
-
-        virtual void buildObjectiveMinimizeExpression(std::string expr) override;
-
-        virtual void buildObjectiveMaximizeExpression(std::string expr) override;
-
-        virtual void buildObjectiveMinimizeVariable(XVariable* x) override;
-
-        virtual void buildObjectiveMaximizeVariable(XVariable* x) override;
-
-        virtual void buildObjectiveMinimize(ExpressionObjective type, std::vector<XVariable*>& list, std::vector<int>& coefs) override;
-
-        virtual void buildObjectiveMaximize(ExpressionObjective type, std::vector<XVariable*>& list, std::vector<int>& coefs) override;
-
-        virtual void buildObjectiveMinimize(ExpressionObjective type, std::vector<XVariable*>& list) override;
-
-        virtual void buildObjectiveMaximize(ExpressionObjective type, std::vector<XVariable*>& list) override;
-
-        virtual void buildAnnotationDecision(std::vector<XVariable*>& list) override;
-        bool canonize;
+        void buildConstraintMaximum(const std::string& id, std::vector<XVariable*>& list, XCondition& xc) override;
+        void buildConstraintMaximum(const std::string& id, std::vector<XVariable*>& list, XVariable* index, int startIndex, RankType rank, XCondition& xc) override;
+        void buildConstraintMaximum(const std::string& id, std::vector<Tree*>& list, XCondition& xc) override;
+
+        void buildConstraintElement(const std::string& id, std::vector<XVariable*>& list, int value) override;
+        void buildConstraintElement(const std::string& id, std::vector<XVariable*>& list, XVariable* value) override;
+        void buildConstraintElement(const std::string& id, std::vector<XVariable*>& list, int startIndex, XVariable* index, RankType rank, int value) override;
+        void buildConstraintElement(const std::string& id, std::vector<XVariable*>& list, int startIndex, XVariable* index, RankType rank, XVariable* value) override;
+        void buildConstraintElement(const std::string& id, std::vector<int>& list, int startIndex, XVariable* index, RankType rank, XVariable* value) override;
+        void buildConstraintElement(const std::string& id, std::vector<std::vector<int>>& matrix, int startRowIndex, XVariable* rowIndex, int startColIndex, XVariable* colIndex, XVariable* value) override;
+        void buildConstraintElement(const std::string& id, std::vector<std::vector<XVariable*>>& matrix, int startRowIndex, XVariable* rowIndex, int startColIndex, XVariable* colIndex, XVariable* value) override;
+        void buildConstraintElement(const std::string& id, std::vector<std::vector<XVariable*>>& matrix, int startRowIndex, XVariable* rowIndex, int startColIndex, XVariable* colIndex, int value) override;
+
+        void buildConstraintChannel(const std::string& id, std::vector<XVariable*>& list, int startIndex) override;
+        void buildConstraintChannel(const std::string& id, std::vector<XVariable*>& list1, int startIndex1, std::vector<XVariable*>& list2, int startIndex2) override;
+        void buildConstraintChannel(const std::string& id, std::vector<XVariable*>& list, int startIndex, XVariable* value) override;
+
+        void buildConstraintStretch(const std::string& id, std::vector<XVariable*>& list, std::vector<int>& values, std::vector<XInterval>& widths) override;
+        void buildConstraintStretch(const std::string& id, std::vector<XVariable*>& list, std::vector<int>& values, std::vector<XInterval>& widths, std::vector<std::vector<int>>& patterns) override;
+
+        void buildConstraintNoOverlap(const std::string& id, std::vector<XVariable*>& origins, std::vector<int>& lengths, bool zeroIgnored) override;
+        void buildConstraintNoOverlap(const std::string& id, std::vector<XVariable*>& origins, std::vector<XVariable*>& lengths, bool zeroIgnored) override;
+        void buildConstraintNoOverlap(const std::string& id, std::vector<std::vector<XVariable*>>& origins, std::vector<std::vector<int>>& lengths, bool zeroIgnored) override;
+        void buildConstraintNoOverlap(const std::string& id, std::vector<std::vector<XVariable*>>& origins, std::vector<std::vector<XVariable*>>& lengths, bool zeroIgnored) override;
+
+        void buildConstraintInstantiation(const std::string& id, std::vector<XVariable*>& list, std::vector<int>& values) override;
+
+        void buildConstraintClause(const std::string& id, std::vector<XVariable*>& positive, std::vector<XVariable*>& negative) override;
+
+        void buildConstraintCircuit(const std::string& id, std::vector<XVariable*>& list, int startIndex) override;
+        void buildConstraintCircuit(const std::string& id, std::vector<XVariable*>& list, int startIndex, int size) override;
+        void buildConstraintCircuit(const std::string& id, std::vector<XVariable*>& list, int startIndex, XVariable* size) override;
+
+        void buildConstraintCumulative(const std::string& id, std::vector<XVariable*>& origins, std::vector<int>& lengths, std::vector<int>& heights, XCondition& xc) override;
+        void buildConstraintCumulative(const std::string& id, std::vector<XVariable*>& origins, std::vector<XVariable*>& lengths, std::vector<int>& heights, XCondition& xc) override;
+        void buildConstraintCumulative(const std::string& id, std::vector<XVariable*>& origins, std::vector<int>& lengths, std::vector<XVariable*>& varHeights, XCondition& xc) override;
+        void buildConstraintCumulative(const std::string& id, std::vector<XVariable*>& origins, std::vector<XVariable*>& lengths, std::vector<XVariable*>& heights, XCondition& xc) override;
+        void buildConstraintCumulative(const std::string& id, std::vector<XVariable*>& origins, std::vector<int>& lengths, std::vector<int>& heights, std::vector<XVariable*>& ends, XCondition& xc) override;
+        void buildConstraintCumulative(const std::string& id, std::vector<XVariable*>& origins, std::vector<int>& lengths, std::vector<XVariable*>& varHeights, std::vector<XVariable*>& ends, XCondition& xc) override;
+        void buildConstraintCumulative(const std::string& id, std::vector<XVariable*>& origins, std::vector<XVariable*>& lengths, std::vector<int>& heights, std::vector<XVariable*>& ends, XCondition& xc) override;
+        void buildConstraintCumulative(const std::string& id, std::vector<XVariable*>& origins, std::vector<XVariable*>& lengths, std::vector<XVariable*>& heights, std::vector<XVariable*>& ends, XCondition& xc) override;
+
+        void buildObjectiveMinimizeExpression(std::string expr) override;
+        void buildObjectiveMaximizeExpression(std::string expr) override;
+
+        void buildObjectiveMinimizeVariable(XVariable* x) override;
+        void buildObjectiveMaximizeVariable(XVariable* x) override;
+
+        void buildObjectiveMinimize(ExpressionObjective type, std::vector<XVariable*>& list, std::vector<int>& coefs) override;
+        void buildObjectiveMaximize(ExpressionObjective type, std::vector<XVariable*>& list, std::vector<int>& coefs) override;
+
+        void buildObjectiveMinimize(ExpressionObjective type, std::vector<XVariable*>& list) override;
+        void buildObjectiveMaximize(ExpressionObjective type, std::vector<XVariable*>& list) override;
+
+        void buildObjectiveMinimize(ExpressionObjective type, std::vector<Tree*>& trees) override;
+        void buildObjectiveMaximize(ExpressionObjective type, std::vector<Tree*>& trees) override;
+
+        void buildObjectiveMinimize(ExpressionObjective type, std::vector<Tree*>& trees, std::vector<int>& coefs) override;
+        void buildObjectiveMaximize(ExpressionObjective type, std::vector<Tree*>& trees, std::vector<int>& coefs) override;
     };
 
 } // namespace XCSP3Core
 
 using namespace XCSP3Core;
 
-XCSP3PrintCallbacks::XCSP3PrintCallbacks() : XCSP3CoreCallbacks(), canonize(true) {}
+XCSP3PrintCallbacks::XCSP3PrintCallbacks() : XCSP3CoreCallbacksBase() {}
 
 template <class T>
 void displayList(std::vector<T>& list, std::string separator = " ") {
@@ -269,6 +238,23 @@ void displayList(std::vector<XVariable*>& list, std::string separator = " ") {
     }
     for (unsigned int i = 0; i < list.size(); i++)
         std::cout << list[i]->id << separator;
+    std::cout << std::endl;
+}
+
+template <class T>
+void displayLists(std::vector<XVariable*>& list1, std::vector<T>& list2, std::string separator = " ") {
+    assert(list1.size() == list2.size());
+    if (list1.size() > 8) {
+        for (int i = 0; i < 3; i++)
+            std::cout << list2[i] << "*" << list1[i]->id << separator;
+        std::cout << " ... ";
+        for (unsigned int i = list1.size() - 4; i < list1.size(); i++)
+            std::cout << list2[i] << "*" << list1[i]->id << separator;
+        std::cout << std::endl;
+        return;
+    }
+    for (unsigned int i = 0; i < list1.size(); i++)
+        std::cout << list2[i] << "*" << list1[i]->id << separator;
     std::cout << std::endl;
 }
 
@@ -313,7 +299,7 @@ void XCSP3PrintCallbacks::endGroup() {
     std::cout << "   end group of constraint" << std::endl;
 }
 
-void XCSP3PrintCallbacks::beginBlock(std::string classes) {
+void XCSP3PrintCallbacks::beginBlock(const std::string& classes) {
     std::cout << "   start block of constraint classes = " << classes << std::endl;
 }
 
@@ -1027,33 +1013,196 @@ void XCSP3PrintCallbacks::buildObjectiveMaximizeExpression(std::string expr) {
 }
 
 void XCSP3PrintCallbacks::buildObjectiveMinimizeVariable(XVariable* x) {
-    std::cout << "\n    objective: minimize variable " << x << std::endl;
+    std::cout << "\n    objective: minimize variable " << x->id << std::endl;
 }
 
 void XCSP3PrintCallbacks::buildObjectiveMaximizeVariable(XVariable* x) {
-    std::cout << "\n    objective: maximize variable " << x << std::endl;
+    std::cout << "\n    objective: maximize variable " << x->id << std::endl;
 }
 
 void XCSP3PrintCallbacks::buildObjectiveMinimize(ExpressionObjective type, std::vector<XVariable*>& list, std::vector<int>& coefs) {
-    XCSP3CoreCallbacks::buildObjectiveMinimize(type, list, coefs);
+    std::cout << "minimize - type : " << static_cast<int>(type) << '\n';
+    std::cout << "      ";
+    displayLists(list, coefs);
 }
 
 void XCSP3PrintCallbacks::buildObjectiveMaximize(ExpressionObjective type, std::vector<XVariable*>& list, std::vector<int>& coefs) {
-    XCSP3CoreCallbacks::buildObjectiveMaximize(type, list, coefs);
+    std::cout << "maximize - type : " << static_cast<int>(type) << '\n';
+    std::cout << "      ";
+    displayLists(list, coefs);
 }
 
 void XCSP3PrintCallbacks::buildObjectiveMinimize(ExpressionObjective type, std::vector<XVariable*>& list) {
-    XCSP3CoreCallbacks::buildObjectiveMinimize(type, list);
+    std::cout << "minimize - type : " << static_cast<int>(type) << '\n';
+    std::cout << "      ";
+    displayList(list);
 }
 
 void XCSP3PrintCallbacks::buildObjectiveMaximize(ExpressionObjective type, std::vector<XVariable*>& list) {
-    XCSP3CoreCallbacks::buildObjectiveMaximize(type, list);
+    std::cout << "maximize - type : " << static_cast<int>(type) << '\n';
+    std::cout << "      ";
+    displayList(list);
 }
 
 void XCSP3PrintCallbacks::buildAnnotationDecision(std::vector<XVariable*>& list) {
     std::cout << "       decision variables" << std::endl
               << "       ";
     displayList(list);
+}
+
+void XCSP3PrintCallbacks::buildConstraintTrue(const std::string& id) {
+    (void)id;
+}
+
+void XCSP3PrintCallbacks::buildConstraintFalse(const std::string& id) {
+    (void)id;
+}
+
+void XCSP3PrintCallbacks::buildConstraintMult(const std::string& id, XVariable* x, XVariable* y, XVariable* z) {
+    (void)id;
+    (void)x;
+    (void)y;
+    (void)z;
+    throw std::runtime_error("primitive constraint x*y=z  is not yet supported. "
+                             "You can use classical intension constrain by assigning recognizeSpecialIntensionCases to false ");
+}
+
+void XCSP3PrintCallbacks::buildConstraintMinimum(const std::string& id, std::vector<Tree*>& list, XCondition& xc) {
+    (void)id;
+    (void)list;
+    (void)xc;
+    throw std::runtime_error("minimum constraint over trees is not yet supported");
+}
+
+void XCSP3PrintCallbacks::buildConstraintMaximum(const std::string& id, std::vector<Tree*>& list, XCondition& xc) {
+    (void)id;
+    (void)list;
+    (void)xc;
+    throw std::runtime_error("maximum constraint over trees is not yet supported");
+}
+
+void XCSP3PrintCallbacks::buildConstraintElement(const std::string& id, std::vector<std::vector<XVariable*>>& matrix, int startRowIndex, XVariable* rowIndex, int startColIndex, XVariable* colIndex, XVariable* value) {
+    (void)id;
+    (void)matrix;
+    (void)startRowIndex;
+    (void)rowIndex;
+    (void)startColIndex;
+    (void)colIndex;
+    (void)value;
+    throw std::runtime_error("Element matrix constraint is not yet supported");
+}
+
+void XCSP3PrintCallbacks::buildConstraintElement(const std::string& id, std::vector<std::vector<XVariable*>>& matrix, int startRowIndex, XVariable* rowIndex, int startColIndex, XVariable* colIndex, int value) {
+    (void)id;
+    (void)matrix;
+    (void)startRowIndex;
+    (void)rowIndex;
+    (void)startColIndex;
+    (void)colIndex;
+    (void)value;
+    throw std::runtime_error("Element matrix constraint is not yet supported");
+}
+
+void XCSP3PrintCallbacks::buildConstraintCumulative(const std::string& id, std::vector<XVariable*>& origins, std::vector<int>& lengths, std::vector<int>& heights, XCondition& xc) {
+    (void)id;
+    (void)origins;
+    (void)lengths;
+    (void)heights;
+    (void)xc;
+    throw std::runtime_error("cumulative (int lengths, int heights) constraint is not yet supported");
+}
+
+void XCSP3PrintCallbacks::buildConstraintCumulative(const std::string& id, std::vector<XVariable*>& origins, std::vector<XVariable*>& lengths, std::vector<int>& heights, XCondition& xc) {
+    (void)id;
+    (void)origins;
+    (void)lengths;
+    (void)heights;
+    (void)xc;
+    throw std::runtime_error("cumulative (var lengths, int heights) constraint is not yet supported");
+}
+
+void XCSP3PrintCallbacks::buildConstraintCumulative(const std::string& id, std::vector<XVariable*>& origins, std::vector<int>& lengths, std::vector<XVariable*>& varHeights, XCondition& xc) {
+    (void)id;
+    (void)origins;
+    (void)lengths;
+    (void)varHeights;
+    (void)xc;
+    throw std::runtime_error("cumulative (int lengths, var heights) constraint is not yet supported");
+}
+
+void XCSP3PrintCallbacks::buildConstraintCumulative(const std::string& id, std::vector<XVariable*>& origins, std::vector<XVariable*>& lengths, std::vector<XVariable*>& heights, XCondition& xc) {
+    (void)id;
+    (void)origins;
+    (void)lengths;
+    (void)heights;
+    (void)xc;
+    throw std::runtime_error("cumulative (var lengths, var heights) constraint is not yet supported");
+}
+
+void XCSP3PrintCallbacks::buildConstraintCumulative(const std::string& id, std::vector<XVariable*>& origins, std::vector<int>& lengths, std::vector<int>& heights, std::vector<XVariable*>& ends, XCondition& xc) {
+    (void)id;
+    (void)origins;
+    (void)lengths;
+    (void)heights;
+    (void)ends;
+    (void)xc;
+    throw std::runtime_error("cumulative (int lengths, int heights) constraint is not yet supported");
+}
+
+void XCSP3PrintCallbacks::buildConstraintCumulative(const std::string& id, std::vector<XVariable*>& origins, std::vector<int>& lengths, std::vector<XVariable*>& varHeights, std::vector<XVariable*>& ends, XCondition& xc) {
+    (void)id;
+    (void)origins;
+    (void)lengths;
+    (void)varHeights;
+    (void)ends;
+    (void)xc;
+    throw std::runtime_error("cumulative (int lengths, var heights, ends) constraint is not yet supported");
+}
+
+void XCSP3PrintCallbacks::buildConstraintCumulative(const std::string& id, std::vector<XVariable*>& origins, std::vector<XVariable*>& lengths, std::vector<int>& heights, std::vector<XVariable*>& ends, XCondition& xc) {
+    (void)id;
+    (void)origins;
+    (void)lengths;
+    (void)heights;
+    (void)ends;
+    (void)xc;
+    throw std::runtime_error("cumulative (var lengths, int heights, ends) constraint is not yet supported");
+}
+
+void XCSP3PrintCallbacks::buildConstraintCumulative(const std::string& id, std::vector<XVariable*>& origins, std::vector<XVariable*>& lengths, std::vector<XVariable*>& heights, std::vector<XVariable*>& ends, XCondition& xc) {
+    (void)id;
+    (void)origins;
+    (void)lengths;
+    (void)heights;
+    (void)ends;
+    (void)xc;
+    throw std::runtime_error("cumulative (var lengths, var heights, ends) constraint is not yet supported");
+}
+
+void XCSP3PrintCallbacks::buildObjectiveMinimize(ExpressionObjective type, std::vector<Tree*>& trees, std::vector<int>& coefs) {
+    (void)type;
+    (void)trees;
+    (void)coefs;
+    throw std::runtime_error("minimize objective sum with expression  not yet supported");
+}
+
+void XCSP3PrintCallbacks::buildObjectiveMaximize(ExpressionObjective type, std::vector<Tree*>& trees, std::vector<int>& coefs) {
+    (void)type;
+    (void)trees;
+    (void)coefs;
+    throw std::runtime_error("maximize objective with expression  not yet supported");
+}
+
+void XCSP3PrintCallbacks::buildObjectiveMinimize(ExpressionObjective type, std::vector<Tree*>& trees) {
+    (void)type;
+    (void)trees;
+    throw std::runtime_error("minimize objective with expression  not yet supported");
+}
+
+void XCSP3PrintCallbacks::buildObjectiveMaximize(ExpressionObjective type, std::vector<Tree*>& trees) {
+    (void)type;
+    (void)trees;
+    throw std::runtime_error("maximize objective with expression not yet supported");
 }
 
 #endif //COSOCO_XCSP3PRINTCALLBACKS_H
