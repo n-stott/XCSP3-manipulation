@@ -370,13 +370,13 @@ void XCSP3PrintCallbacks::buildConstraintIntension(const std::string& id, Tree* 
     std::cout << "\n";
 }
 
-void XCSP3PrintCallbacks::buildConstraintPrimitive(const std::string& id, OrderType, XVariable* x, int k, XVariable* y) {
-    std::cout << "\n   intension constraint " << id << ": " << x->id << (k >= 0 ? "+" : "") << k << " op " << y->id << std::endl;
+void XCSP3PrintCallbacks::buildConstraintPrimitive(const std::string& id, OrderType op, XVariable* x, int k, XVariable* y) {
+    std::cout << "\n   intension constraint " << id << ": " << x->id << (k >= 0 ? "+" : "") << k << OrderTypeToString(op) << y->id << std::endl;
 }
 
 void XCSP3PrintCallbacks::buildConstraintPrimitive(const std::string& id, OrderType op, XVariable* x, int k) {
     (void)op;
-    std::cout << "\n   constraint  " << id << ":" << x->id << " op " << k << "\n";
+    std::cout << "\n   constraint  " << id << ":" << x->id << OrderTypeToString(op) << k << "\n";
 }
 
 void XCSP3PrintCallbacks::buildConstraintPrimitive(const std::string& id, XVariable* x, bool in, int min, int max) {
@@ -1060,11 +1060,7 @@ void XCSP3PrintCallbacks::buildConstraintFalse(const std::string& id) {
 
 void XCSP3PrintCallbacks::buildConstraintMult(const std::string& id, XVariable* x, XVariable* y, XVariable* z) {
     (void)id;
-    (void)x;
-    (void)y;
-    (void)z;
-    throw std::runtime_error("primitive constraint x*y=z  is not yet supported. "
-                             "You can use classical intension constrain by assigning recognizeSpecialIntensionCases to false ");
+    std::cout << "constraint : " << z->id << " == " << x->id << "*" << y->id << '\n';
 }
 
 void XCSP3PrintCallbacks::buildConstraintMinimum(const std::string& id, std::vector<Tree*>& list, XCondition& xc) {
@@ -1109,7 +1105,14 @@ void XCSP3PrintCallbacks::buildConstraintCumulative(const std::string& id, std::
     (void)lengths;
     (void)heights;
     (void)xc;
-    throw std::runtime_error("cumulative (int lengths, int heights) constraint is not yet supported");
+    std::cout << "Cumulative\n";
+    std::cout << "Origins : ";
+    displayList(origins);
+    std::cout << "Lengths : ";
+    displayList(lengths);
+    std::cout << "heights : ";
+    displayList(heights);
+    std::cout << "Condition : " << xc << std::endl;
 }
 
 void XCSP3PrintCallbacks::buildConstraintCumulative(const std::string& id, std::vector<XVariable*>& origins, std::vector<XVariable*>& lengths, std::vector<int>& heights, XCondition& xc) {

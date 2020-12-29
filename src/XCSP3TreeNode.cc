@@ -199,7 +199,6 @@ Expr XCSP3Core::logicalInversion(Expr type) {
     case Expr::SUPSEQ:
         return Expr::SUBSET;
     default:
-        assert(false);
         break;
     }
     return Expr::UNDEF;

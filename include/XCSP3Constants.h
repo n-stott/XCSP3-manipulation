@@ -24,7 +24,9 @@
  */
 #ifndef XCSP3CONSTANTS_H
 #define XCSP3CONSTANTS_H
+#include <cassert>
 #include <climits>
+#include <string>
 
 namespace XCSP3Core {
 
@@ -69,6 +71,27 @@ namespace XCSP3Core {
         EQ,
         NE
     };
+
+    inline std::string OrderTypeToString(OrderType op) {
+        switch (op) {
+        case OrderType::LE:
+            return "<=";
+        case OrderType::LT:
+            return "<";
+        case OrderType::GE:
+            return ">=";
+        case OrderType::GT:
+            return ">";
+        case OrderType::IN:
+            return "in";
+        case OrderType::EQ:
+            return "==";
+        case OrderType::NE:
+            return "!=";
+        }
+        assert(false);
+        return "undefined";
+    }
 
     enum class OperandType {
         INTEGER,
