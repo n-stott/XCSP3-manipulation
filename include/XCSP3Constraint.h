@@ -68,7 +68,7 @@ namespace XCSP3Core {
 
         XConstraintGroup(std::string idd, std::string c) : XConstraint(idd, c), constraint(NULL), type(ConstraintType::UNKNOWN) {}
 
-        virtual ~XConstraintGroup() { delete constraint; }
+        virtual ~XConstraintGroup() {  }
 
         void unfoldVector(std::vector<XVariable*>& toUnfold, std::vector<XVariable*>& args, std::vector<XVariable*>& initial);
         void unfoldString(std::string& toUnfold, std::vector<XVariable*>& args);

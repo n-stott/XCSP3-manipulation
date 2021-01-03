@@ -208,13 +208,12 @@ void XMLParser::parseSequence(const UTF8String& txt, std::vector<XVariable*>& li
                     int nb;
                     try { // An integer
                         nb = std::stoi(current);
-                        XInteger* xi = new XInteger(current, nb);
+                        XInteger* xi = DataPool::EntityPool.make<XInteger>(current, nb);
                         list.push_back(xi);
-                        toFree.push_back(xi);
 
                     } catch (std::invalid_argument& e) {
                         if (variablesList[current] != NULL)
-                            list.push_back(static_cast<XVariable*>(variablesList[current].get()));
+                            list.push_back(static_cast<XVariable*>(variablesList[current]));
                         else
                             throw std::runtime_error("unknown variable: " + current);
                     }
@@ -222,12 +221,11 @@ void XMLParser::parseSequence(const UTF8String& txt, std::vector<XVariable*>& li
                     int first = std::stoi(current.substr(0, dotdot));
                     int last = std::stoi(current.substr(dotdot + 2));
                     if (keepIntervals) {
-                        list.push_back(new XEInterval(current, first, last));
+                        list.push_back(DataPool::EntityPool.make<XEInterval>(current, first, last));
                     } else {
                         for (int i = first; i <= last; i++) {
-                            XInteger* xi = new XInteger(std::to_string(i), i);
+                            XInteger* xi = DataPool::EntityPool.make<XInteger>(std::to_string(i), i);
                             list.push_back(xi);
-                            toFree.push_back(xi);
                         }
                     }
                 }
@@ -238,17 +236,16 @@ void XMLParser::parseSequence(const UTF8String& txt, std::vector<XVariable*>& li
 
                 if (variablesList[name] == NULL)
                     throw std::runtime_error("unknown variable: " + name);
-                (static_cast<XVariableArray*>(variablesList[name].get()))->getVarsFor(list, compactForm);
+                (static_cast<XVariableArray*>(variablesList[name]))->getVarsFor(list, compactForm);
             }
         } else {
             // Parameter Variable form group template
-            XParameterVariable* xpv = new XParameterVariable(current);
+            XParameterVariable* xpv = DataPool::EntityPool.make<XParameterVariable>(current);
             if (xpv->number == -1)
                 nbParameters = -1;
             else
                 nbParameters++;
             list.push_back(xpv);
-            toFree.push_back(xpv);
         }
     }
 }
@@ -324,9 +321,8 @@ void XMLParser::parseListOfIntegerOrInterval(const UTF8String& txt, std::vector<
                 txt.to(ds);
                 throw std::runtime_error("Integer expected: " + ds);
             }
-            XIntegerValue* xv = new XIntegerValue(val);
+            XIntegerValue* xv = DataPool::IntegerEntityPool.make<XIntegerValue>(val);
             listToFill.push_back(xv);
-            toFreeEntity.push_back(xv);
         } else {
             int first, last;
             if ((false == token.substr(0, pos).to(first)) || (false == token.substr(pos + 2).to(last))) {
@@ -334,9 +330,8 @@ void XMLParser::parseListOfIntegerOrInterval(const UTF8String& txt, std::vector<
                 txt.to(ds);
                 throw std::runtime_error("Integer expected: " + ds);
             }
-            XIntegerInterval* xi = new XIntegerInterval(first, last);
+            XIntegerInterval* xi = DataPool::IntegerEntityPool.make<XIntegerInterval>(first, last);
             listToFill.push_back(xi);
-            toFreeEntity.push_back(xi);
         }
     }
 }
@@ -438,4 +433,5 @@ XMLParser::XMLParser(XCSP3CoreCallbacksBase* cb) {
     registerTagAction(tagList, new ListOfVariablesOrIntegerTagAction(this, "size", this->values));
 }
 
-XMLParser::~XMLParser() { }
+XMLParser::~XMLParser() {
+}

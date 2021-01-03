@@ -101,11 +101,11 @@ public:
         if (operators[0] == Expr::EQ || operators[0] == Expr::NE) {
             std::vector<int> values;
             values.push_back(constants[0]);
-            manager.callback->buildConstraintExtension(id, static_cast<XVariable*>(manager.mapping[variables[0]].get()), values, operators[0] == Expr::EQ, false);
+            manager.callback->buildConstraintExtension(id, static_cast<XVariable*>(manager.mapping[variables[0]]), values, operators[0] == Expr::EQ, false);
             return true;
         }
         if (operators[0] == Expr::LE) {
-            manager.callback->buildConstraintPrimitive(id, OrderType::LE, static_cast<XVariable*>(manager.mapping[variables[0]].get()), constants[0]);
+            manager.callback->buildConstraintPrimitive(id, OrderType::LE, static_cast<XVariable*>(manager.mapping[variables[0]]), constants[0]);
             return true;
         }
         return false;
@@ -117,7 +117,7 @@ public:
     PrimitiveUnary2(XCSP3Manager& m) : PrimitivePattern(m, "le(3,x)") {}
 
     bool post() override {
-        manager.callback->buildConstraintPrimitive(id, OrderType::GE, static_cast<XVariable*>(manager.mapping[variables[0]].get()), constants[0]);
+        manager.callback->buildConstraintPrimitive(id, OrderType::GE, static_cast<XVariable*>(manager.mapping[variables[0]]), constants[0]);
         return true;
     }
 };
@@ -142,7 +142,7 @@ public:
                 manager.callback->buildConstraintTrue(id);
             return true;
         }
-        manager.callback->buildConstraintExtension(id, static_cast<XVariable*>(manager.mapping[variables[0]].get()), values, operators[0] == Expr::IN, false);
+        manager.callback->buildConstraintExtension(id, static_cast<XVariable*>(manager.mapping[variables[0]]), values, operators[0] == Expr::IN, false);
         return true;
     }
 };
@@ -160,13 +160,13 @@ public:
             if (constants[1] > constants[0])
                 manager.callback->buildConstraintFalse(id);
             else
-                manager.callback->buildConstraintPrimitive(id, static_cast<XVariable*>(manager.mapping[variables[0]].get()), true, constants[1], constants[0]);
+                manager.callback->buildConstraintPrimitive(id, static_cast<XVariable*>(manager.mapping[variables[0]]), true, constants[1], constants[0]);
             return true;
         }
         if (constants[0] > constants[1])
             manager.callback->buildConstraintTrue(id);
         else
-            manager.callback->buildConstraintPrimitive(id, static_cast<XVariable*>(manager.mapping[variables[0]].get()), false, constants[0] + 1, constants[1] - 1);
+            manager.callback->buildConstraintPrimitive(id, static_cast<XVariable*>(manager.mapping[variables[0]]), false, constants[0] + 1, constants[1] - 1);
         return true;
     }
 };
@@ -180,8 +180,8 @@ public:
     bool post() override {
         if (operators.size() != 1 || isRelationalOperator(operators[0]) == false)
             return false;
-        manager.callback->buildConstraintPrimitive(id, expressionTypeToOrderType(operators[0]), static_cast<XVariable*>(manager.mapping[variables[0]].get()), 0,
-                                                   static_cast<XVariable*>(manager.mapping[variables[1]].get()));
+        manager.callback->buildConstraintPrimitive(id, expressionTypeToOrderType(operators[0]), static_cast<XVariable*>(manager.mapping[variables[0]]), 0,
+                                                   static_cast<XVariable*>(manager.mapping[variables[1]]));
         return true;
     }
 };
@@ -195,8 +195,8 @@ public:
     bool post() override {
         if (operators.size() != 1 || isRelationalOperator(operators[0]) == false)
             return false;
-        manager.callback->buildConstraintPrimitive(id, expressionTypeToOrderType(operators[0]), static_cast<XVariable*>(manager.mapping[variables[0]].get()), constants[0],
-                                                   static_cast<XVariable*>(manager.mapping[variables[1]].get()));
+        manager.callback->buildConstraintPrimitive(id, expressionTypeToOrderType(operators[0]), static_cast<XVariable*>(manager.mapping[variables[0]]), constants[0],
+                                                   static_cast<XVariable*>(manager.mapping[variables[1]]));
 
         return true;
     }
@@ -212,8 +212,8 @@ public:
         if (operators.size() != 1 || isRelationalOperator(operators[0]) == false)
             return false;
         constants[0] = -constants[0];
-        manager.callback->buildConstraintPrimitive(id, expressionTypeToOrderType(operators[0]), static_cast<XVariable*>(manager.mapping[variables[0]].get()), constants[0],
-                                                   static_cast<XVariable*>(manager.mapping[variables[1]].get()));
+        manager.callback->buildConstraintPrimitive(id, expressionTypeToOrderType(operators[0]), static_cast<XVariable*>(manager.mapping[variables[0]]), constants[0],
+                                                   static_cast<XVariable*>(manager.mapping[variables[1]]));
 
         return true;
     }
@@ -230,7 +230,7 @@ public:
             return false;
         std::vector<XVariable*> list;
         for (std::string& s : variables)
-            list.push_back(static_cast<XVariable*>(manager.mapping[s].get()));
+            list.push_back(static_cast<XVariable*>(manager.mapping[s]));
         std::vector<int> coefs;
         coefs.push_back(1);
         coefs.push_back(1);
@@ -250,9 +250,9 @@ public:
     PrimitiveTernary2(XCSP3Manager& m) : PrimitivePattern(m, "eq(mul(x,y),z)") {}
 
     bool post() override {
-        manager.callback->buildConstraintMult(id, static_cast<XVariable*>(manager.mapping[variables[0]].get()),
-                                              static_cast<XVariable*>(manager.mapping[variables[1]].get()),
-                                              static_cast<XVariable*>(manager.mapping[variables[2]].get()));
+        manager.callback->buildConstraintMult(id, static_cast<XVariable*>(manager.mapping[variables[0]]),
+                                              static_cast<XVariable*>(manager.mapping[variables[1]]),
+                                              static_cast<XVariable*>(manager.mapping[variables[2]]));
         return true;
     }
 };
@@ -551,7 +551,7 @@ void XCSP3Manager::newConstraintSum(XConstraintSum* constraint) {
 
     std::vector<XVariable*> xvalues;
     for (XEntity* xe : constraint->values) {
-        xvalues.push_back(static_cast<XVariable*>(mapping[xe->id].get()));
+        xvalues.push_back(static_cast<XVariable*>(mapping[xe->id]));
     }
     callback->buildConstraintSum(constraint->id, constraint->list, xvalues, xc);
 }
@@ -588,7 +588,7 @@ void XCSP3Manager::newConstraintCount(XConstraintCount* constraint) {
             return;
         }
         if (xc.operandType == OperandType::VARIABLE && xc.op == OrderType::EQ) {
-            callback->buildConstraintExactlyVariable(constraint->id, constraint->list, value, static_cast<XVariable*>(mapping[xc.var].get()));
+            callback->buildConstraintExactlyVariable(constraint->id, constraint->list, value, static_cast<XVariable*>(mapping[xc.var]));
             return;
         }
     }
@@ -614,7 +614,7 @@ void XCSP3Manager::newConstraintCount(XConstraintCount* constraint) {
     } else {
         std::vector<XVariable*> values;
         for (XEntity* xe : constraint->values) {
-            values.push_back(static_cast<XVariable*>(mapping[xe->id].get()));
+            values.push_back(static_cast<XVariable*>(mapping[xe->id]));
         }
         callback->buildConstraintCount(constraint->id, constraint->list, values, xc);
     }
@@ -1100,7 +1100,7 @@ void XCSP3Manager::newConstraintGroup(XConstraintGroup* group) {
 
 void XCSP3Manager::addObjective(XObjective* objective) {
     if (objective->type == ExpressionObjective::EXPRESSION_O) {
-        XVariable* x = static_cast<XVariable*>(mapping[objective->expression].get());
+        XVariable* x = static_cast<XVariable*>(mapping[objective->expression]);
         if (x != NULL) {
             if (objective->goal == ObjectiveGoal::MINIMIZE)
                 callback->buildObjectiveMinimizeVariable(x);

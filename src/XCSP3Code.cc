@@ -29,6 +29,7 @@
 #include "XCSP3Domain.h"
 #include "XCSP3Tree.h"
 #include "XCSP3Variable.h"
+#include "XCSP3Objective.h"
 #include <assert.h>
 
 using namespace XCSP3Core;
@@ -150,7 +151,7 @@ XVariableArray::XVariableArray(std::string idd, XVariableArray* as) : sizes(as->
     variables.assign(as->variables.size(), NULL);
     id = idd;
     for (unsigned int i = 0; i < variables.size(); i++) {
-        variables[i] = new XVariable(idd, as->variables[i]->domain, indexes);
+        variables[i] = DataPool::EntityPool.make<XVariable>(idd, as->variables[i]->domain, indexes);
         for (int j = sizes.size() - 1; j >= 0; j--)
             if (++indexes[j] == sizes[j])
                 indexes[j] = 0;
@@ -191,15 +192,15 @@ void XVariableArray::getVarsFor(std::vector<XVariable*>& list, std::string compa
         tmp = compactForm.substr(1, pos - 1);
         compactForm = compactForm.substr(pos + 1);
         if (tmp.size() == 0) {
-            ranges.push_back(new XIntegerInterval(0, sizes[i] - 1));
+            ranges.push_back(DataPool::IntegerEntityPool.make<XIntegerInterval>(0, sizes[i] - 1));
         } else {
             size_t dot = tmp.find("..");
             if (dot == std::string::npos)
-                ranges.push_back(new XIntegerValue(std::stoi(tmp)));
+                ranges.push_back(DataPool::IntegerEntityPool.make<XIntegerValue>(std::stoi(tmp)));
             else {
                 int first = std::stoi(tmp.substr(0, dot));
                 int last = std::stoi(tmp.substr(dot + 2));
-                ranges.push_back(new XIntegerInterval(first, last));
+                ranges.push_back(DataPool::IntegerEntityPool.make<XIntegerInterval>(first, last));
             }
         }
     }
@@ -217,9 +218,6 @@ void XVariableArray::getVarsFor(std::vector<XVariable*>& list, std::string compa
                 list.push_back(variables[flatIndexFor(indexes)]);
         }
     } while (incrementIndexes(indexes, ranges));
-
-    for (XIntegerEntity* xi : ranges)
-        delete xi;
 }
 
 void XVariableArray::buildVarsWith(XDomainInteger* domain) {
@@ -228,7 +226,7 @@ void XVariableArray::buildVarsWith(XDomainInteger* domain) {
 
     for (unsigned int i = 0; i < variables.size(); i++) {
         if (variables[i] == NULL) // We need to create a variable
-            variables[i] = new XVariable(id, domain, indexes);
+            variables[i] = DataPool::EntityPool.make<XVariable>(id, domain, indexes);
         for (int j = sizes.size() - 1; j >= 0; j--)
             if (++indexes[j] == sizes[j])
                 indexes[j] = 0;
@@ -537,7 +535,7 @@ void XConstraintClause::unfoldParameters(XConstraintGroup* group, std::vector<XV
             if (xv->id.rfind("not(", 0) != 0)
                 throw std::runtime_error("a clause is malformed in a group: " + xv->id);
             std::string name = xv->id.substr(4, xv->id.length() - 5);
-            negative.push_back(new XVariable(name, nullptr)); // TODO: improvements needed here
+            negative.push_back(DataPool::EntityPool.make<XVariable>(name, nullptr)); // TODO: improvements needed here
         } else {
             positive.push_back(xv);
         }

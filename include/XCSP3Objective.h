@@ -27,6 +27,7 @@
 #define XOBJECTIVE_H
 
 #include "XCSP3Constants.h"
+#include "XCSP3Variable.h"
 #include <iostream>
 #include <vector>
 

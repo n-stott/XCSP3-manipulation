@@ -50,6 +50,7 @@
 #include "XCSP3Objective.h"
 #include "XCSP3Variable.h"
 #include "XCSP3utils.h"
+#include "XCSP3Pool.h"
 
 #include "AttributeList.h"
 #include "UTF8String.h"
@@ -72,9 +73,9 @@ namespace XCSP3Core {
     class XMLParser {
     public:
         // list of attributes and values for a tag
-        std::map<std::string, std::unique_ptr<XEntity>> variablesList;
-        std::vector<std::unique_ptr<XDomainInteger>> allDomains;
-        std::vector<std::unique_ptr<XConstraint>> constraints;
+        std::map<std::string, XEntity*> variablesList;
+        std::vector<XDomainInteger*> allDomains;
+        std::vector<XConstraint*> constraints;
         std::unique_ptr<XCSP3Manager> manager;
 
         // stack of operands to construct list, dictionaries, predicate
@@ -204,8 +205,6 @@ namespace XCSP3Core {
         std::vector<XTransition> transitions; // used in regular and mdd constraints
         int nbParameters;
         bool closed;
-        std::vector<XEntity*> toFree;
-        std::vector<XIntegerEntity*> toFreeEntity;
 
         bool keepIntervals;
 

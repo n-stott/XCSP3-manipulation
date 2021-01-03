@@ -26,6 +26,7 @@
 #ifndef XDOMAIN_H
 #define XDOMAIN_H
 
+#include "XCSP3Pool.h"
 #include <iostream>
 #include <limits>
 #include <stdexcept>
@@ -99,6 +100,8 @@ namespace XCSP3Core {
     };
 
     class XDomain {
+        public:
+        virtual ~XDomain() { }
     };
 
     class XDomainInteger : public XDomain {
@@ -116,6 +119,8 @@ namespace XCSP3Core {
         std::vector<XIntegerEntity*> values;
 
         XDomainInteger() : size(0) {}
+
+        virtual ~XDomainInteger() {}
 
         int nbValues() const {
             return size;
@@ -136,13 +141,13 @@ namespace XCSP3Core {
         void addValue(int v) {
             if (v <= top)
                 throw std::runtime_error{"not sequence domain"};
-            addEntity(new XIntegerValue(top = v));
+            addEntity(DataPool::IntegerEntityPool.make<XIntegerValue>(top = v));
         }
 
         void addInterval(int min, int max) {
             if (min >= max || min <= top)
                 throw std::runtime_error{"not sequence domain"};
-            addEntity(new XIntegerInterval(min, top = max));
+            addEntity(DataPool::IntegerEntityPool.make<XIntegerInterval>(min, top = max));
         }
 
         friend std::ostream& operator<<(std::ostream& f, const XDomainInteger& d);
@@ -159,10 +164,6 @@ namespace XCSP3Core {
             return true;
         }
 
-        virtual ~XDomainInteger() {
-            for (XIntegerEntity* xi : values)
-                delete xi;
-        }
     };
 } // namespace XCSP3Core
 
