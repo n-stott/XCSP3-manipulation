@@ -1601,8 +1601,7 @@ namespace XCSP3Core {
          * @param xc the condition (see XCondition)
          */
         virtual void
-        buildConstraintCumulative(const std::string& id, std::vector<XVariable*>& origins, std::vector<int>& lengths, std::vector<XVariable*>& varHeights, std::vector<XVariable*>& ends,
-                                  XCondition& xc) = 0;
+        buildConstraintCumulative(const std::string& id, std::vector<XVariable*>& origins, std::vector<int>& lengths, std::vector<XVariable*>& varHeights, std::vector<XVariable*>& ends, XCondition& xc) = 0;
 
         /**
          * The callback function related to a cumulative constraint with variable origin, variable lengths and int heights and variable ends
@@ -1625,8 +1624,7 @@ namespace XCSP3Core {
          * @param xc the condition (see XCondition)
          */
         virtual void
-        buildConstraintCumulative(const std::string& id, std::vector<XVariable*>& origins, std::vector<XVariable*>& lengths, std::vector<int>& heights, std::vector<XVariable*>& ends,
-                                  XCondition& xc) = 0;
+        buildConstraintCumulative(const std::string& id, std::vector<XVariable*>& origins, std::vector<XVariable*>& lengths, std::vector<int>& heights, std::vector<XVariable*>& ends, XCondition& xc) = 0;
 
         /**
          * The callback function related to a cumulative constraint with variable origin, variable lengths and variable heights and variable ends
@@ -1649,8 +1647,7 @@ namespace XCSP3Core {
          * @param xc the condition (see XCondition)
          */
         virtual void
-        buildConstraintCumulative(const std::string& id, std::vector<XVariable*>& origins, std::vector<XVariable*>& lengths, std::vector<XVariable*>& heights,
-                                  std::vector<XVariable*>& ends, XCondition& xc) = 0;
+        buildConstraintCumulative(const std::string& id, std::vector<XVariable*>& origins, std::vector<XVariable*>& lengths, std::vector<XVariable*>& heights, std::vector<XVariable*>& ends, XCondition& xc) = 0;
 
         //--------------------------------------------------------------------------------------
         // instantiation constraints

@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.6)
 
 project("xcsp3parser")
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/samples")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/bin")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/lib")
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/lib)
 
@@ -13,10 +13,6 @@ set(Xcsp3Parser_VERSION_MINOR 0)
 set(Xcsp3Parser_VERSION_PATCH 0)
 set(VERSION ${Xcsp3Parser_VERSION_MAJOR}.${Xcsp3Parser_VERSION_MINOR}.${Xcsp3Parser_VERSION_PATCH})
 
-#configure_file(
-#        "${PROJECT_SOURCE_DIR}/include/Xcsp3ParserConfig.h.in"
-#        "${PROJECT_BINARY_DIR}/include/Xcsp3ParserConfig.h"
-#)
 find_package(LibXml2 REQUIRED)
 include_directories(${LIBXML2_INCLUDE_DIR})
 
@@ -60,12 +56,16 @@ set(APP_SOURCES
         samples/main.cc
         include/XCSP3TreeNode.h)
 
+set(BENCH_SOURCES
+        instances/src/XCSP3SummaryCallbacks.h
+        instances/src/run.cpp
+        )
+
 include_directories(
         ${PROJECT_SOURCE_DIR}/include
 )
 
 add_library(${LIBRARY_NAME} STATIC ${LIB_SOURCES} ${LIB_HEADERS})
-#add_library(${LIBRARY_NAME} SHARED ${LIB_SOURCES} ${LIB_HEADERS})
 target_link_libraries(${LIBRARY_NAME} ${LIBXML2_LIBRARIES})
 target_compile_options(${LIBRARY_NAME} PRIVATE -g -O3 -Werror -Wall -Wextra -Werror -pedantic -Wundef -Wcast-align -Wcast-qual -Wold-style-cast -Wdouble-promotion)
 
@@ -80,5 +80,11 @@ add_executable(${APPLICATION_NAME} ${APP_SOURCES})
 target_link_libraries(${APPLICATION_NAME} ${LIBRARY_NAME} ${LIBXML2_LIBRARIES})
 target_include_directories(${LIBRARY_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 target_compile_options(${APPLICATION_NAME} PRIVATE -g -O3 -Werror -Wall -Wextra -Werror -pedantic -Wundef -Wcast-align -Wcast-qual -Wold-style-cast -Wdouble-promotion)
+
+set(BENCH_NAME benchmarkXcsp3)
+add_executable(${BENCH_NAME} ${BENCH_SOURCES})
+target_link_libraries(${BENCH_NAME} ${LIBRARY_NAME} ${LIBXML2_LIBRARIES})
+target_include_directories(${LIBRARY_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_compile_options(${BENCH_NAME} PRIVATE -g -O3 -Werror -Wall -Wextra -Werror -pedantic -Wundef -Wcast-align -Wcast-qual -Wold-style-cast -Wdouble-promotion)
 
 

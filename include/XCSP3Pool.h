@@ -20,11 +20,15 @@ namespace XCSP3Core {
         }
 
         ~Pool() {
-            std::cout << typeid(Data).name() << " : " << pool_.size() << " freed from pool" << std::endl;
+            // std::cout << typeid(Data).name() << " : " << pool_.size() << " freed from pool" << std::endl;
         }
 
         void clear() {
             pool_.clear();
+        }
+
+        void swap(Pool& other) {
+            pool_.swap(other.pool_);
         }
     };
 

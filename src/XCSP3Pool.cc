@@ -14,11 +14,11 @@ namespace XCSP3Core {
     Pool<Node> DataPool::NodePool;
 
     void DataPool::clear() {
-        EntityPool.clear();
-        IntegerEntityPool.clear();
-        DomainPool.clear();
-        ConstraintPool.clear();
-        ObjectivePool.clear();
-        NodePool.clear();
+        Pool<XEntity>().swap(EntityPool);
+        Pool<XIntegerEntity>().swap(IntegerEntityPool);
+        Pool<XDomain>().swap(DomainPool);
+        Pool<XConstraint>().swap(ConstraintPool);
+        Pool<XObjective>().swap(ObjectivePool);
+        Pool<Node>().swap(NodePool);
     }
 }
