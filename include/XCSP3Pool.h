@@ -29,6 +29,7 @@ namespace XCSP3Core {
     class XDomain;
     class XConstraint;
     class XObjective;
+    class Node;
 
     struct DataPool {
         static Pool<XEntity> EntityPool;
@@ -36,6 +37,7 @@ namespace XCSP3Core {
         static Pool<XDomain> DomainPool;
         static Pool<XConstraint> ConstraintPool;
         static Pool<XObjective> ObjectivePool;
+        static Pool<Node> NodePool;
     };
 
 }

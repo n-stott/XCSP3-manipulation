@@ -27,6 +27,7 @@
 
 #include "XCSP3Tree.h"
 #include "XCSP3TreeNode.h"
+#include "XCSP3Pool.h"
 #include <algorithm>
 #include <limits>
 #include <sstream>
@@ -131,41 +132,41 @@ Expr XCSP3Core::stringToOperator(const std::string& op) {
 
 NodeOperator* createNodeOperator(Expr op) {
     NodeOperator* tmp = nullptr;
-    if (op == Expr::NEG) tmp = globalNodePool.make<NodeNeg>();
-    if (op == Expr::ABS) tmp = globalNodePool.make<NodeAbs>();
+    if (op == Expr::NEG) tmp = DataPool::NodePool.make<NodeNeg>();
+    if (op == Expr::ABS) tmp = DataPool::NodePool.make<NodeAbs>();
 
-    if (op == Expr::ADD) tmp = globalNodePool.make<NodeAdd>();
-    if (op == Expr::SUB) tmp = globalNodePool.make<NodeSub>();
-    if (op == Expr::MUL) tmp = globalNodePool.make<NodeMult>();
-    if (op == Expr::DIV) tmp = globalNodePool.make<NodeDiv>();
-    if (op == Expr::MOD) tmp = globalNodePool.make<NodeMod>();
+    if (op == Expr::ADD) tmp = DataPool::NodePool.make<NodeAdd>();
+    if (op == Expr::SUB) tmp = DataPool::NodePool.make<NodeSub>();
+    if (op == Expr::MUL) tmp = DataPool::NodePool.make<NodeMult>();
+    if (op == Expr::DIV) tmp = DataPool::NodePool.make<NodeDiv>();
+    if (op == Expr::MOD) tmp = DataPool::NodePool.make<NodeMod>();
 
-    if (op == Expr::SQR) tmp = globalNodePool.make<NodeSquare>();
-    if (op == Expr::POW) tmp = globalNodePool.make<NodePow>();
+    if (op == Expr::SQR) tmp = DataPool::NodePool.make<NodeSquare>();
+    if (op == Expr::POW) tmp = DataPool::NodePool.make<NodePow>();
 
-    if (op == Expr::MIN) tmp = globalNodePool.make<NodeMin>();
-    if (op == Expr::MAX) tmp = globalNodePool.make<NodeMax>();
-    if (op == Expr::DIST) tmp = globalNodePool.make<NodeDist>();
+    if (op == Expr::MIN) tmp = DataPool::NodePool.make<NodeMin>();
+    if (op == Expr::MAX) tmp = DataPool::NodePool.make<NodeMax>();
+    if (op == Expr::DIST) tmp = DataPool::NodePool.make<NodeDist>();
 
-    if (op == Expr::LE) tmp = globalNodePool.make<NodeLE>();
-    if (op == Expr::LT) tmp = globalNodePool.make<NodeLT>();
-    if (op == Expr::GE) tmp = globalNodePool.make<NodeGE>();
-    if (op == Expr::GT) tmp = globalNodePool.make<NodeGT>();
+    if (op == Expr::LE) tmp = DataPool::NodePool.make<NodeLE>();
+    if (op == Expr::LT) tmp = DataPool::NodePool.make<NodeLT>();
+    if (op == Expr::GE) tmp = DataPool::NodePool.make<NodeGE>();
+    if (op == Expr::GT) tmp = DataPool::NodePool.make<NodeGT>();
 
-    if (op == Expr::NE) tmp = globalNodePool.make<NodeNE>();
-    if (op == Expr::EQ) tmp = globalNodePool.make<NodeEQ>();
+    if (op == Expr::NE) tmp = DataPool::NodePool.make<NodeNE>();
+    if (op == Expr::EQ) tmp = DataPool::NodePool.make<NodeEQ>();
 
-    if (op == Expr::NOT) tmp = globalNodePool.make<NodeNot>();
-    if (op == Expr::AND) tmp = globalNodePool.make<NodeAnd>();
-    if (op == Expr::OR) tmp = globalNodePool.make<NodeOr>();
-    if (op == Expr::XOR) tmp = globalNodePool.make<NodeXor>();
-    if (op == Expr::IMP) tmp = globalNodePool.make<NodeImp>();
-    if (op == Expr::IF) tmp = globalNodePool.make<NodeIf>();
-    if (op == Expr::IFF) tmp = globalNodePool.make<NodeIff>();
+    if (op == Expr::NOT) tmp = DataPool::NodePool.make<NodeNot>();
+    if (op == Expr::AND) tmp = DataPool::NodePool.make<NodeAnd>();
+    if (op == Expr::OR) tmp = DataPool::NodePool.make<NodeOr>();
+    if (op == Expr::XOR) tmp = DataPool::NodePool.make<NodeXor>();
+    if (op == Expr::IMP) tmp = DataPool::NodePool.make<NodeImp>();
+    if (op == Expr::IF) tmp = DataPool::NodePool.make<NodeIf>();
+    if (op == Expr::IFF) tmp = DataPool::NodePool.make<NodeIff>();
 
-    if (op == Expr::IN) tmp = globalNodePool.make<NodeIn>();
-    if (op == Expr::NOTIN) tmp = globalNodePool.make<NodeNotIn>();
-    if (op == Expr::SET) tmp = globalNodePool.make<NodeSet>();
+    if (op == Expr::IN) tmp = DataPool::NodePool.make<NodeIn>();
+    if (op == Expr::NOTIN) tmp = DataPool::NodePool.make<NodeNotIn>();
+    if (op == Expr::SET) tmp = DataPool::NodePool.make<NodeSet>();
 
     assert(tmp != nullptr);
 
@@ -275,17 +276,17 @@ Node* NodeOperator::canonize() {
     if (newType == Expr::LT && newParams[1]->type == Expr::DECIMAL) { // lt(x,k) becomes le(x,k-1)
         NodeConstant* c = dynamic_cast<NodeConstant*>(newParams[1]);
         c->val = c->val - 1;
-        return globalNodePool.make<NodeLE>()->addParameter(newParams[0])->addParameter(newParams[1])->canonize();
+        return DataPool::NodePool.make<NodeLE>()->addParameter(newParams[0])->addParameter(newParams[1])->canonize();
     }
     if (newType == Expr::LT && newParams[0]->type == Expr::DECIMAL) { // lt(k,x) becomes le(k+1,x)
         NodeConstant* c = dynamic_cast<NodeConstant*>(newParams[0]);
         c->val = c->val + 1;
-        return globalNodePool.make<NodeLE>()->addParameter(newParams[0])->addParameter(newParams[1])->canonize();
+        return DataPool::NodePool.make<NodeLE>()->addParameter(newParams[0])->addParameter(newParams[1])->canonize();
     }
 
     NodeOperator* tmp = dynamic_cast<NodeOperator*>(newParams[0]); // abs(sub becomes dist
     if (newType == Expr::ABS && newParams[0]->type == Expr::SUB)
-        return globalNodePool.make<NodeDist>()->addParameters(tmp->parameters)->canonize();
+        return DataPool::NodePool.make<NodeDist>()->addParameters(tmp->parameters)->canonize();
 
     if (newType == Expr::NOT && newParams[0]->type == Expr::NOT) // NOT(NOT.. becomes ..
         return tmp->parameters[0]->canonize();
@@ -306,12 +307,12 @@ Node* NodeOperator::canonize() {
             (c2 = dynamic_cast<NodeConstant*>(newParams[newParams.size() - 2])) != nullptr) {
             std::vector<Node*> l;
             l.insert(l.end(), newParams.begin(), newParams.end() - 2);
-            l.push_back(newType == Expr::ADD ? globalNodePool.make<NodeConstant>(c1->val + c2->val) : globalNodePool.make<NodeConstant>(c1->val * c2->val));
+            l.push_back(newType == Expr::ADD ? DataPool::NodePool.make<NodeConstant>(c1->val + c2->val) : DataPool::NodePool.make<NodeConstant>(c1->val * c2->val));
 
             if (newType == Expr::ADD)
-                return globalNodePool.make<NodeAdd>()->addParameters(l)->canonize();
+                return DataPool::NodePool.make<NodeAdd>()->addParameters(l)->canonize();
             else
-                return globalNodePool.make<NodeMult>()->addParameters(l)->canonize();
+                return DataPool::NodePool.make<NodeMult>()->addParameters(l)->canonize();
         }
     }
 
@@ -319,8 +320,8 @@ Node* NodeOperator::canonize() {
     if (pattern(this, "le(add(y[4],5),7)", operators, constants, variables, true)) {
         if (newType == Expr::EQ || newType == Expr::NE || newType == Expr::LE || newType == Expr::LT)
             return createNodeOperator(newType)
-                ->addParameter(globalNodePool.make<NodeVariable>(variables[0]))
-                ->addParameter(globalNodePool.make<NodeConstant>(constants[1] - constants[0]))
+                ->addParameter(DataPool::NodePool.make<NodeVariable>(variables[0]))
+                ->addParameter(DataPool::NodePool.make<NodeConstant>(constants[1] - constants[0]))
                 ->canonize();
     }
 
@@ -328,8 +329,8 @@ Node* NodeOperator::canonize() {
     if (pattern(this, "le(8,add(y[4],5))", operators, constants, variables, true)) {
         if (newType == Expr::EQ || newType == Expr::NE || newType == Expr::LE || newType == Expr::LT)
             return createNodeOperator(newType)
-                ->addParameter(globalNodePool.make<NodeConstant>(constants[0] - constants[1]))
-                ->addParameter(globalNodePool.make<NodeVariable>(variables[0]))
+                ->addParameter(DataPool::NodePool.make<NodeConstant>(constants[0] - constants[1]))
+                ->addParameter(DataPool::NodePool.make<NodeVariable>(variables[0]))
                 ->canonize();
     }
 
@@ -337,8 +338,8 @@ Node* NodeOperator::canonize() {
     if (pattern(this, "le(8,add(5,y[4]))", operators, constants, variables, true)) {
         if (newType == Expr::EQ || newType == Expr::NE || newType == Expr::LE || newType == Expr::LT)
             return createNodeOperator(newType)
-                ->addParameter(globalNodePool.make<NodeConstant>(constants[0] - constants[1]))
-                ->addParameter(globalNodePool.make<NodeVariable>(variables[0]))
+                ->addParameter(DataPool::NodePool.make<NodeConstant>(constants[0] - constants[1]))
+                ->addParameter(DataPool::NodePool.make<NodeVariable>(variables[0]))
                 ->canonize();
     }
 
@@ -346,16 +347,16 @@ Node* NodeOperator::canonize() {
     if (pattern(this, "eq(mul(y[0],3),9)", operators, constants, variables) ||
         pattern(this, "eq(mul(3,x),6)", operators, constants, variables)) {
         if (constants[1] % constants[0] != 0)
-            return globalNodePool.make<NodeConstant>(0);
-        return globalNodePool.make<NodeEQ>()->addParameter(globalNodePool.make<NodeVariable>(variables[0]))->addParameter(globalNodePool.make<NodeConstant>(constants[1] / constants[0]))->canonize();
+            return DataPool::NodePool.make<NodeConstant>(0);
+        return DataPool::NodePool.make<NodeEQ>()->addParameter(DataPool::NodePool.make<NodeVariable>(variables[0]))->addParameter(DataPool::NodePool.make<NodeConstant>(constants[1] / constants[0]))->canonize();
     }
 
     //eq(9,mul(3,y[0]))
     if (pattern(this, "eq(9,mul(3,y[0]))", operators, constants, variables) ||
         pattern(this, "eq(9,mul(y[0],3))", operators, constants, variables)) {
         if (constants[0] % constants[1] != 0)
-            return globalNodePool.make<NodeConstant>(0);
-        return globalNodePool.make<NodeEQ>()->addParameter(globalNodePool.make<NodeVariable>(variables[0]))->addParameter(globalNodePool.make<NodeConstant>(constants[0] / constants[1]))->canonize();
+            return DataPool::NodePool.make<NodeConstant>(0);
+        return DataPool::NodePool.make<NodeEQ>()->addParameter(DataPool::NodePool.make<NodeVariable>(variables[0]))->addParameter(DataPool::NodePool.make<NodeConstant>(constants[0] / constants[1]))->canonize();
     }
 
     // Then, we merge operators when possible; for example add(add(x,y),z) becomes add(x,y,z)
@@ -380,16 +381,16 @@ Node* NodeOperator::canonize() {
         NodeOperator* n1 = dynamic_cast<NodeOperator*>(newParams[1]);
         // First, we replace sub by add when possible
         if (newParams[0]->type == Expr::SUB && newParams[1]->type == Expr::SUB) {
-            Node* a = globalNodePool.make<NodeAdd>()->addParameter(n0->parameters[0])->addParameter(n1->parameters[1]);
-            Node* b = globalNodePool.make<NodeAdd>()->addParameter(n1->parameters[0])->addParameter(n0->parameters[1]);
+            Node* a = DataPool::NodePool.make<NodeAdd>()->addParameter(n0->parameters[0])->addParameter(n1->parameters[1]);
+            Node* b = DataPool::NodePool.make<NodeAdd>()->addParameter(n1->parameters[0])->addParameter(n0->parameters[1]);
             return (createNodeOperator(newType))->addParameter(a)->addParameter(b)->canonize();
         } else if (newParams[1]->type == Expr::SUB) {
-            Node* a = globalNodePool.make<NodeAdd>()->addParameter(newParams[0])->addParameter(n1->parameters[1]);
+            Node* a = DataPool::NodePool.make<NodeAdd>()->addParameter(newParams[0])->addParameter(n1->parameters[1]);
             Node* b = n1->parameters[0];
             return (createNodeOperator(newType))->addParameter(a)->addParameter(b)->canonize();
         } else if (n0 != nullptr && n0->op == "sub") {
             Node* a = n0->parameters[0];
-            Node* b = globalNodePool.make<NodeAdd>()->addParameter(newParams[1])->addParameter(n0->parameters[1]);
+            Node* b = DataPool::NodePool.make<NodeAdd>()->addParameter(newParams[1])->addParameter(n0->parameters[1]);
             return (createNodeOperator(newType))->addParameter(a)->addParameter(b)->canonize();
         }
 
@@ -398,7 +399,7 @@ Node* NodeOperator::canonize() {
             if (n0->parameters.size() == 2 && n0->parameters[0]->type == Expr::VAR && n0->parameters[1]->type == Expr::DECIMAL) {
                 NodeConstant* c1 = dynamic_cast<NodeConstant*>(newParams[1]);
                 NodeConstant* c2 = dynamic_cast<NodeConstant*>(n0->parameters[1]);
-                return (createNodeOperator(newType))->addParameter(n0->parameters[0])->addParameter(globalNodePool.make<NodeConstant>(c1->val - c2->val))->canonize();
+                return (createNodeOperator(newType))->addParameter(n0->parameters[0])->addParameter(DataPool::NodePool.make<NodeConstant>(c1->val - c2->val))->canonize();
             }
         }
 

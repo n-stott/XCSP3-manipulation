@@ -120,19 +120,6 @@ namespace XCSP3Core {
     bool isPredicateOperator(Expr type);
     //-------------------------------------
 
-    class Node;
-    struct NodePool {
-        std::vector<std::unique_ptr<Node>> pool_;
-
-        template <typename T, typename... U>
-        T* make(U&&... us) {
-            pool_.emplace_back(new T(std::forward<U>(us)...));
-            return static_cast<T*>(pool_.back().get());
-        }
-    };
-
-    static NodePool globalNodePool;
-
     class Node {
         friend class Intension;
 
