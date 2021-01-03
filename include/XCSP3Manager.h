@@ -42,7 +42,7 @@ namespace XCSP3Core {
 
     public:
         XCSP3CoreCallbacksBase* callback;
-        std::map<std::string, XEntity*>& mapping;
+        std::map<std::string, std::unique_ptr<XEntity>>& mapping;
         std::string blockClasses;
 
         inline bool discardedClasses(std::string classes) {
@@ -59,7 +59,7 @@ namespace XCSP3Core {
 
     public:
         // XCSP3CoreCallbacksBase *c, std::map<std::string, XEntity *> &m, bool
-        XCSP3Manager(XCSP3CoreCallbacksBase* c, std::map<std::string, XEntity*>& m, bool = true) : callback(c), mapping(m), blockClasses("") {}
+        XCSP3Manager(XCSP3CoreCallbacksBase* c, std::map<std::string, std::unique_ptr<XEntity>>& m, bool = true) : callback(c), mapping(m), blockClasses("") {}
 
         void beginInstance(InstanceType type) {
             callback->_arguments = nullptr;

@@ -72,10 +72,10 @@ namespace XCSP3Core {
     class XMLParser {
     public:
         // list of attributes and values for a tag
-        std::map<std::string, XEntity*> variablesList;
-        std::vector<XDomainInteger*> allDomains;
-        std::vector<XConstraint*> constraints;
-        XCSP3Manager* manager;
+        std::map<std::string, std::unique_ptr<XEntity>> variablesList;
+        std::vector<std::unique_ptr<XDomainInteger>> allDomains;
+        std::vector<std::unique_ptr<XConstraint>> constraints;
+        std::unique_ptr<XCSP3Manager> manager;
 
         // stack of operands to construct list, dictionaries, predicate
         // parameters and so on
@@ -153,8 +153,7 @@ namespace XCSP3Core {
             }
         };
 
-        typedef std::map<UTF8String, TagAction*> TagActionList;
-
+        using TagActionList = std::map<UTF8String, std::unique_ptr<TagAction>>;
         TagActionList tagList;
 
         struct State {
@@ -211,7 +210,7 @@ namespace XCSP3Core {
         bool keepIntervals;
 
         void registerTagAction(TagActionList& tagList, TagAction* action) {
-            tagList[action->getTagName()] = action;
+            tagList[action->getTagName()].reset(action);
         }
 
         /**
@@ -301,6 +300,7 @@ namespace XCSP3Core {
 
             // UTF8String txt, bool last
             void text(const UTF8String txt, bool) override {
+                assert(domain);
                 this->parser->parseDomain(txt, *domain);
             }
         };
@@ -951,7 +951,7 @@ namespace XCSP3Core {
         // specific actions
         VarTagAction* varTagAction;
         //DictTagAction *dictTagAction;
-        TagAction* unknownTagHandler; // handler to help ignore all unknown tags
+        std::unique_ptr<TagAction> unknownTagHandler; // handler to help ignore all unknown tags
 
     }; // class XMLParser
 

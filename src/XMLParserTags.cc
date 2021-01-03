@@ -109,15 +109,15 @@ void XMLParser::VarTagAction::beginTag(const AttributeList& attributes) {
         XVariableArray* similarArray;
         if (this->parser->variablesList[as] == NULL)
             throw std::runtime_error("Variable as \"" + as + "\" does not exist");
-        if ((similarArray = dynamic_cast<XVariableArray*>(this->parser->variablesList[as])) != NULL) {
+        if ((similarArray = dynamic_cast<XVariableArray*>(this->parser->variablesList[as].get())) != NULL) {
             variableArray = new XVariableArray(id, similarArray);
         } else {
-            XVariable* similar = static_cast<XVariable*>(this->parser->variablesList[as]);
+            XVariable* similar = static_cast<XVariable*>(this->parser->variablesList[as].get());
             variable = new XVariable(id, similar->domain);
         }
     } else {
-        domain = new XDomainInteger();
-        this->parser->allDomains.push_back(domain);
+        this->parser->allDomains.emplace_back(new XDomainInteger());
+        domain = this->parser->allDomains.back().get();
     }
 }
 
@@ -132,9 +132,9 @@ void XMLParser::VarTagAction::text(const UTF8String txt, bool) {
 void XMLParser::VarTagAction::endTag() {
     if (variableArray != NULL) { // SImulate an array
         this->parser->manager->beginVariableArray(variableArray->id);
-        this->parser->variablesList[variableArray->id] = variableArray;
+        this->parser->variablesList[variableArray->id].reset(variableArray);
         for (XVariable* x : variableArray->variables)
-            this->parser->variablesList[x->id] = x;
+            this->parser->variablesList[x->id].reset(x);
         this->parser->manager->buildVariableArray(variableArray);
         this->parser->manager->endVariableArray();
         return;
@@ -142,7 +142,7 @@ void XMLParser::VarTagAction::endTag() {
     if (variable == NULL)
         variable = new XVariable(id, domain);
     variable->classes = classes;
-    this->parser->variablesList[variable->id] = variable;
+    this->parser->variablesList[variable->id].reset(variable);
     this->parser->manager->buildVariable(variable);
 }
 
@@ -178,7 +178,7 @@ void XMLParser::ArrayTagAction::beginTag(const AttributeList& attributes) {
         attributes["as"].to(as);
         if (this->parser->variablesList[as] == nullptr)
             throw std::runtime_error("Matrix variable as \"" + as + "\" does not exist");
-        XVariableArray* similar = static_cast<XVariableArray*>(this->parser->variablesList[as]);
+        XVariableArray* similar = static_cast<XVariableArray*>(this->parser->variablesList[as].get());
         varArray = new XVariableArray(id, similar);
     } else {
         if (!attributes["size"].to(size))
@@ -191,8 +191,8 @@ void XMLParser::ArrayTagAction::beginTag(const AttributeList& attributes) {
         }
         varArray = new XVariableArray(id, sizes);
 
-        domain = new XDomainInteger();
-        this->parser->allDomains.push_back(domain);
+        this->parser->allDomains.emplace_back(new XDomainInteger());
+        domain = this->parser->allDomains.back().get();
         this->parser->manager->beginVariableArray(id);
     }
 
@@ -202,11 +202,11 @@ void XMLParser::ArrayTagAction::beginTag(const AttributeList& attributes) {
 void XMLParser::ArrayTagAction::endTag() {
     if (domain != nullptr && domain->nbValues() != 0) // If dommain is null -> as variable // Possible empty variables
         varArray->buildVarsWith(domain);
-    this->parser->variablesList[varArray->id] = varArray;
+    this->parser->variablesList[varArray->id].reset(varArray);
     for (XVariable* x : varArray->variables) {
         if (x == nullptr) // Undefined variable
             continue;
-        this->parser->variablesList[x->id] = x;
+        this->parser->variablesList[x->id].reset(x);
     }
     this->parser->manager->buildVariableArray(varArray);
     this->parser->manager->endVariableArray();
@@ -218,8 +218,7 @@ void XMLParser::DomainTagAction::beginTag(const AttributeList& attributes) {
     if (forAttr == "others")
         d = static_cast<XMLParser::ArrayTagAction*>(this->parser->getParentTagAction())->domain;
     else {
-        d = new XDomainInteger();
-        this->parser->allDomains.push_back(d);
+        this->parser->allDomains.emplace_back(new XDomainInteger());
     }
 }
 
@@ -1306,7 +1305,7 @@ void XMLParser::ClauseTagAction::endTag() {
 
             if (p == std::string::npos) {
                 if (this->parser->variablesList[current] != NULL)
-                    constraint->positive.push_back(static_cast<XVariable*>(this->parser->variablesList[current]));
+                    constraint->positive.push_back(static_cast<XVariable*>(this->parser->variablesList[current].get()));
                 else
                     throw std::runtime_error("unknown variable: " + current);
             } else {
@@ -1314,7 +1313,7 @@ void XMLParser::ClauseTagAction::endTag() {
                 std::string v = current.substr(p + 1, current.size() - p - 2);
 
                 if (this->parser->variablesList[v] != NULL)
-                    constraint->negative.push_back(static_cast<XVariable*>(this->parser->variablesList[v]));
+                    constraint->negative.push_back(static_cast<XVariable*>(this->parser->variablesList[v].get()));
                 else
                     throw std::runtime_error("unknown variable: " + v);
             }
@@ -1574,7 +1573,7 @@ void XMLParser::MatrixTagAction::text(const UTF8String txt, bool) {
         compactForm = txt2.substr(pos);
         if (this->parser->variablesList[name] == NULL)
             throw std::runtime_error("Matrix variable " + name + "does not exist");
-        XVariableArray* varArray = static_cast<XVariableArray*>(this->parser->variablesList[name]);
+        XVariableArray* varArray = static_cast<XVariableArray*>(this->parser->variablesList[name].get());
         int nbV = 0;
         std::string tmp;
         // Find the first interval

@@ -48,14 +48,14 @@ void XMLParser::startElement(UTF8String name, const AttributeList& attributes) {
     TagAction* action;
 
     if (iAction != tagList.end()) {
-        action = (*iAction).second;
+        action = (*iAction).second.get();
 
         // ???
         //if (!action->isActivated())
         //  throw runtime_error("unexpected tag");
     } else {
         // add a handler to ignore the text and end element
-        action = unknownTagHandler;
+        action = unknownTagHandler.get();
         std::cerr << "unknown tag " << name << std::endl;
     }
 
@@ -214,7 +214,7 @@ void XMLParser::parseSequence(const UTF8String& txt, std::vector<XVariable*>& li
 
                     } catch (std::invalid_argument& e) {
                         if (variablesList[current] != NULL)
-                            list.push_back(static_cast<XVariable*>(variablesList[current]));
+                            list.push_back(static_cast<XVariable*>(variablesList[current].get()));
                         else
                             throw std::runtime_error("unknown variable: " + current);
                     }
@@ -238,7 +238,7 @@ void XMLParser::parseSequence(const UTF8String& txt, std::vector<XVariable*>& li
 
                 if (variablesList[name] == NULL)
                     throw std::runtime_error("unknown variable: " + name);
-                (static_cast<XVariableArray*>(variablesList[name]))->getVarsFor(list, compactForm);
+                (static_cast<XVariableArray*>(variablesList[name].get()))->getVarsFor(list, compactForm);
             }
         } else {
             // Parameter Variable form group template
@@ -347,8 +347,8 @@ void XMLParser::parseListOfIntegerOrInterval(const UTF8String& txt, std::vector<
 
 XMLParser::XMLParser(XCSP3CoreCallbacksBase* cb) {
     keepIntervals = false;
-    this->manager = new XCSP3Manager(cb, variablesList);
-    unknownTagHandler = new UnknownTagAction(this, "unknown");
+    this->manager.reset(new XCSP3Manager(cb, variablesList));
+    unknownTagHandler.reset(new UnknownTagAction(this, "unknown"));
 
     registerTagAction(tagList, new InstanceTagAction(this, "instance"));
 
@@ -438,10 +438,4 @@ XMLParser::XMLParser(XCSP3CoreCallbacksBase* cb) {
     registerTagAction(tagList, new ListOfVariablesOrIntegerTagAction(this, "size", this->values));
 }
 
-XMLParser::~XMLParser() {
-    for (TagActionList::iterator it = tagList.begin();
-         it != tagList.end(); ++it)
-        delete (*it).second;
-    delete unknownTagHandler;
-    delete manager;
-}
+XMLParser::~XMLParser() { }
