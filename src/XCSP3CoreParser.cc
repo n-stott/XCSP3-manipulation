@@ -104,7 +104,7 @@ int XCSP3CoreParser::parse(std::istream& in) {
             std::cout << "c Exception at undefined line" << std::endl;
         throw;
     }
-
+    DataPool::clear();
     return 0;
 }
 

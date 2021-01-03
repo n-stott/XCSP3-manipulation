@@ -22,6 +22,10 @@ namespace XCSP3Core {
         ~Pool() {
             std::cout << typeid(Data).name() << " : " << pool_.size() << " freed from pool" << std::endl;
         }
+
+        void clear() {
+            pool_.clear();
+        }
     };
 
     class XEntity;
@@ -38,6 +42,8 @@ namespace XCSP3Core {
         static Pool<XConstraint> ConstraintPool;
         static Pool<XObjective> ObjectivePool;
         static Pool<Node> NodePool;
+
+        static void clear();
     };
 
 }
