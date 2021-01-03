@@ -36,7 +36,6 @@
 #include "XCSP3Constants.h"
 #include "XCSP3CoreCallbacks.h"
 #include "XMLParser.h"
-//#define debug
 
 namespace XCSP3Core {
 

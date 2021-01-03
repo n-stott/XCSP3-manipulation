@@ -112,41 +112,22 @@ int XCSP3CoreParser::parse(std::istream& in) {
 void XCSP3CoreParser::comment(void*, const xmlChar*) {}
 
 void XCSP3CoreParser::startDocument(void* parser) {
-#ifdef debug
-    cout << "Parsing begins" << endl;
-#endif
     static_cast<XMLParser*>(parser)->startDocument();
 }
 
 void XCSP3CoreParser::endDocument(void* parser) {
-#ifdef debug
-    cout << "Parsing ends" << endl;
-#endif
     static_cast<XMLParser*>(parser)->endDocument();
 }
 
 void XCSP3CoreParser::characters(void* parser, const xmlChar* ch, int len) {
-#ifdef debug
-    cout << "    chars '" << UTF8String(ch, ch + len) << "'" << endl;
-#endif
     static_cast<XMLParser*>(parser)->characters(UTF8String(ch, ch + len));
 }
 
 void XCSP3CoreParser::startElement(void* parser, const xmlChar* name, const xmlChar** attr) {
     AttributeList attributes(attr);
-#ifdef debug
-    cout << "  begin element " << UTF8String(name) << endl;
-    for (int i = 0; i < attributes.size(); ++i) {
-        cout << "    attribute " << attributes.getName(i)
-             << " = " << attributes.getValue(i) << endl;
-    }
-#endif
     static_cast<XMLParser*>(parser)->startElement(UTF8String(name), attributes);
 }
 
 void XCSP3CoreParser::endElement(void* parser, const xmlChar* name) {
-#ifdef debug
-    cout << "  end element " << UTF8String(name) << endl;
-#endif
     static_cast<XMLParser*>(parser)->endElement(UTF8String(name));
 }
