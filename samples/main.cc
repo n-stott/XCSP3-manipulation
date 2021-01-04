@@ -1,16 +1,32 @@
 #include "XCSP3CoreParser.h"
 #include "XCSP3PrintCallbacks.h"
+#include "XCSP3SummaryCallbacks.h"
 
 using namespace XCSP3Core;
 
 int main(int argc, char** argv) {
-    XCSP3PrintCallbacks cb; // my interface between the parser and the solver
+    XCSP3PrintCallbacks printcb;
+    XCSP3SummaryCallbacks sumcb;
+    XCSP3CoreCallbacksBase* cb = nullptr;
 
-    if (argc != 2)
-        throw std::runtime_error("usage: ./test xcsp3instance.xml");
+    bool ok = true;
+
+    if (argc != 3) ok = false;
+    if(std::strcmp(argv[1], "summary") == 0) {
+        cb = &sumcb;
+        std::cout << "// Print summary\n";
+    } else if(std::strcmp(argv[1], "print") == 0) {
+        cb = &printcb;
+        std::cout << "// Print instance\n";
+    } else {
+        ok = false;
+    }
+    if(!ok) throw std::runtime_error("usage: ./sample [print/summary] xcsp3instance.xml");
+
     try {
-        XCSP3CoreParser parser(&cb);
-        parser.parse(argv[1]); // fileName is a string
+        XCSP3CoreParser parser(cb);
+        std::cout << "// Instance : " << argv[2] << '\n';
+        parser.parse(argv[2]); // fileName is a string
     } catch (std::exception& e) {
         std::cout.flush();
         std::cerr << "\n\tUnexpected exception :\n";
