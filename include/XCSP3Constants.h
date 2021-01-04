@@ -131,6 +131,27 @@ namespace XCSP3Core {
         LEX_O
     };
 
+    inline std::string ExpressionObjectiveToString(ExpressionObjective op) {
+        switch (op) {
+        case ExpressionObjective::EXPRESSION_O:
+            return "0*";
+        case ExpressionObjective::SUM_O:
+            return "sum";
+        case ExpressionObjective::PRODUCT_O:
+            return "prod";
+        case ExpressionObjective::MINIMUM_O:
+            return "min";
+        case ExpressionObjective::MAXIMUM_O:
+            return "max";
+        case ExpressionObjective::NVALUES_O:
+            return "0*";
+        case ExpressionObjective::LEX_O:
+            return "0*";
+        }
+        assert(false);
+        return "0*";
+    }
+
 #define STAR INT_MAX
 } // namespace XCSP3Core
 #endif /* XCSP3CONSTANTS_H */

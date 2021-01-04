@@ -275,7 +275,7 @@ namespace XCSP3Core {
          * @param id the id (name) of the group
          * @param values the set of values in the domain
         */
-        virtual void buildVariableInteger(const std::string& id, std::vector<int>& values) = 0;
+        virtual void buildVariableInteger(const std::string& id, const std::vector<int>& values) = 0;
 
         /**
          * All callbacks related to constraints.
@@ -325,7 +325,7 @@ namespace XCSP3Core {
          * @param support  support or conflicts?
          * @param hasStar is the tuples contain star values?
          */
-        virtual void buildConstraintExtension(const std::string& id, std::vector<XVariable*> list, std::vector<std::vector<int>>& tuples, bool support, bool hasStar) = 0;
+        virtual void buildConstraintExtension(const std::string& id, const std::vector<XVariable*>& list, const std::vector<std::vector<int>>& tuples, bool support, bool hasStar) = 0;
 
         /*
          * The callback function related to an constraint in extension
@@ -343,7 +343,7 @@ namespace XCSP3Core {
          * @param support  support or conflicts?
          * @param hasStar is the tuples contain star values?
          */
-        virtual void buildConstraintExtension(const std::string& id, XVariable* variable, std::vector<int>& tuples, bool support, bool hasStar) = 0;
+        virtual void buildConstraintExtension(const std::string& id, XVariable* variable, const std::vector<int>& tuples, bool support, bool hasStar) = 0;
 
         /**
          * The callback function related to a constraint in extension where the set of tuples is exactly the same
@@ -356,7 +356,7 @@ namespace XCSP3Core {
          * @param support  support or conflicts?
          * @param hasStar is the tuples contain star values?
          */
-        virtual void buildConstraintExtensionAs(const std::string& id, std::vector<XVariable*> list, bool support, bool hasStar) = 0;
+        virtual void buildConstraintExtensionAs(const std::string& id, const std::vector<XVariable*>& list, bool support, bool hasStar) = 0;
 
         /**
          * The callback function related to a constraint in intension
@@ -459,7 +459,7 @@ namespace XCSP3Core {
          * @param final the set of final nodes
          * @param transitions the set of transitions
          */
-        virtual void buildConstraintRegular(const std::string& id, std::vector<XVariable*>& list, std::string start, std::vector<std::string>& final, std::vector<XTransition>& transitions) = 0;
+        virtual void buildConstraintRegular(const std::string& id, const std::vector<XVariable*>& list, std::string start, const std::vector<std::string>& final, const std::vector<XTransition>& transitions) = 0;
 
         /**
          * The callback function related to a MDD constraint.
@@ -479,7 +479,7 @@ namespace XCSP3Core {
          * @param list the scope of the constraint
          * @param transitions the set of transitions
          */
-        virtual void buildConstraintMDD(const std::string& id, std::vector<XVariable*>& list, std::vector<XTransition>& transitions) = 0;
+        virtual void buildConstraintMDD(const std::string& id, const std::vector<XVariable*>& list, const std::vector<XTransition>& transitions) = 0;
 
         //--------------------------------------------------------------------------------------
         // Comparison constraints
@@ -497,7 +497,7 @@ namespace XCSP3Core {
          * @param id the id (name) of the constraint
          * @param list the scope of the constraint
          */
-        virtual void buildConstraintAlldifferent(const std::string& id, std::vector<XVariable*>& list) = 0;
+        virtual void buildConstraintAlldifferent(const std::string& id, const std::vector<XVariable*>& list) = 0;
 
         /**
          * The callback function related to a alldifferent constraint with expression
@@ -511,7 +511,7 @@ namespace XCSP3Core {
          * @param id the id (name) of the constraint
          * @param list the trees of the constraint
          */
-        virtual void buildConstraintAlldifferent(const std::string& id, std::vector<Tree*>& list) = 0;
+        virtual void buildConstraintAlldifferent(const std::string& id, const std::vector<Tree*>& list) = 0;
 
         /**
          * The callback function related to a alldifferent with some excepted values constraint
@@ -527,7 +527,7 @@ namespace XCSP3Core {
          * @param list the scope of the constraint
          * @param except the set of excepted values
          */
-        virtual void buildConstraintAlldifferentExcept(const std::string& id, std::vector<XVariable*>& list, std::vector<int>& except) = 0;
+        virtual void buildConstraintAlldifferentExcept(const std::string& id, const std::vector<XVariable*>& list, const std::vector<int>& except) = 0;
 
         /**
          * The callback function related to a alldifferent  list constraint
@@ -542,7 +542,7 @@ namespace XCSP3Core {
          * @param id the id (name) of the constraint
          * @param lists the set of lists (not the scope, a variable may appear at different place!)
          */
-        virtual void buildConstraintAlldifferentList(const std::string& id, std::vector<std::vector<XVariable*>>& lists) = 0;
+        virtual void buildConstraintAlldifferentList(const std::string& id, const std::vector<std::vector<XVariable*>>& lists) = 0;
 
         /**
          * The callback function related to a alldifferent  matrix constraint
@@ -560,7 +560,7 @@ namespace XCSP3Core {
          * @param id the id (name) of the constraint
          * @param matrix the matrix (not the scope, a variable may appear at different place!)
          */
-        virtual void buildConstraintAlldifferentMatrix(const std::string& id, std::vector<std::vector<XVariable*>>& matrix) = 0;
+        virtual void buildConstraintAlldifferentMatrix(const std::string& id, const std::vector<std::vector<XVariable*>>& matrix) = 0;
 
         /**
          * The callback function related to a allequal constraint
@@ -575,7 +575,7 @@ namespace XCSP3Core {
          * @param list the scope of the constraint
          *
          */
-        virtual void buildConstraintAllEqual(const std::string& id, std::vector<XVariable*>& list) = 0;
+        virtual void buildConstraintAllEqual(const std::string& id, const std::vector<XVariable*>& list) = 0;
 
         /**
          * The callback function related to a not all equal constraint
@@ -592,7 +592,7 @@ namespace XCSP3Core {
          * @param id the id (name) of the constraint
          * @param list the scope of the constraint
          */
-        virtual void buildConstraintNotAllEqual(const std::string& id, std::vector<XVariable*>& list) = 0;
+        virtual void buildConstraintNotAllEqual(const std::string& id, const std::vector<XVariable*>& list) = 0;
 
         /**
          * The callback function related to an ordered constraint
@@ -610,7 +610,7 @@ namespace XCSP3Core {
          * @param list the scope of the constraint
          * @param order the order LT, LE...
          */
-        virtual void buildConstraintOrdered(const std::string& id, std::vector<XVariable*>& list, OrderType order) = 0;
+        virtual void buildConstraintOrdered(const std::string& id, const std::vector<XVariable*>& list, OrderType order) = 0;
 
         /**
          * The callback function related to an ordered constraint
@@ -628,7 +628,7 @@ namespace XCSP3Core {
          * @param list the scope of the constraint
          * @param order the order LT, LE...
          */
-        virtual void buildConstraintOrdered(const std::string& id, std::vector<XVariable*>& list, std::vector<int>& lengths, OrderType order) = 0;
+        virtual void buildConstraintOrdered(const std::string& id, const std::vector<XVariable*>& list, const std::vector<int>& lengths, OrderType order) = 0;
 
         /**
          * The callback function related to an ordered list constraint (this is a lex constraint)
@@ -646,7 +646,7 @@ namespace XCSP3Core {
          * @param lists the set of lists (not the scope, a variable may appear at different place!)
          * @param order the order LT, LE...
          */
-        virtual void buildConstraintLex(const std::string& id, std::vector<std::vector<XVariable*>>& lists, OrderType order) = 0;
+        virtual void buildConstraintLex(const std::string& id, const std::vector<std::vector<XVariable*>>& lists, OrderType order) = 0;
 
         /**
         * The callback function related to an ordered matrix constraint
@@ -667,7 +667,7 @@ namespace XCSP3Core {
         * @param matrix the matrix (not the scope, a variable may appear at different place!)
         * @param order the order LT, LE...
         */
-        virtual void buildConstraintLexMatrix(const std::string& id, std::vector<std::vector<XVariable*>>& matrix, OrderType order) = 0;
+        virtual void buildConstraintLexMatrix(const std::string& id, const std::vector<std::vector<XVariable*>>& matrix, OrderType order) = 0;
 
         //--------------------------------------------------------------------------------------
         // Summing and counting constraints
@@ -692,7 +692,7 @@ namespace XCSP3Core {
         * @param coeffs the coefficients (here int)
         * @param cond the condition (See XCondition object)
         */
-        virtual void buildConstraintSum(const std::string& id, std::vector<XVariable*>& list, std::vector<int>& coeffs, XCondition& cond) = 0;
+        virtual void buildConstraintSum(const std::string& id, const std::vector<XVariable*>& list, const std::vector<int>& coeffs, XCondition& cond) = 0;
 
         /**
          * The callback function related to an sum constraint with all coefs are equal to one
@@ -708,7 +708,7 @@ namespace XCSP3Core {
          * @param list the scope of the constraint
          * @param cond the condition (See XCondition object)
          */
-        virtual void buildConstraintSum(const std::string& id, std::vector<XVariable*>& list, XCondition& cond) = 0;
+        virtual void buildConstraintSum(const std::string& id, const std::vector<XVariable*>& list, XCondition& cond) = 0;
 
         /**
          * The callback function related to a sum constraint with all coefs are variables
@@ -726,7 +726,7 @@ namespace XCSP3Core {
          * @param coeffs the coefficients (here XVariable)
          * @param cond the condition (See XCondition object)
          */
-        virtual void buildConstraintSum(const std::string& id, std::vector<XVariable*>& list, std::vector<XVariable*>& coeffs, XCondition& cond) = 0;
+        virtual void buildConstraintSum(const std::string& id, const std::vector<XVariable*>& list, const std::vector<XVariable*>& coeffs, XCondition& cond) = 0;
 
         /**
          * The callback function related to a sum constraint with trees in list
@@ -741,7 +741,7 @@ namespace XCSP3Core {
          * @param list the different trees
          * @param cond the condition (See XCondition object)
          */
-        virtual void buildConstraintSum(const std::string& id, std::vector<Tree*>& trees, XCondition& cond) = 0;
+        virtual void buildConstraintSum(const std::string& id, const std::vector<Tree*>& trees, XCondition& cond) = 0;
 
         /**
          * The callback function related to a sum constraint with trees in list
@@ -758,7 +758,7 @@ namespace XCSP3Core {
          * @param coefs the coefs.
          * @param cond the condition (See XCondition object)
          */
-        virtual void buildConstraintSum(const std::string& id, std::vector<Tree*>& trees, std::vector<int>& coefs, XCondition& cond) = 0;
+        virtual void buildConstraintSum(const std::string& id, const std::vector<Tree*>& trees, const std::vector<int>& coefs, XCondition& cond) = 0;
 
         /**
          * The callback function related to a atmost constraint
@@ -782,7 +782,7 @@ namespace XCSP3Core {
          * @param value the value
          * @param k the maximum number of variables that can take the value
          */
-        virtual void buildConstraintAtMost(const std::string& id, std::vector<XVariable*>& list, int value, int k) = 0;
+        virtual void buildConstraintAtMost(const std::string& id, const std::vector<XVariable*>& list, int value, int k) = 0;
 
         /**
          * The callback function related to a atleast constraint
@@ -805,7 +805,7 @@ namespace XCSP3Core {
          * @param value the value
          * @param k the minimum number of variables that can take the value
          */
-        virtual void buildConstraintAtLeast(const std::string& id, std::vector<XVariable*>& list, int value, int k) = 0;
+        virtual void buildConstraintAtLeast(const std::string& id, const std::vector<XVariable*>& list, int value, int k) = 0;
 
         /**
          * The callback function related to a exactly k  constraint
@@ -827,7 +827,7 @@ namespace XCSP3Core {
          * @param value the value
          * @param k the exact number of variables that can take the value
          */
-        virtual void buildConstraintExactlyK(const std::string& id, std::vector<XVariable*>& list, int value, int k) = 0;
+        virtual void buildConstraintExactlyK(const std::string& id, const std::vector<XVariable*>& list, int value, int k) = 0;
 
         /**
          * The callback function related to a exactly k variable constraint
@@ -848,7 +848,7 @@ namespace XCSP3Core {
          * @param value the value
          * @param x the exact number of variables that can take the value (here it is a variable)
          */
-        virtual void buildConstraintExactlyVariable(const std::string& id, std::vector<XVariable*>& list, int value, XVariable* x) = 0;
+        virtual void buildConstraintExactlyVariable(const std::string& id, const std::vector<XVariable*>& list, int value, XVariable* x) = 0;
 
         /**
          * The callback function related to a among constraint
@@ -869,7 +869,7 @@ namespace XCSP3Core {
          * @param value the value
          * @param k
          */
-        virtual void buildConstraintAmong(const std::string& id, std::vector<XVariable*>& list, std::vector<int>& values, int k) = 0;
+        virtual void buildConstraintAmong(const std::string& id, const std::vector<XVariable*>& list, const std::vector<int>& values, int k) = 0;
 
         /**
          * The callback function related to a count constraint with integer values
@@ -887,7 +887,7 @@ namespace XCSP3Core {
          * @param k the  number of variables
          * @param xc the condition (see #XCondition)
          */
-        virtual void buildConstraintCount(const std::string& id, std::vector<XVariable*>& list, std::vector<int>& values, XCondition& xc) = 0;
+        virtual void buildConstraintCount(const std::string& id, const std::vector<XVariable*>& list, const std::vector<int>& values, XCondition& xc) = 0;
 
         /**
          * The callback function related to a count constraint with integer variables
@@ -905,7 +905,7 @@ namespace XCSP3Core {
          * @param k the  number of variables
          * @param xc the condition (see #XCondition)
          */
-        virtual void buildConstraintCount(const std::string& id, std::vector<XVariable*>& list, std::vector<XVariable*>& values, XCondition& xc) = 0;
+        virtual void buildConstraintCount(const std::string& id, const std::vector<XVariable*>& list, const std::vector<XVariable*>& values, XCondition& xc) = 0;
 
         /**
          * The callback function related to a nValues constraint with exception
@@ -922,7 +922,7 @@ namespace XCSP3Core {
          * @param except the set of excepted values
          * @param xc the condition (see #XCondition)
          */
-        virtual void buildConstraintNValues(const std::string& id, std::vector<XVariable*>& list, std::vector<int>& except, XCondition& xc) = 0;
+        virtual void buildConstraintNValues(const std::string& id, const std::vector<XVariable*>& list, const std::vector<int>& except, XCondition& xc) = 0;
 
         /**
          * The callback function related to a nValues constraint with exception
@@ -937,7 +937,7 @@ namespace XCSP3Core {
          * @param list the scope of the constraint
          * @param xc the condition (see #XCondition)
          */
-        virtual void buildConstraintNValues(const std::string& id, std::vector<XVariable*>& list, XCondition& xc) = 0;
+        virtual void buildConstraintNValues(const std::string& id, const std::vector<XVariable*>& list, XCondition& xc) = 0;
 
         /**
          * The callback function related to a cardinality constraint with int values and int occurs
@@ -956,7 +956,7 @@ namespace XCSP3Core {
          * @param occurs the number of occurences (here int)
          * @param closed is the constraint is closed
          */
-        virtual void buildConstraintCardinality(const std::string& id, std::vector<XVariable*>& list, std::vector<int> values, std::vector<int>& occurs, bool closed) = 0;
+        virtual void buildConstraintCardinality(const std::string& id, const std::vector<XVariable*>& list, const std::vector<int> values, const std::vector<int>& occurs, bool closed) = 0;
 
         //
         /**
@@ -976,7 +976,7 @@ namespace XCSP3Core {
          * @param occurs the number of occurences (here variables)
          * @param closed is the constraint is closed
          */
-        virtual void buildConstraintCardinality(const std::string& id, std::vector<XVariable*>& list, std::vector<int> values, std::vector<XVariable*>& occurs, bool closed) = 0;
+        virtual void buildConstraintCardinality(const std::string& id, const std::vector<XVariable*>& list, const std::vector<int> values, const std::vector<XVariable*>& occurs, bool closed) = 0;
 
         //
         /**
@@ -996,7 +996,7 @@ namespace XCSP3Core {
          * @param occurs the number of occurences (here intervals)
          * @param closed is the constraint is closed
          */
-        virtual void buildConstraintCardinality(const std::string& id, std::vector<XVariable*>& list, std::vector<int> values, std::vector<XInterval>& occurs, bool closed) = 0;
+        virtual void buildConstraintCardinality(const std::string& id, const std::vector<XVariable*>& list, const std::vector<int> values, const std::vector<XInterval>& occurs, bool closed) = 0;
 
         /**
          * The callback function related to a cardinality constraint with variable values and int occurs
@@ -1015,7 +1015,7 @@ namespace XCSP3Core {
          * @param occurs the number of occurences (here int)
          * @param closed is the constraint is closed
          */
-        virtual void buildConstraintCardinality(const std::string& id, std::vector<XVariable*>& list, std::vector<XVariable*> values, std::vector<int>& occurs, bool closed) = 0;
+        virtual void buildConstraintCardinality(const std::string& id, const std::vector<XVariable*>& list, const std::vector<XVariable*> values, const std::vector<int>& occurs, bool closed) = 0;
 
         /**
          * The callback function related to a cardinality constraint with variable values and variable occurs
@@ -1034,7 +1034,7 @@ namespace XCSP3Core {
          * @param occurs the number of occurences (here variables)
          * @param closed is the constraint is closed
          */
-        virtual void buildConstraintCardinality(const std::string& id, std::vector<XVariable*>& list, std::vector<XVariable*> values, std::vector<XVariable*>& occurs, bool closed) = 0;
+        virtual void buildConstraintCardinality(const std::string& id, const std::vector<XVariable*>& list, const std::vector<XVariable*> values, const std::vector<XVariable*>& occurs, bool closed) = 0;
 
         /**
          * The callback function related to a cardinality constraint with variable values and interval occurs
@@ -1053,7 +1053,7 @@ namespace XCSP3Core {
          * @param occurs the number of occurences (here intervals)
          * @param closed is the constraint is closed
          */
-        virtual void buildConstraintCardinality(const std::string& id, std::vector<XVariable*>& list, std::vector<XVariable*> values, std::vector<XInterval>& occurs, bool closed) = 0;
+        virtual void buildConstraintCardinality(const std::string& id, const std::vector<XVariable*>& list, const std::vector<XVariable*> values, const std::vector<XInterval>& occurs, bool closed) = 0;
         //--------------------------------------------------------------------------------------
         // Connection constraints
         //--------------------------------------------------------------------------------------
@@ -1072,7 +1072,7 @@ namespace XCSP3Core {
          * @param list the scope of the constraint
          * @param xc the condition (see #XCondition)
          */
-        virtual void buildConstraintMinimum(const std::string& id, std::vector<XVariable*>& list, XCondition& xc) = 0;
+        virtual void buildConstraintMinimum(const std::string& id, const std::vector<XVariable*>& list, XCondition& xc) = 0;
 
         /**
          * The callback function related to a minimum constraint
@@ -1088,7 +1088,7 @@ namespace XCSP3Core {
          * @param list set of expression
          * @param xc the condition (see #XCondition)
          */
-        virtual void buildConstraintMinimum(const std::string& id, std::vector<Tree*>& list, XCondition& xc) = 0;
+        virtual void buildConstraintMinimum(const std::string& id, const std::vector<Tree*>& list, XCondition& xc) = 0;
 
         /**
          * The callback function related to a minimum constraint (arg_min)
@@ -1108,7 +1108,7 @@ namespace XCSP3Core {
          * @param rank ANY, ALL...
          * @param xc the condition (see #XCondition)
          */
-        virtual void buildConstraintMinimum(const std::string& id, std::vector<XVariable*>& list, XVariable* index, int startIndex, RankType rank, XCondition& xc) = 0;
+        virtual void buildConstraintMinimum(const std::string& id, const std::vector<XVariable*>& list, XVariable* index, int startIndex, RankType rank, XCondition& xc) = 0;
 
         /**
          * The callback function related to a maximum constraint
@@ -1124,7 +1124,7 @@ namespace XCSP3Core {
          * @param list the scope of the constraint
          * @param xc the condition (see #XCondition)
          */
-        virtual void buildConstraintMaximum(const std::string& id, std::vector<XVariable*>& list, XCondition& xc) = 0;
+        virtual void buildConstraintMaximum(const std::string& id, const std::vector<XVariable*>& list, XCondition& xc) = 0;
 
         /**
                 * The callback function related to a maximum constraint
@@ -1140,7 +1140,7 @@ namespace XCSP3Core {
                 * @param list the expressions of the constraint
                 * @param xc the condition (see #XCondition)
                 */
-        virtual void buildConstraintMaximum(const std::string& id, std::vector<Tree*>& list, XCondition& xc) = 0;
+        virtual void buildConstraintMaximum(const std::string& id, const std::vector<Tree*>& list, XCondition& xc) = 0;
 
         /**
          * The callback function related to a maximum constraint (arg_max)
@@ -1160,7 +1160,7 @@ namespace XCSP3Core {
          * @param rank ANY, ALL...
          * @param xc the condition (see #XCondition)
          */
-        virtual void buildConstraintMaximum(const std::string& id, std::vector<XVariable*>& list, XVariable* index, int startIndex, RankType rank, XCondition& xc) = 0;
+        virtual void buildConstraintMaximum(const std::string& id, const std::vector<XVariable*>& list, XVariable* index, int startIndex, RankType rank, XCondition& xc) = 0;
 
         /**
          * The callback function related to a element constraint with int value
@@ -1176,7 +1176,7 @@ namespace XCSP3Core {
          * @param list the scope of the constraint
          * @param value the value (here an int)
          */
-        virtual void buildConstraintElement(const std::string& id, std::vector<XVariable*>& list, int value) = 0;
+        virtual void buildConstraintElement(const std::string& id, const std::vector<XVariable*>& list, int value) = 0;
 
         /**
          * The callback function related to a element constraint matrix
@@ -1197,7 +1197,7 @@ namespace XCSP3Core {
          * @param startColIndex the start index for cols
          * @param value the value (here a variable)
          */
-        virtual void buildConstraintElement(const std::string& id, std::vector<std::vector<XVariable*>>& matrix, int startRowIndex, XVariable* rowIndex, int startColIndex, XVariable* colIndex, XVariable* value) = 0;
+        virtual void buildConstraintElement(const std::string& id, const std::vector<std::vector<XVariable*>>& matrix, int startRowIndex, XVariable* rowIndex, int startColIndex, XVariable* colIndex, XVariable* value) = 0;
 
         /**
         * The callback function related to a element constraint matrix
@@ -1218,7 +1218,7 @@ namespace XCSP3Core {
         * @param startColIndex the start index for cols
         * @param value the value (here an int)
         */
-        virtual void buildConstraintElement(const std::string& id, std::vector<std::vector<XVariable*>>& matrix, int startRowIndex, XVariable* rowIndex, int startColIndex, XVariable* colIndex, int value) = 0;
+        virtual void buildConstraintElement(const std::string& id, const std::vector<std::vector<XVariable*>>& matrix, int startRowIndex, XVariable* rowIndex, int startColIndex, XVariable* colIndex, int value) = 0;
 
         /**
         * The callback function related to a element constraint matrix
@@ -1240,7 +1240,7 @@ namespace XCSP3Core {
         * @param value the value (here a variable)
         */
 
-        virtual void buildConstraintElement(const std::string& id, std::vector<std::vector<int>>& matrix, int startRowIndex, XVariable* rowIndex, int startColIndex, XVariable* colIndex, XVariable* value) = 0;
+        virtual void buildConstraintElement(const std::string& id, const std::vector<std::vector<int>>& matrix, int startRowIndex, XVariable* rowIndex, int startColIndex, XVariable* colIndex, XVariable* value) = 0;
 
         /**
          * The callback function related to a element constraint with variable value
@@ -1256,7 +1256,7 @@ namespace XCSP3Core {
          * @param list the scope of the constraint
          * @param value the value (here a variable)
          */
-        virtual void buildConstraintElement(const std::string& id, std::vector<XVariable*>& list, XVariable* value) = 0;
+        virtual void buildConstraintElement(const std::string& id, const std::vector<XVariable*>& list, XVariable* value) = 0;
 
         /**
          * The callback function related to a element constraint with variable index and  int value
@@ -1276,7 +1276,7 @@ namespace XCSP3Core {
          * @param rank ANY, ALL...
          * @param value the value (here an int)
          */
-        virtual void buildConstraintElement(const std::string& id, std::vector<XVariable*>& list, int startIndex, XVariable* index, RankType rank, int value) = 0;
+        virtual void buildConstraintElement(const std::string& id, const std::vector<XVariable*>& list, int startIndex, XVariable* index, RankType rank, int value) = 0;
 
         /**
          * The callback function related to a element constraint with variable index and variable value
@@ -1296,7 +1296,7 @@ namespace XCSP3Core {
          * @param rank ANY, ALL...
          * @param value the value (here a variable)
          */
-        virtual void buildConstraintElement(const std::string& id, std::vector<XVariable*>& list, int startIndex, XVariable* index, RankType rank, XVariable* value) = 0;
+        virtual void buildConstraintElement(const std::string& id, const std::vector<XVariable*>& list, int startIndex, XVariable* index, RankType rank, XVariable* value) = 0;
 
         /**
          * The callback function related to a element constraint with int list variable index and variable value
@@ -1316,7 +1316,7 @@ namespace XCSP3Core {
          * @param rank ANY, ALL...
          * @param value the value (here a variable)
          */
-        virtual void buildConstraintElement(const std::string& id, std::vector<int>& list, int startIndex, XVariable* index, RankType rank, XVariable* value) = 0;
+        virtual void buildConstraintElement(const std::string& id, const std::vector<int>& list, int startIndex, XVariable* index, RankType rank, XVariable* value) = 0;
 
         /**
          * The callback function related to a channel constraint
@@ -1330,7 +1330,7 @@ namespace XCSP3Core {
          * @param id the id (name) of the constraint
          * @param list the scope of the constraint
          */
-        virtual void buildConstraintChannel(const std::string& id, std::vector<XVariable*>& list, int startIndex) = 0;
+        virtual void buildConstraintChannel(const std::string& id, const std::vector<XVariable*>& list, int startIndex) = 0;
 
         /**
          * The callback function related to a channel constraint
@@ -1354,7 +1354,7 @@ namespace XCSP3Core {
          * @param startIndex2 the starting index for list2
          *
          */
-        virtual void buildConstraintChannel(const std::string& id, std::vector<XVariable*>& list1, int startIndex1, std::vector<XVariable*>& list2, int startIndex2) = 0;
+        virtual void buildConstraintChannel(const std::string& id, const std::vector<XVariable*>& list1, int startIndex1, const std::vector<XVariable*>& list2, int startIndex2) = 0;
 
         /**
          * The callback function related to a channel constraint with a value
@@ -1371,7 +1371,7 @@ namespace XCSP3Core {
          * @param startIndex the starting index for list
          * @param value the vaule
          */
-        virtual void buildConstraintChannel(const std::string& id, std::vector<XVariable*>& list, int startIndex, XVariable* value) = 0;
+        virtual void buildConstraintChannel(const std::string& id, const std::vector<XVariable*>& list, int startIndex, XVariable* value) = 0;
 
         //--------------------------------------------------------------------------------------
         // packing and schedulling constraints
@@ -1393,7 +1393,7 @@ namespace XCSP3Core {
          * @param values thelist of values
          * @param widths the list of intervals for widths
          */
-        virtual void buildConstraintStretch(const std::string& id, std::vector<XVariable*>& list, std::vector<int>& values, std::vector<XInterval>& widths) = 0;
+        virtual void buildConstraintStretch(const std::string& id, const std::vector<XVariable*>& list, const std::vector<int>& values, const std::vector<XInterval>& widths) = 0;
 
         /**
          * The callback function related to a strectch constraint with values, widths and patterns
@@ -1406,7 +1406,7 @@ namespace XCSP3Core {
          * @param patterns
          *
          */
-        virtual void buildConstraintStretch(const std::string& id, std::vector<XVariable*>& list, std::vector<int>& values, std::vector<XInterval>& widths, std::vector<std::vector<int>>& patterns) = 0;
+        virtual void buildConstraintStretch(const std::string& id, const std::vector<XVariable*>& list, const std::vector<int>& values, const std::vector<XInterval>& widths, const std::vector<std::vector<int>>& patterns) = 0;
 
         /**
          * The callback function related to a no overlap constraint with variable origins and int lenghts
@@ -1423,7 +1423,7 @@ namespace XCSP3Core {
          * @param lengths the std::vector of lenghts (here int)
          * @param zeroIgnored are zero ignored?
          */
-        virtual void buildConstraintNoOverlap(const std::string& id, std::vector<XVariable*>& origins, std::vector<int>& lengths, bool zeroIgnored) = 0;
+        virtual void buildConstraintNoOverlap(const std::string& id, const std::vector<XVariable*>& origins, const std::vector<int>& lengths, bool zeroIgnored) = 0;
 
         /**
          * The callback function related to a no overlap constraint with variable origins and variable lenghts
@@ -1440,7 +1440,7 @@ namespace XCSP3Core {
          * @param lengths the std::vector of lenghts (here variables)
          * @param zeroIgnored are zero ignored?
          */
-        virtual void buildConstraintNoOverlap(const std::string& id, std::vector<XVariable*>& origins, std::vector<XVariable*>& lengths, bool zeroIgnored) = 0;
+        virtual void buildConstraintNoOverlap(const std::string& id, const std::vector<XVariable*>& origins, const std::vector<XVariable*>& lengths, bool zeroIgnored) = 0;
 
         /**
          * The callback function related to a no overlap constraint with variable origins and 3 dimensional int  lenghts
@@ -1457,7 +1457,7 @@ namespace XCSP3Core {
          * @param lengths the std::vector of lenghts (here std::vector of int)
          * @param zeroIgnored are zero ignored?
          */
-        virtual void buildConstraintNoOverlap(const std::string& id, std::vector<std::vector<XVariable*>>& origins, std::vector<std::vector<int>>& lengths, bool zeroIgnored) = 0;
+        virtual void buildConstraintNoOverlap(const std::string& id, const std::vector<std::vector<XVariable*>>& origins, const std::vector<std::vector<int>>& lengths, bool zeroIgnored) = 0;
 
         /**
          * The callback function related to a no overlap constraint with variable origins and 3 dimensional variable  lenghts
@@ -1474,7 +1474,7 @@ namespace XCSP3Core {
          * @param lengths the std::vector of lenghts (here std::vector of variables)
          * @param zeroIgnored are zero ignored?
          */
-        virtual void buildConstraintNoOverlap(const std::string& id, std::vector<std::vector<XVariable*>>& origins, std::vector<std::vector<XVariable*>>& lengths, bool zeroIgnored) = 0;
+        virtual void buildConstraintNoOverlap(const std::string& id, const std::vector<std::vector<XVariable*>>& origins, const std::vector<std::vector<XVariable*>>& lengths, bool zeroIgnored) = 0;
 
         /**
          * The callback function related to a cumulative constraint with variable origins, int lengths and int heights
@@ -1494,7 +1494,7 @@ namespace XCSP3Core {
          * @param heights the std::vector of heights (here ints)
          * @param xc the condition (see XCondition)
          */
-        virtual void buildConstraintCumulative(const std::string& id, std::vector<XVariable*>& origins, std::vector<int>& lengths, std::vector<int>& heights, XCondition& xc) = 0;
+        virtual void buildConstraintCumulative(const std::string& id, const std::vector<XVariable*>& origins, const std::vector<int>& lengths, const std::vector<int>& heights, XCondition& xc) = 0;
 
         /**
          * The callback function related to a cumulative constraint with variable origin, int lengths and variable heights
@@ -1514,7 +1514,7 @@ namespace XCSP3Core {
          * @param heights the std::vector of heights (here variables)
          * @param xc the condition (see XCondition)
          */
-        virtual void buildConstraintCumulative(const std::string& id, std::vector<XVariable*>& origins, std::vector<int>& lengths, std::vector<XVariable*>& varHeights, XCondition& xc) = 0;
+        virtual void buildConstraintCumulative(const std::string& id, const std::vector<XVariable*>& origins, const std::vector<int>& lengths, const std::vector<XVariable*>& varHeights, XCondition& xc) = 0;
 
         /**
          * The callback function related to a cumulative constraint with variable origin, variable lengths and int heights
@@ -1534,7 +1534,7 @@ namespace XCSP3Core {
          * @param heights the std::vector of heights (here ints)
          * @param xc the condition (see XCondition)
          */
-        virtual void buildConstraintCumulative(const std::string& id, std::vector<XVariable*>& origins, std::vector<XVariable*>& lengths, std::vector<int>& heights, XCondition& xc) = 0;
+        virtual void buildConstraintCumulative(const std::string& id, const std::vector<XVariable*>& origins, const std::vector<XVariable*>& lengths, const std::vector<int>& heights, XCondition& xc) = 0;
 
         /**
          * The callback function related to a cumulative constraint with variable origin, variable lengths and variable heights
@@ -1555,7 +1555,7 @@ namespace XCSP3Core {
          * @param xc the condition (see XCondition)
          */
         virtual void
-        buildConstraintCumulative(const std::string& id, std::vector<XVariable*>& origins, std::vector<XVariable*>& lengths, std::vector<XVariable*>& heights, XCondition& xc) = 0;
+        buildConstraintCumulative(const std::string& id, const std::vector<XVariable*>& origins, const std::vector<XVariable*>& lengths, const std::vector<XVariable*>& heights, XCondition& xc) = 0;
 
         /**
          * The callback function related to a cumulative constraint with variable origin, int lengths and int heights and variable ends
@@ -1577,7 +1577,7 @@ namespace XCSP3Core {
          * @param ends the std::vector of ends (here variables)
          * @param xc the condition (see XCondition)
          */
-        virtual void buildConstraintCumulative(const std::string& id, std::vector<XVariable*>& origins, std::vector<int>& lengths, std::vector<int>& heights, std::vector<XVariable*>& ends,
+        virtual void buildConstraintCumulative(const std::string& id, const std::vector<XVariable*>& origins, const std::vector<int>& lengths, const std::vector<int>& heights, const std::vector<XVariable*>& ends,
                                                XCondition& xc) = 0;
 
         /**
@@ -1601,7 +1601,7 @@ namespace XCSP3Core {
          * @param xc the condition (see XCondition)
          */
         virtual void
-        buildConstraintCumulative(const std::string& id, std::vector<XVariable*>& origins, std::vector<int>& lengths, std::vector<XVariable*>& varHeights, std::vector<XVariable*>& ends, XCondition& xc) = 0;
+        buildConstraintCumulative(const std::string& id, const std::vector<XVariable*>& origins, const std::vector<int>& lengths, const std::vector<XVariable*>& varHeights, const std::vector<XVariable*>& ends, XCondition& xc) = 0;
 
         /**
          * The callback function related to a cumulative constraint with variable origin, variable lengths and int heights and variable ends
@@ -1624,7 +1624,7 @@ namespace XCSP3Core {
          * @param xc the condition (see XCondition)
          */
         virtual void
-        buildConstraintCumulative(const std::string& id, std::vector<XVariable*>& origins, std::vector<XVariable*>& lengths, std::vector<int>& heights, std::vector<XVariable*>& ends, XCondition& xc) = 0;
+        buildConstraintCumulative(const std::string& id, const std::vector<XVariable*>& origins, const std::vector<XVariable*>& lengths, const std::vector<int>& heights, const std::vector<XVariable*>& ends, XCondition& xc) = 0;
 
         /**
          * The callback function related to a cumulative constraint with variable origin, variable lengths and variable heights and variable ends
@@ -1647,7 +1647,7 @@ namespace XCSP3Core {
          * @param xc the condition (see XCondition)
          */
         virtual void
-        buildConstraintCumulative(const std::string& id, std::vector<XVariable*>& origins, std::vector<XVariable*>& lengths, std::vector<XVariable*>& heights, std::vector<XVariable*>& ends, XCondition& xc) = 0;
+        buildConstraintCumulative(const std::string& id, const std::vector<XVariable*>& origins, const std::vector<XVariable*>& lengths, const std::vector<XVariable*>& heights, const std::vector<XVariable*>& ends, XCondition& xc) = 0;
 
         //--------------------------------------------------------------------------------------
         // instantiation constraints
@@ -1667,7 +1667,7 @@ namespace XCSP3Core {
          * @param list the scope of the constraint
          * @param values the value for each variable
          */
-        virtual void buildConstraintInstantiation(const std::string& id, std::vector<XVariable*>& list, std::vector<int>& values) = 0;
+        virtual void buildConstraintInstantiation(const std::string& id, const std::vector<XVariable*>& list, const std::vector<int>& values) = 0;
 
         //--------------------------------------------------------------------------------------
         // Clause constraints
@@ -1685,7 +1685,7 @@ namespace XCSP3Core {
          * @param positive the positive variables in the clause
          * @param negative the negative variables in the clause
          */
-        virtual void buildConstraintClause(const std::string& id, std::vector<XVariable*>& positive, std::vector<XVariable*>& negative) = 0;
+        virtual void buildConstraintClause(const std::string& id, const std::vector<XVariable*>& positive, const std::vector<XVariable*>& negative) = 0;
 
         //--------------------------------------------------------------------------------------
         // Graph constraints
@@ -1704,7 +1704,7 @@ namespace XCSP3Core {
          * @param list the scope of the constraint
          * @param startIndex the start index for the list
          */
-        virtual void buildConstraintCircuit(const std::string& id, std::vector<XVariable*>& list, int startIndex) = 0;
+        virtual void buildConstraintCircuit(const std::string& id, const std::vector<XVariable*>& list, int startIndex) = 0;
 
         /**
          * The callback function related to circuit   constraint with defined int size
@@ -1721,7 +1721,7 @@ namespace XCSP3Core {
          * @param startIndex the start index for the list
          * @param size the size of the circuit (here an int)
          */
-        virtual void buildConstraintCircuit(const std::string& id, std::vector<XVariable*>& list, int startIndex, int size) = 0;
+        virtual void buildConstraintCircuit(const std::string& id, const std::vector<XVariable*>& list, int startIndex, int size) = 0;
 
         /**
          * The callback function related to circuit   constraint with defined variable size
@@ -1738,7 +1738,7 @@ namespace XCSP3Core {
          * @param startIndex the start index for the list
          * @param size the size of the circuit (here an variable)
          */
-        virtual void buildConstraintCircuit(const std::string& id, std::vector<XVariable*>& list, int startIndex, XVariable* size) = 0;
+        virtual void buildConstraintCircuit(const std::string& id, const std::vector<XVariable*>& list, int startIndex, XVariable* size) = 0;
 
         //--------------------------------------------------------------------------------------
         // Objectives
@@ -1812,7 +1812,7 @@ namespace XCSP3Core {
          * @param list the scope
          * @param coefs the std::vector of coefficients
          */
-        virtual void buildObjectiveMinimize(ExpressionObjective type, std::vector<XVariable*>& list, std::vector<int>& coefs) = 0;
+        virtual void buildObjectiveMinimize(ExpressionObjective type, const std::vector<XVariable*>& list, const std::vector<int>& coefs) = 0;
 
         /**
          * The callback function related to an objective maximize a sum/product
@@ -1830,7 +1830,7 @@ namespace XCSP3Core {
          * @param list the scope
          * @param coefs the std::vector of coefficients
          */
-        virtual void buildObjectiveMaximize(ExpressionObjective type, std::vector<XVariable*>& list, std::vector<int>& coefs) = 0;
+        virtual void buildObjectiveMaximize(ExpressionObjective type, const std::vector<XVariable*>& list, const std::vector<int>& coefs) = 0;
 
         /**
          * The callback function related to an objective minimize a sum/product with coefs = 1
@@ -1846,7 +1846,7 @@ namespace XCSP3Core {
          * @param type SUM, PRODUCT...
          * @param list the scope
          */
-        virtual void buildObjectiveMinimize(ExpressionObjective type, std::vector<XVariable*>& list) = 0;
+        virtual void buildObjectiveMinimize(ExpressionObjective type, const std::vector<XVariable*>& list) = 0;
 
         /**
          * The callback function related to an objective maximize a sum/product with coefs = 1
@@ -1862,7 +1862,7 @@ namespace XCSP3Core {
          * @param type SUM, PRODUCT...
          * @param list the scope
          */
-        virtual void buildObjectiveMaximize(ExpressionObjective type, std::vector<XVariable*>& list) = 0;
+        virtual void buildObjectiveMaximize(ExpressionObjective type, const std::vector<XVariable*>& list) = 0;
 
         /**
          * The callback function related to an objective minimize a sum/product
@@ -1880,7 +1880,7 @@ namespace XCSP3Core {
          * @param trees the expressions
          * @param coefs the std::vector of coefficients
          */
-        virtual void buildObjectiveMinimize(ExpressionObjective type, std::vector<Tree*>& trees, std::vector<int>& coefs) = 0;
+        virtual void buildObjectiveMinimize(ExpressionObjective type, const std::vector<Tree*>& trees, const std::vector<int>& coefs) = 0;
 
         /**
          * The callback function related to an objective maximize a sum/product
@@ -1898,7 +1898,7 @@ namespace XCSP3Core {
          * @param list the scope
          * @param coefs the std::vector of coefficients
          */
-        virtual void buildObjectiveMaximize(ExpressionObjective type, std::vector<Tree*>& trees, std::vector<int>& coefs) = 0;
+        virtual void buildObjectiveMaximize(ExpressionObjective type, const std::vector<Tree*>& trees, const std::vector<int>& coefs) = 0;
 
         /**
          * The callback function related to an objective minimize a sum/product with coefs = 1
@@ -1914,7 +1914,7 @@ namespace XCSP3Core {
          * @param type SUM, PRODUCT...
          * @param list the scope
          */
-        virtual void buildObjectiveMinimize(ExpressionObjective type, std::vector<Tree*>& trees) = 0;
+        virtual void buildObjectiveMinimize(ExpressionObjective type, const std::vector<Tree*>& trees) = 0;
 
         /**
          * The callback function related to an objective maximize a sum/product with coefs = 1
@@ -1930,7 +1930,7 @@ namespace XCSP3Core {
          * @param type SUM, PRODUCT...
          * @param list the scope
          */
-        virtual void buildObjectiveMaximize(ExpressionObjective type, std::vector<Tree*>& trees) = 0;
+        virtual void buildObjectiveMaximize(ExpressionObjective type, const std::vector<Tree*>& trees) = 0;
 
         /**
          * The callback function related to annotations.

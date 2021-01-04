@@ -27,9 +27,9 @@
 // definition of different functions coming from XCSP3Constraint, XCSPVariables, XCS3Domain
 #include "XCSP3Constraint.h"
 #include "XCSP3Domain.h"
+#include "XCSP3Objective.h"
 #include "XCSP3Tree.h"
 #include "XCSP3Variable.h"
-#include "XCSP3Objective.h"
 #include <assert.h>
 
 using namespace XCSP3Core;
@@ -298,7 +298,7 @@ namespace XCSP3Core {
         if (xc.op == OrderType::GE)
             sep = " >= ";
         if (xc.op == OrderType::EQ)
-            sep = " = ";
+            sep = " == ";
 
         if (xc.operandType == OperandType::INTEGER)
             O << sep << xc.val;

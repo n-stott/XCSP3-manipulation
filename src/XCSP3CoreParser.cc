@@ -59,7 +59,7 @@ int XCSP3CoreParser::parse(std::istream& in) {
     xmlSAXHandler handler;
     xmlParserCtxtPtr parserCtxt = nullptr;
 
-    const int bufSize = 4096;
+    const int bufSize = (1 << 20);
     std::unique_ptr<char[]> buffer{new char[bufSize]};
 
     int size;

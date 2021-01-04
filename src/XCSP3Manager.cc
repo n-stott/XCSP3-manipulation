@@ -1035,7 +1035,7 @@ void XCSP3Manager::newConstraintGroup(XConstraintGroup* group) {
                     previousArguments.clear();
             }
 
-            if (i > 0 && previousArguments.size() > 0)
+            if (false && i > 0 && previousArguments.size() > 0)
                 newConstraintExtensionAsLastOne(ce);
             else {
                 std::vector<XVariable*> list;
