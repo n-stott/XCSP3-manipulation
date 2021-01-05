@@ -348,6 +348,9 @@ void XCSP3PrintCallbacks::buildVariableInteger(const std::string& id, const std:
     auto p = std::minmax_element(values.begin(), values.end());
     if (*p.second - *p.first + 1 == static_cast<int>(values.size())) {
         buildVariableInteger(id, *p.first, *p.second);
+    } else if(values.size() == 2) {
+        std::cout << "   _" << id << " <- bool();\n";
+        std::cout << "   " << id << " <- " << values[0] << "+ _" << id << "*" << (values[1]-values[0]) << ";\n";
     } else {
         std::vector<std::string> aliases;
         for (unsigned int i = 0; i < values.size(); ++i) {
@@ -473,11 +476,9 @@ void XCSP3PrintCallbacks::buildConstraintMDD(const std::string&, const std::vect
 
 void XCSP3PrintCallbacks::buildConstraintAlldifferent(const std::string& id, const std::vector<XVariable*>& list) {
     (void)id;
-    for (unsigned int i = 0; i < list.size(); ++i) {
-        for (unsigned int j = i + 1; j < list.size(); ++j) {
-            std::cout << "   constraint " << *list[i] << " != " << *list[j] << ";" << std::endl;
-        }
-    }
+    std::cout << "   constraint allDifferent({";
+    displayList(list, ", ");
+    std::cout << "});\n";
 }
 
 void XCSP3PrintCallbacks::buildConstraintAlldifferentExcept(const std::string& id, const std::vector<XVariable*>& list, const std::vector<int>& except) {
